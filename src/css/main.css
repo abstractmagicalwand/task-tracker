@@ -1,0 +1,60 @@
+.app {
+  width: 800px;
+  height: 600px;
+  background-color: #666;
+  position: relative;
+}
+
+.hat-app {
+  width: 800px;
+  height: 70px;
+  background-color: #44FFB1;
+  position: absolute;
+}
+
+.main-app {
+  width: 570px;
+  height: 425px;
+  background-color: #FFC157;
+  position: absolute;
+  top: 70px;
+  left: 230px;
+}
+
+.nav-sidebar-app {
+  width: 230px;
+  height: 530px;
+  background-color: #CEE87B;
+  position: absolute;
+  top: 70px;
+}
+
+.area-input-task-app {
+  background-color: #A471FF;
+  position: absolute;
+  height: 105px;
+  width: 570px;
+  left: 230px;
+  top: 495px;
+}
+
+.text-area-input-task-app {
+  position: relative;
+  width: 500px;
+  height: 99px;
+  resize: none;
+  outline: none;
+  overflow: auto;
+}
+
+.btn-area-input-task-app {
+  position: relative;
+  width: 70px;
+  height: 105px;
+  left: 500px;
+  top: -110px;
+  background-color: black;
+}
+.btn-area-input-task-app:hover {
+  background-color: red;
+}
