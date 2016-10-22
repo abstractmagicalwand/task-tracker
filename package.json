@@ -1,0 +1,31 @@
+{
+  "name": "task-tracker",
+  "version": "0.0.1",
+  "description": "Task traker with time managment.",
+  "keywords": [
+    "task",
+    "traker",
+    "managment",
+    "time",
+    "control",
+    "to-do"
+  ],
+  "bugs": {
+    "url": "https://github.com/magicwantabstract/task-tracker/issues",
+    "email": "magicwantabstract@gmail.com"
+  },
+  "license": "MIT",
+  "main": "./server.js",
+  "scripts": {
+    "test" : "echo \"Error: no test specified\" && exit 1",
+  },
+  "author": {
+    "name": "magicwantabstract",
+    "email": "magicwantabstract@gmail.com",
+    "url": "https://github.com/magicwantabstract"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/magicwantabstract/task-tracker"
+  }
+}
