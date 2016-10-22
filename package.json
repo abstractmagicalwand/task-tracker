@@ -17,7 +17,7 @@
   "license": "MIT",
   "main": "./server.js",
   "scripts": {
-    "test" : "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
     "name": "magicwantabstract",
@@ -27,5 +27,8 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/magicwantabstract/task-tracker"
+  },
+  "devDependencies": {
+    "express": "^4.14.0"
   }
 }
