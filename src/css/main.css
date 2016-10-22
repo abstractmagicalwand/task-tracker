@@ -55,6 +55,14 @@
   top: -110px;
   background-color: black;
 }
+
 .btn-area-input-task-app:hover {
   background-color: red;
+}
+
+.track-task {
+  background-color: #E85997;
+  width: 500px;
+  height: 50px;
+  margin: 35px 35px;
 }
