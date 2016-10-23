@@ -3,11 +3,14 @@ const COUNT_TASK_MAIN_APP = 5;
 
 const taskDB = [{
   description: 'Купить молока.',
+  id: 1
 }, {
   description: 'Выпить колы.',
+  id: 2
 }, {
-  description: 'Познакомиться с девочкой.'
-}];
+  description: 'Познакомиться с девочкой.',
+  id: 3
+}, ];
 
 const App = React.createClass({
 
@@ -48,10 +51,25 @@ const MainApp = React.createClass({
       const newTask = item.concat(self.state.tasks);
       self.setState({tasks: newTask});
     });
+
+    emitter.addListener('Del', function(item) {
+      var newTasks = self.state.tasks;
+      newTasks.splice(self.searchTask(item.id), 1)
+      self.setState({tasks: newTasks});
+    });
+  },
+
+  searchTask: function(id) {
+    var tasks = this.state.tasks;
+
+    tasks.forEach(function(item, index) {
+        if (item.id == id) return index;
+    });
   },
 
   componentWillUnmount: function() {
     emitter.removeListener('Add');
+    emitter.removeListener('Del');
   },
 
   propTypes: {
@@ -66,7 +84,7 @@ const MainApp = React.createClass({
       console.log(index);
       if (index <= quantity) {
         return (
-          <TrackTask key={index} data={item['description']} />
+          <TrackTask key={index} data={item.description} id={item.id} />
         );
       }
 
@@ -81,7 +99,10 @@ const MainApp = React.createClass({
 const AreaInputTaskApp = React.createClass({
   onBtnClickHandler: function(e) {
     if (!this.refs.textTask.value.length) return;
-    const item = [{description: this.refs.textTask.value}];
+    const item = [{
+      description: this.refs.textTask.value,
+      id: Math.floor(Math.random() * 100)
+    }];
 
     emitter.emit('Add', item);
     this.refs.textTask.value = "";
