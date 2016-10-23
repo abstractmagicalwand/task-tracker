@@ -65,4 +65,20 @@
   width: 500px;
   height: 50px;
   margin: 35px 35px;
+  position: relative;
+  text-align: center;
+  padding: 5px 5px;
+  font-size: 15px;
+  display: block;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+.track-task-delete {
+  background-color: mediumvioletred;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 5px;
+  right: 10px;
+  top: 10px;
 }
