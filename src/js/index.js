@@ -1,3 +1,6 @@
+const emitter = new EventEmitter();
+const COUNT_TASK_MAIN_APP = 5;
+
 const taskDB = [{
   description: 'Купить молока.',
 }, {
@@ -13,7 +16,7 @@ const App = React.createClass({
       <div className="app">
         <HatApp />
         <NavSideBarApp />
-        <MainApp />
+        <MainApp quantity={COUNT_TASK_MAIN_APP} />
         <AreaInputTaskApp />
       </div>
     );
@@ -37,10 +40,18 @@ const NavSideBarApp = React.createClass({
 });
 
 const MainApp = React.createClass({
-  getInitialState: function() {
-    return (
-      {tasks: taskDB}
-    );
+  getInitialState: function() { return {tasks: taskDB}; },
+
+  componentDidMount: function() {
+    const self = this;
+    emitter.addListener('Add', function(item) {
+      const newTask = item.concat(self.state.tasks);
+      self.setState({tasks: newTask});
+    });
+  },
+
+  componentWillUnmount: function() {
+    emitter.removeListener('Add');
   },
 
   propTypes: {
@@ -50,10 +61,15 @@ const MainApp = React.createClass({
   },
 
   render: function() {
+    const quantity = this.props.quantity;
     const tasks = this.state.tasks.map(function(item, index) {
-      return (
-        <TrackTask key={index} data={item['description']} />
-      )
+      console.log(index);
+      if (index <= quantity) {
+        return (
+          <TrackTask key={index} data={item['description']} />
+        );
+      }
+
     });
 
     return (
@@ -63,31 +79,44 @@ const MainApp = React.createClass({
 });
 
 const AreaInputTaskApp = React.createClass({
-  onBtnClickHandler: function() {
+  onBtnClickHandler: function(e) {
+    if (!this.refs.textTask.value.length) return;
+    const item = [{description: this.refs.textTask.value}];
 
+    emitter.emit('Add', item);
+    this.refs.textTask.value = "";
   },
+
   render: function() {
     return (
       <div className="area-input-task-app">
         <textarea 
+          defaultValue=""
+          ref="textTask"
           placeholder="#tags *priority @project :::deathtimer [create date]" 
           className="text-area-input-task-app">
         </textarea>
-        <button className="btn-area-input-task-app"></button>
+        <button onClick={this.onBtnClickHandler} className="btn-area-input-task-app"></button>
       </div>
     );
   }
 });
 
 const TrackTask = React.createClass({
+  deleteTask: function() {
+    emitter.emit('Del', this.props.id);
+  },
   render: function() {
     return (
-      <div className="track-task">{this.props.data}</div>
+      <div className="track-task">
+        {this.props.data}
+        <span onClick={this.deleteTask} className="track-task-delete"></span>
+      </div>
     );
-  }
+  } 
 });
 
 ReactDOM.render(
   <App />,
   document.getElementById('root')
-)
+);
