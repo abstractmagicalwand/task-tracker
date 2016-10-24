@@ -1,5 +1,5 @@
 const emitter = new EventEmitter();
-const COUNT_TASK_MAIN_APP = 3;
+const COUNT_TASK_MAIN_APP = 4;
 
 const taskDB = [{
   description: 'Купить молока.',
@@ -89,6 +89,7 @@ const MainApp = React.createClass({
   componentWillUnmount: function() {
     emitter.removeListener('Add');
     emitter.removeListener('Del');
+    emitter.removeListener('Done');
   },
 
   getTask: function(list, id) {
@@ -116,10 +117,11 @@ const MainApp = React.createClass({
   },
 
   render: function() {
-    const quantity = this.props.quantity;
+    let quantity = this.props.quantity;
     const tasks = this.state.tasks.map(function(item, index) {
 
-      if (index <= quantity && !item.complited) {
+      if (quantity && !item.complited) {
+        quantity = quantity - 1;
         return (
           <TrackTask key={index} data={item.description} id={item.id} />
         );
@@ -136,14 +138,26 @@ const MainApp = React.createClass({
 const AreaInputTaskApp = React.createClass({
   onBtnClickHandler: function(e) {
     if (!this.refs.textTask.value.length) return;
-    const item = [{
-      description: this.refs.textTask.value,
-      id: Math.floor(Math.random() * Math.pow(10, 6)),
-      complited: false
-    }];
-
+    const item = this.createTask();
     emitter.emit('Add', item);
     this.refs.textTask.value = "";
+  },
+
+  createTask: function(text) {
+    const task = [{
+      description: this.refs.textTask.value,
+      id: Math.floor(Math.random() * Math.pow(10, 6)),
+      complited: false,
+      tags: [],
+      project: [],
+      priority: 0,
+      timeDeath: 0,
+      notes: [],
+      timeBank: 0,
+      date: new Date()
+    }];
+
+    return task;
   },
 
   render: function() {
@@ -185,27 +199,86 @@ const TrackTask = React.createClass({
   render: function() {
     return (
       <div className="track-task">
-        {this.props.data}
+        <p className="track-task-data">{this.props.data}</p>
         <span onClick={this.deleteTask} className="track-task-delete"></span>
-          <label 
-            className="track-task-checkbox" 
-            for="checkboxFourInput">
-            <span className="track-task-checkbox-in">
-              <input 
-                type="checkbox" 
-                className="track-task-checkbox-input"
-                id="checkboxFourInput"
-                onChange={this.onCheckedComplited}
-              />
-            </span>
-          </label>
+        <label 
+          className="track-task-checkbox" 
+          for="checkboxFourInput">
+          <span className="track-task-checkbox-in">
+            <input 
+              type="checkbox" 
+              className="track-task-checkbox-input"
+              id="checkboxFourInput"
+              onChange={this.onCheckedComplited}
+            />
+          </span>
+        </label>
+        <TimerAndStopWatch />
       </div>
     );
   } 
+});
+
+const TimerAndStopWatch = React.createClass({
+  getInitialState: function() {
+    return {
+      hh: '00',
+      mm: '00',
+      ss: '00'
+    };
+  },
+
+  stopwatch: null,
+
+  stopwatchTime: null,
+
+  getTime: function() {
+    const now = new Date;
+    const nowSs = now.getSeconds();
+
+    now.setTime(0);
+    now.setHours(0);
+
+    this.stopwatchTime ? now.setSeconds(nowSs - this.stopwatchTime) :
+      this.stopwatchTime = nowSs; 
+
+    const ss = now.getSeconds();
+    const mm = now.getMinutes();
+    const hh = now.getHours();
+
+    return {
+      ss: (ss < 10 ? 0 + '' + ss : ss),
+      mm: (mm < 10 ? 0 + '' + mm : mm),
+      hh: (hh < 10 ? 0 + '' + hh : hh)
+    }
+  },
+
+  render: function() {
+
+    if (!this.stopwatch) {
+      const self = this;
+      this.stopwatch = setInterval(function() {
+        const nowTime = self.getTime();
+        self.setState({
+          ss: nowTime.ss,
+          mm: nowTime.mm,
+          hh: nowTime.hh
+        })
+      }, 1000);
+    }
+
+    return (
+      <p className="stopwatch">
+        [<span className="stopwatch-hh">{this.state.hh}</span>:
+        <span className="stopwatch-mm">{this.state.mm}</span>:
+        <span className="stopwatch-ss">{this.state.ss}</span>]
+        <input type="button" className="stopwatch-of-on"/>
+      </p>
+    );
+  }
 });
 
 ReactDOM.render(
   <App />,
   document.getElementById('root')
 );
-
