@@ -3,13 +3,34 @@ const COUNT_TASK_MAIN_APP = 3;
 
 const taskDB = [{
   description: 'Купить молока.',
-  id: 1
+  id: 1,
+  complited: false,
+  tags: [],
+  project: [],
+  priority: 0,
+  timeDeath: 0,
+  notes: [],
+  timeBank: 0
 }, {
   description: 'Выпить колы.',
-  id: 2
+  id: 2,
+  complited: false,
+  tags: [],
+  project: [],
+  priority: 0,
+  timeDeath: 0,
+  notes: [],
+  timeBank: 0
 }, {
   description: 'Познакомиться с девочкой.',
-  id: 3
+  id: 3,
+  complited: false,
+  tags: [],
+  project: [],
+  priority: 0,
+  timeDeath: 0,
+  notes: [],
+  timeBank: 0
 }, ];
 
 const App = React.createClass({
@@ -52,25 +73,40 @@ const MainApp = React.createClass({
       self.setState({tasks: newTask});
     });
 
-    emitter.addListener('Del', function(item) {
-      const newTasks = self.state.tasks;
-      const delIndex = self.searchTask(newTasks, item);
-      newTasks.splice(delIndex, 1)
-      self.setState({tasks: newTasks});
+    emitter.addListener('Del', function(id) {
+      const task = self.getTask(self.state.tasks, id);
+      task.list.splice(task.id, 1);
+      self.setState({tasks: task.list});
     });
-  },
 
-  searchTask: function(lists, id) {
-      let result;
-      lists.forEach(function(item, index) {
-        if (item.id == id) result = index;
-      });
-      return result;
+    emitter.addListener('Done', function(id) {
+      const task = self.getTask(self.state.tasks, id);
+      task.list[task.id].complited = true;
+      self.setState({tasks: task.list});
+    });
   },
 
   componentWillUnmount: function() {
     emitter.removeListener('Add');
     emitter.removeListener('Del');
+  },
+
+  getTask: function(list, id) {
+
+    function searchTask(list, id) {
+      let result;
+      list.forEach(function(item, index) {
+        if (item.id == id) result = index;
+      });
+      return result;
+    }
+
+    const task = {};
+
+    task.list = list;
+    task.id = searchTask(task.list, id);
+    
+    return task;
   },
 
   propTypes: {
@@ -83,7 +119,7 @@ const MainApp = React.createClass({
     const quantity = this.props.quantity;
     const tasks = this.state.tasks.map(function(item, index) {
 
-      if (index <= quantity) {
+      if (index <= quantity && !item.complited) {
         return (
           <TrackTask key={index} data={item.description} id={item.id} />
         );
@@ -102,7 +138,8 @@ const AreaInputTaskApp = React.createClass({
     if (!this.refs.textTask.value.length) return;
     const item = [{
       description: this.refs.textTask.value,
-      id: Math.floor(Math.random() * Math.pow(10, 6))
+      id: Math.floor(Math.random() * Math.pow(10, 6)),
+      complited: false
     }];
 
     emitter.emit('Add', item);
@@ -119,21 +156,49 @@ const AreaInputTaskApp = React.createClass({
           placeholder="#tags *priority @project :::deathtimer [create date]" 
           className="text-area-input-task-app">
         </textarea>
-        <div onClick={this.onBtnClickHandler} className="btn-area-input-task-app">{sym}</div>
+        <div 
+          onClick={this.onBtnClickHandler} 
+          className="btn-area-input-task-app">
+          {sym}
+        </div>
       </div>
     );
   }
 });
 
 const TrackTask = React.createClass({
+  getInitialState: function() {
+    return {
+      complited: false
+    }
+  },
+
   deleteTask: function() {
     emitter.emit('Del', this.props.id);
   },
+
+  onCheckedComplited: function() {
+    this.setState({complited: !this.state.complited});
+    emitter.emit('Done', this.props.id);
+  },
+
   render: function() {
     return (
       <div className="track-task">
         {this.props.data}
         <span onClick={this.deleteTask} className="track-task-delete"></span>
+          <label 
+            className="track-task-checkbox" 
+            for="checkboxFourInput">
+            <span className="track-task-checkbox-in">
+              <input 
+                type="checkbox" 
+                className="track-task-checkbox-input"
+                id="checkboxFourInput"
+                onChange={this.onCheckedComplited}
+              />
+            </span>
+          </label>
       </div>
     );
   } 
@@ -143,3 +208,4 @@ ReactDOM.render(
   <App />,
   document.getElementById('root')
 );
+
