@@ -99,7 +99,7 @@
 	border-bottom-width: 4px;
   position: relative;
   left: 500px;
-  top: -110px;
+  top: -111px;
   font-size: 50px;
   text-align: center;
   color: #34a46c;
@@ -108,4 +108,33 @@
 .btn-area-input-task-app:hover {
 	background-color:#34a46c;
   color: #40c781;
+}
+
+.track-task-checkbox-input {
+  display: none;
+}
+
+.track-task-checkbox {
+	width: 40px;
+	height: 40px;
+	background: #E53D5C;
+  display: inline-block;
+	border-radius: 100%;
+	position: absolute;
+  left: 8px;
+  top: 10px;
+	box-shadow: 0px 1px 3px rgba(0, 0, 0, .5);
+}
+
+.track-task-checkbox-in {
+  border-radius: 100px;
+  background-color: rgba(102, 14, 83, .8);
+  display: inline-block;
+  margin: 5.5px;
+	width: 30px;
+	height: 30px;
+}
+
+.track-task-checkbox-in:hover {
+  background-color: rgba(102, 14, 83, .3);
 }
