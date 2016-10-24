@@ -1,5 +1,5 @@
 const emitter = new EventEmitter();
-const COUNT_TASK_MAIN_APP = 5;
+const COUNT_TASK_MAIN_APP = 3;
 
 const taskDB = [{
   description: 'Купить молока.',
@@ -53,18 +53,19 @@ const MainApp = React.createClass({
     });
 
     emitter.addListener('Del', function(item) {
-      var newTasks = self.state.tasks;
-      newTasks.splice(self.searchTask(item.id), 1)
+      const newTasks = self.state.tasks;
+      const delIndex = self.searchTask(newTasks, item);
+      newTasks.splice(delIndex, 1)
       self.setState({tasks: newTasks});
     });
   },
 
-  searchTask: function(id) {
-    var tasks = this.state.tasks;
-
-    tasks.forEach(function(item, index) {
-        if (item.id == id) return index;
-    });
+  searchTask: function(lists, id) {
+      let result;
+      lists.forEach(function(item, index) {
+        if (item.id == id) result = index;
+      });
+      return result;
   },
 
   componentWillUnmount: function() {
@@ -81,7 +82,7 @@ const MainApp = React.createClass({
   render: function() {
     const quantity = this.props.quantity;
     const tasks = this.state.tasks.map(function(item, index) {
-      console.log(index);
+
       if (index <= quantity) {
         return (
           <TrackTask key={index} data={item.description} id={item.id} />
@@ -101,7 +102,7 @@ const AreaInputTaskApp = React.createClass({
     if (!this.refs.textTask.value.length) return;
     const item = [{
       description: this.refs.textTask.value,
-      id: Math.floor(Math.random() * 100)
+      id: Math.floor(Math.random() * Math.pow(10, 6))
     }];
 
     emitter.emit('Add', item);
@@ -109,6 +110,7 @@ const AreaInputTaskApp = React.createClass({
   },
 
   render: function() {
+    const sym = '\u2386';
     return (
       <div className="area-input-task-app">
         <textarea 
@@ -117,7 +119,7 @@ const AreaInputTaskApp = React.createClass({
           placeholder="#tags *priority @project :::deathtimer [create date]" 
           className="text-area-input-task-app">
         </textarea>
-        <button onClick={this.onBtnClickHandler} className="btn-area-input-task-app"></button>
+        <div onClick={this.onBtnClickHandler} className="btn-area-input-task-app">{sym}</div>
       </div>
     );
   }
