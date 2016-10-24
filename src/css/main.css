@@ -45,20 +45,21 @@
   resize: none;
   outline: none;
   overflow: auto;
+  font-size: 20px;
+  font-family: 'Fira Sans', sans-serif;
 }
 
-.btn-area-input-task-app {
-  position: relative;
+/*.btn-area-input-task-app {
+
   width: 70px;
   height: 105px;
-  left: 500px;
-  top: -110px;
+
   background-color: black;
 }
 
 .btn-area-input-task-app:hover {
   background-color: red;
-}
+}*/
 
 .track-task {
   background-color: #E85997;
@@ -68,7 +69,7 @@
   position: relative;
   text-align: center;
   padding: 5px 5px;
-  font-size: 15px;
+  font-size: 20px;
   display: block;
   font-family: 'Fira Sans', sans-serif;
 }
@@ -81,4 +82,30 @@
   border-radius: 5px;
   right: 10px;
   top: 10px;
+  position: absolute;
+}
+
+.btn-area-input-task-app {
+	background-color: #40c781;
+	text-align: center;
+	line-height: 102px;
+	font-weight: 700;
+  width: 70px;
+  height: 102px;
+	color: #fff;
+	text-decoration: none;
+	opacity: 1;
+	border: 0px solid #35a76e;
+	border-bottom-width: 4px;
+  position: relative;
+  left: 500px;
+  top: -110px;
+  font-size: 50px;
+  text-align: center;
+  color: #34a46c;
+}
+
+.btn-area-input-task-app:hover {
+	background-color:#34a46c;
+  color: #40c781;
 }
