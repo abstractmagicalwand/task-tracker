@@ -106,7 +106,7 @@ const MainApp = React.createClass({
 
     task.list = list;
     task.id = searchTask(task.list, id);
-    
+
     return task;
   },
 
@@ -143,14 +143,30 @@ const AreaInputTaskApp = React.createClass({
     this.refs.textTask.value = "";
   },
 
-  createTask: function(text) {
+  parser: function(str) {
+    const result    = {};
+    result.str      = str;
+    result.tags     = result.str.match(/#\w*/g);
+    result.str      = result.str.replace(/#\w*/g, '');
+    result.priority = result.str.match(/\*{2,}/g);
+    result.str      = result.str.replace(/\*{2,}/g, '');
+    result.project  = result.str.match(/@\w*/g);
+    result.str      = result.str.replace(/@\w*/g, '');
+    result.str      = result.str.trim();
+
+    return result;
+  },
+
+  createTask: function() {
+    const newText = this.parser(this.refs.textTask.value);
+    console.log(newText)
     const task = [{
-      description: this.refs.textTask.value,
+      description: newText.str,
       id: Math.floor(Math.random() * Math.pow(10, 6)),
       complited: false,
-      tags: [],
-      project: [],
-      priority: 0,
+      tags: newText.tags,
+      project: newText.project,
+      priority: newText.priority,
       timeDeath: 0,
       notes: [],
       timeBank: 0,
@@ -161,20 +177,10 @@ const AreaInputTaskApp = React.createClass({
   },
 
   render: function() {
-    const sym = '\u2386';
     return (
-      <div className="area-input-task-app">
-        <textarea 
-          defaultValue=""
-          ref="textTask"
-          placeholder="#tags *priority @project :::deathtimer [create date]" 
-          className="text-area-input-task-app">
-        </textarea>
-        <div 
-          onClick={this.onBtnClickHandler} 
-          className="btn-area-input-task-app">
-          {sym}
-        </div>
+      <div>
+        <textarea defaultValue="" ref="textTask"></textarea>
+        <button onClick={this.onBtnClickHandler}></button>
       </div>
     );
   }
@@ -196,17 +202,21 @@ const TrackTask = React.createClass({
     emitter.emit('Done', this.props.id);
   },
 
+  edit: function() {
+    this.props.data
+  },
+
   render: function() {
     return (
-      <div className="track-task">
+      <div className="track-task" onDblclick={this.edit}>
         <p className="track-task-data">{this.props.data}</p>
         <span onClick={this.deleteTask} className="track-task-delete"></span>
-        <label 
-          className="track-task-checkbox" 
+        <label
+          className="track-task-checkbox"
           for="checkboxFourInput">
           <span className="track-task-checkbox-in">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               className="track-task-checkbox-input"
               id="checkboxFourInput"
               onChange={this.onCheckedComplited}
@@ -216,7 +226,7 @@ const TrackTask = React.createClass({
         <TimerAndStopWatch />
       </div>
     );
-  } 
+  }
 });
 
 const TimerAndStopWatch = React.createClass({
@@ -289,7 +299,3 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-// /#\w*/gi tags
-// /\*{2,}/gi priority
-// /@\w*/gi project
-// 
