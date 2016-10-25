@@ -224,7 +224,8 @@ const TimerAndStopWatch = React.createClass({
     return {
       hh: '00',
       mm: '00',
-      ss: '00'
+      ss: '00',
+      stop: true
     };
   },
 
@@ -232,39 +233,44 @@ const TimerAndStopWatch = React.createClass({
 
   stopwatchTime: null,
 
+  clickBtn: function(e) {
+    e.preventDefault();
+    this.setState({stop: !this.state.stop});
+  },
+
   getTime: function() {
-    const now = new Date;
-    const nowSs = now.getSeconds();
+    let hh = +this.state.hh,
+        mm = +this.state.mm,
+        ss = +this.state.ss;
 
-    now.setTime(0);
-    now.setHours(0);
-
-    this.stopwatchTime ? now.setSeconds(nowSs - this.stopwatchTime) :
-      this.stopwatchTime = nowSs; 
-
-    const ss = now.getSeconds();
-    const mm = now.getMinutes();
-    const hh = now.getHours();
+    if (ss != 59) {
+      ss += 1;
+    } else if (ss == 59) {
+      mm += 1;
+      ss = 0;
+    } else if (mm == 59) {
+      hh += 1;
+      mm = 0;
+    }
 
     return {
-      ss: (ss < 10 ? 0 + '' + ss : ss),
+      hh: (hh < 10 ? 0 + '' + hh : hh),
       mm: (mm < 10 ? 0 + '' + mm : mm),
-      hh: (hh < 10 ? 0 + '' + hh : hh)
-    }
+      ss: (ss < 10 ? 0 + '' + ss : ss)
+    };
   },
 
   render: function() {
 
-    if (!this.stopwatch) {
+    if (!this.stopwatch && !this.state.stop) {
       const self = this;
       this.stopwatch = setInterval(function() {
-        const nowTime = self.getTime();
-        self.setState({
-          ss: nowTime.ss,
-          mm: nowTime.mm,
-          hh: nowTime.hh
-        })
+        self.setState(self.getTime());
       }, 1000);
+    } else if (this.stopwatch && this.state.stop) {
+      clearInterval(this.stopwatch);
+      this.stopwatch = null;
+      this.stopwatchTime = null;
     }
 
     return (
@@ -272,7 +278,7 @@ const TimerAndStopWatch = React.createClass({
         [<span className="stopwatch-hh">{this.state.hh}</span>:
         <span className="stopwatch-mm">{this.state.mm}</span>:
         <span className="stopwatch-ss">{this.state.ss}</span>]
-        <input type="button" className="stopwatch-of-on"/>
+        <input type="button" className="stopwatch-of-on" onClick={this.clickBtn}/>
       </p>
     );
   }
@@ -282,3 +288,8 @@ ReactDOM.render(
   <App />,
   document.getElementById('root')
 );
+
+// /#\w*/gi tags
+// /\*{2,}/gi priority
+// /@\w*/gi project
+// 
