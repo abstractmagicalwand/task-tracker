@@ -10,7 +10,8 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timeBank: 0
+  timer: [0, 0, 0],
+  stopwatch: [0, 0, 0]
 }, {
   description: 'Выпить колы.',
   id: 2,
@@ -20,7 +21,8 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timeBank: 0
+  timer: null,
+  stopwatch: [0, 0, 0]
 }, {
   description: 'Познакомиться с девочкой.',
   id: 3,
@@ -30,7 +32,8 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timeBank: 0
+  timer: [0, 0, 0],
+  stopwatch: null
 }, ];
 
 const App = React.createClass({
@@ -123,7 +126,12 @@ const List = React.createClass({
       if (quantity && !item.complited) {
         quantity = quantity - 1;
         return (
-          <Task key={index} data={item.description} id={item.id} />
+          <Task 
+            key={index} 
+            data={item.description} 
+            timer={item.timer}
+            stopwatch={item.stopwatch}
+            id={item.id} />
         );
       }
 
@@ -169,8 +177,9 @@ const AddTask = React.createClass({
       priority: newText.priority,
       timeDeath: 0,
       notes: [],
-      timeBank: 0,
-      date: new Date()
+      date: new Date(),
+      timer: [0, 0, 0],
+      stopwatch: [0, 0, 0]
     }];
 
     return task;
@@ -227,7 +236,10 @@ const Task = React.createClass({
               onChange={this.onCheckedComplited}
             />
         </label>
-        <TimerAndStopWatch />
+        <TimerAndStopWatch 
+          timer={this.props.timer ? this.props.timer : null} 
+          stopwatch={this.props.stopwatch ? this.props.stopwatch : null}
+        />
       </div>
     );
   }
@@ -236,10 +248,9 @@ const Task = React.createClass({
 const TimerAndStopWatch = React.createClass({
   getInitialState: function() {
     return {
-      hh: '00',
-      mm: '00',
-      ss: '00',
-      stop: true
+      stopwatch: [0, 0, 0],
+      stop: true,
+      timer: [0, 0, 0]
     };
   },
 
@@ -252,10 +263,10 @@ const TimerAndStopWatch = React.createClass({
     this.setState({stop: !this.state.stop});
   },
 
-  getTime: function(timer) {
-    let hh = +this.state.hh,
-        mm = +this.state.mm,
-        ss = +this.state.ss;
+  tick: function(timer) {
+    let hh = thos.state.stopwatch[0],
+        mm = thos.state.stopwatch[1],
+        ss = thos.state.stopwatch[2];
 
     if (ss != 59) {
       timer ? ss -= 1 : ss += 1;
@@ -267,19 +278,19 @@ const TimerAndStopWatch = React.createClass({
       mm = 0;
     }
 
-    return {
-      hh: (hh < 10 ? 0 + '' + hh : hh),
-      mm: (mm < 10 ? 0 + '' + mm : mm),
-      ss: (ss < 10 ? 0 + '' + ss : ss)
-    };
+    return [
+      hh < 10 ? 0 + '' + hh : hh,
+      mm < 10 ? 0 + '' + mm : mm,
+      ss < 10 ? 0 + '' + ss : ss
+    ];
   },
 
   render: function() {
 
-    if (!this.stopwatch && !this.state.stop) {
+    if (!this.stopwatch && !this.state.stop && this.props.stopwatch) {
       const self = this;
       this.stopwatch = setInterval(function() {
-        self.setState(self.getTime());
+        self.setState(self.tick());
       }, 1000);
     } else if (this.stopwatch && this.state.stop) {
       clearInterval(this.stopwatch);
@@ -288,13 +299,32 @@ const TimerAndStopWatch = React.createClass({
     }
 
     return (
-      <p className="stopwatch">
-        [
-        <span>{this.state.hh}</span>:
-        <span>{this.state.mm}</span>:
-        <span>{this.state.ss}</span>
-        ]
-        <input type="button" className="stopwatch-toggle" onClick={this.clickBtn}/>
+        <p>
+        {
+          (this.props.stopwatch) ? (
+            <p className="stopwatch">
+              [
+                <span>{this.state.stopwatch[0]}</span>:
+                <span>{this.state.stopwatch[1]}</span>:
+                <span>{this.state.stopwatch[2]}</span>
+              ]
+              <input 
+                type="button" 
+                className="stopwatch-toggle" onClick={this.clickBtn}/>
+            </p>
+          ) : null
+        }
+        {
+          (this.props.timer) ? (
+            (<p className='timer'>
+            [
+              <span>{this.state.timer[0]}</span>:
+              <span>{this.state.timer[1]}</span>:
+              <span>{this.state.timer[2]}</span>
+            ]
+            </p>)
+          ) : null
+        }
       </p>
     );
   }
