@@ -1,5 +1,5 @@
 const emitter = new EventEmitter();
-const COUNT_TASK_MAIN_APP = 4;
+const COUNT_TASK_MAIN_APP = 3;
 
 const taskDB = [{
   description: 'Купить молока.',
@@ -38,32 +38,32 @@ const App = React.createClass({
   render: function() {
     return (
       <div className="app">
-        <HatApp />
-        <NavSideBarApp />
-        <MainApp quantity={COUNT_TASK_MAIN_APP} />
-        <AreaInputTaskApp />
+        <Bar />
+        <NavigationMenu />
+        <List quantity={COUNT_TASK_MAIN_APP} />
+        <AddTask />
       </div>
     );
   }
 });
 
-const HatApp = React.createClass({
+const Bar = React.createClass({
   render: function() {
     return (
-      <div className="hat-app"></div>
+      <div className="bar"></div>
     )
   }
 });
 
-const NavSideBarApp = React.createClass({
+const NavigationMenu = React.createClass({
   render: function() {
     return (
-      <div className="nav-sidebar-app"></div>
+      <div className="navigation-menu"></div>
     )
   }
 });
 
-const MainApp = React.createClass({
+const List = React.createClass({
   getInitialState: function() { return {tasks: taskDB}; },
 
   componentDidMount: function() {
@@ -123,19 +123,19 @@ const MainApp = React.createClass({
       if (quantity && !item.complited) {
         quantity = quantity - 1;
         return (
-          <TrackTask key={index} data={item.description} id={item.id} />
+          <Task key={index} data={item.description} id={item.id} />
         );
       }
 
     });
 
     return (
-      <div className="main-app">{tasks}</div>
+      <div className="list">{tasks}</div>
     );
   }
 });
 
-const AreaInputTaskApp = React.createClass({
+const AddTask = React.createClass({
   onBtnClickHandler: function(e) {
     if (!this.refs.textTask.value.length) return;
     const item = this.createTask();
@@ -178,15 +178,21 @@ const AreaInputTaskApp = React.createClass({
 
   render: function() {
     return (
-      <div>
-        <textarea defaultValue="" ref="textTask"></textarea>
-        <button onClick={this.onBtnClickHandler}></button>
+      <div className="add-task">
+        <textarea 
+          placeholder="#tags @project *priority %time death $time start" 
+          className="add-task-area" 
+          defaultValue="" 
+          ref="textTask">
+        </textarea>
+        <div className="add-task-btn" onClick={this.onBtnClickHandler}>
+        </div>
       </div>
     );
   }
 });
 
-const TrackTask = React.createClass({
+const Task = React.createClass({
   getInitialState: function() {
     return {
       complited: false
@@ -208,20 +214,18 @@ const TrackTask = React.createClass({
 
   render: function() {
     return (
-      <div className="track-task" onDblclick={this.edit}>
-        <p className="track-task-data">{this.props.data}</p>
-        <span onClick={this.deleteTask} className="track-task-delete"></span>
+      <div className="task" onDblclick={this.edit}>
+        <p className="task-data">{this.props.data}</p>
+        <span onClick={this.deleteTask} className="task-delete"></span>
         <label
-          className="track-task-checkbox"
+          className="task-label-checkbox"
           for="checkboxFourInput">
-          <span className="track-task-checkbox-in">
             <input
               type="checkbox"
-              className="track-task-checkbox-input"
+              className="task-input-checkbox"
               id="checkboxFourInput"
               onChange={this.onCheckedComplited}
             />
-          </span>
         </label>
         <TimerAndStopWatch />
       </div>
@@ -248,18 +252,18 @@ const TimerAndStopWatch = React.createClass({
     this.setState({stop: !this.state.stop});
   },
 
-  getTime: function() {
+  getTime: function(timer) {
     let hh = +this.state.hh,
         mm = +this.state.mm,
         ss = +this.state.ss;
 
     if (ss != 59) {
-      ss += 1;
+      timer ? ss -= 1 : ss += 1;
     } else if (ss == 59) {
-      mm += 1;
+      timer ? mm -= 1 : mm += 1;
       ss = 0;
     } else if (mm == 59) {
-      hh += 1;
+      timer ? hh -= 1 : hh += 1;
       mm = 0;
     }
 
@@ -285,10 +289,12 @@ const TimerAndStopWatch = React.createClass({
 
     return (
       <p className="stopwatch">
-        [<span className="stopwatch-hh">{this.state.hh}</span>:
-        <span className="stopwatch-mm">{this.state.mm}</span>:
-        <span className="stopwatch-ss">{this.state.ss}</span>]
-        <input type="button" className="stopwatch-of-on" onClick={this.clickBtn}/>
+        [
+        <span>{this.state.hh}</span>:
+        <span>{this.state.mm}</span>:
+        <span>{this.state.ss}</span>
+        ]
+        <input type="button" className="stopwatch-toggle" onClick={this.clickBtn}/>
       </p>
     );
   }

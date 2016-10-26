@@ -1,0 +1,144 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+.app {
+  background-color: #7f8c8d;
+  display: block;
+  width: 1000px;
+  height: 600px;
+  position: relative;
+  font-family: "DejaVu Sans";
+  color: #2c3e50;
+}
+
+.navigation-menu {
+  background-color: #bdc3c7;
+  width: 350px;
+  height: 490px;
+  position: absolute;
+  display: block;
+  top: 100px;
+  left: 10px;
+}
+
+.bar {
+  background-color: #bdc3c7;
+  width: 980px;
+  height: 80px;
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  display: block;
+}
+
+.list {
+  background-color: #bdc3c7;
+  position: absolute;
+  display: block;
+  width: 620px;
+  height: 380px;
+  top: 100px;
+  left: 370px;
+}
+
+.add-task {
+  background-color: #bdc3c7;
+  position: absolute;
+  display: inline-block;
+  width: 620px;
+  height: 100px;
+  top: 490px;
+  left: 370px;
+}
+
+.add-task-area {
+  color: #2c3e50;
+  position: relative;
+  top: -2px;
+  left: 10px;
+  height: 80px;
+  width: 500px;
+  border-radius: 5px;
+  border: 1px solid #7f8c8d;
+  background-color: #ecf0f1;
+  outline: none;
+  resize: none;
+  overflow: auto;
+}
+
+.add-task-btn {
+  background-color: #bdc3c7;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  border: 15px solid #7f8c8d;
+  display: inline-block;
+  top: 5px;
+  left: 20px;
+}
+
+.add-task-btn:active {
+  background-color: #7f8c8d;
+  border: 15px solid #bdc3c7;
+}
+
+.task {
+  display: block;
+  position: relative;
+  background-color: #7f8c8d;
+  width: 600px;
+  height: 112px;
+  margin: 10px;
+}
+
+.task-delete {
+  display: inline-block;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  background-color: #c0392b;
+}
