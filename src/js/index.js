@@ -10,8 +10,8 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timer: [0, 0, 0],
-  stopwatch: [0, 0, 0]
+  timer: null,
+  stopwatch: ['01', '04', '44']
 }, {
   description: 'Выпить колы.',
   id: 2,
@@ -22,7 +22,7 @@ const taskDB = [{
   timeDeath: 0,
   notes: [],
   timer: null,
-  stopwatch: [0, 0, 0]
+  stopwatch: null
 }, {
   description: 'Познакомиться с девочкой.',
   id: 3,
@@ -32,7 +32,7 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timer: [0, 0, 0],
+  timer: null,
   stopwatch: null
 }, ];
 
@@ -77,6 +77,7 @@ const List = React.createClass({
     });
 
     emitter.addListener('Del', function(id) {
+      console.log(id);
       const task = self.getTask(self.state.tasks, id);
       task.list.splice(task.id, 1);
       self.setState({tasks: task.list});
@@ -167,7 +168,7 @@ const AddTask = React.createClass({
 
   createTask: function() {
     const newText = this.parser(this.refs.textTask.value);
-    console.log(newText)
+
     const task = [{
       description: newText.str,
       id: Math.floor(Math.random() * Math.pow(10, 6)),
@@ -236,45 +237,79 @@ const Task = React.createClass({
               onChange={this.onCheckedComplited}
             />
         </label>
-        <TimerAndStopWatch 
-          timer={this.props.timer ? this.props.timer : null} 
-          stopwatch={this.props.stopwatch ? this.props.stopwatch : null}
-        />
+        {this.props.stopwatch ? (<Stopwatch stopwatch={this.props.stopwatch}/>) : null}
+        {this.props.timer     ? (<Timer     />) : null}
       </div>
     );
   }
 });
 
-const TimerAndStopWatch = React.createClass({
+
+/*    const self = this;
+stopwatch: null,
+
+timer: null,
+
+stopwatchTime: null,
+
+  }
+*/
+
+
+const Stopwatch = React.createClass({
   getInitialState: function() {
     return {
-      stopwatch: [0, 0, 0],
+      stopwatch: this.props.stopwatch,
       stop: true,
-      timer: [0, 0, 0]
     };
   },
 
-  stopwatch: null,
+  componentDidUpdate: function() {
+    const self = this;
 
-  stopwatchTime: null,
+    if (!this.stopwatch && !this.state.stop && this.state.stopwatch) {
+      this.stopwatch = setInterval(function() {
+        self.setState({stopwatch: self.tick(false, self.state.stopwatch)});
+      }, 1000);
+    } else if (this.stopwatch && this.state.stop) {
+      clearInterval(this.stopwatch);
+      this.stopwatch = null;
+    }
+  },
 
   clickBtn: function(e) {
     e.preventDefault();
     this.setState({stop: !this.state.stop});
   },
 
-  tick: function(timer) {
-    let hh = thos.state.stopwatch[0],
-        mm = thos.state.stopwatch[1],
-        ss = thos.state.stopwatch[2];
+  render: function() {
+    return (
+      <p className="stopwatch">
+        [
+          <span>{this.state.stopwatch[0]}</span>:
+          <span>{this.state.stopwatch[1]}</span>:
+          <span>{this.state.stopwatch[2]}</span>
+        ]
+      <input 
+        type="button" 
+        className="stopwatch-toggle" 
+        onClick={this.clickBtn}/>
+      </p>
+    );
+  },
+
+  tick: function(timer, state) {
+    let hh = Number(state[0]), 
+        mm = Number(state[1]), 
+        ss = Number(state[2]);
 
     if (ss != 59) {
-      timer ? ss -= 1 : ss += 1;
+      ss += 1;
     } else if (ss == 59) {
-      timer ? mm -= 1 : mm += 1;
+      mm += 1;
       ss = 0;
     } else if (mm == 59) {
-      timer ? hh -= 1 : hh += 1;
+      hh += 1;
       mm = 0;
     }
 
@@ -283,50 +318,62 @@ const TimerAndStopWatch = React.createClass({
       mm < 10 ? 0 + '' + mm : mm,
       ss < 10 ? 0 + '' + ss : ss
     ];
+  }
+});
+
+const Timer = React.createClass({
+  getInitialState: function() {
+
+  },
+  componentWillUpdate: function() {
+
+    if (!this.timer && this.state.timer) {
+    console.log(self.props.id);
+    self.timer = setInterval(function() {
+    self.setState({timer: self.tick(true, self.state.timer)});
+    if (!self.maxValArr(self.state.timer)) {
+    emitter.emit('Del', self.props.id);
+    clearInterval(self.timer);
+    }
+    }, 1000)};
+  },
+  render: function() {
+    return (
+      <p className='timer'>[
+        <span>{this.state.timer[0]}</span>:
+        <span>{this.state.timer[1]}</span>:
+        <span>{this.state.timer[2]}</span>
+      ]</p>
+    ); 
   },
 
-  render: function() {
+  maxValArr: function(arr) {
+    return Math.max.apply(null, arr);
+  },
 
-    if (!this.stopwatch && !this.state.stop && this.props.stopwatch) {
-      const self = this;
-      this.stopwatch = setInterval(function() {
-        self.setState(self.tick());
-      }, 1000);
-    } else if (this.stopwatch && this.state.stop) {
-      clearInterval(this.stopwatch);
-      this.stopwatch = null;
-      this.stopwatchTime = null;
+  tick: function(timer, state) {
+    let hh = Number(state[0]), 
+        mm = Number(state[1]), 
+        ss = Number(state[2]);
+
+
+    if (timer && this.maxValArr(state)) {
+      if (ss > 0) {
+        ss -= 1;
+      } else if (ss == 0) {
+        mm -= 1;
+        ss = 59;
+      } else if (mm == 0) {
+        hh -= 1;
+        mm = 59;
+      }
     }
 
-    return (
-        <p>
-        {
-          (this.props.stopwatch) ? (
-            <p className="stopwatch">
-              [
-                <span>{this.state.stopwatch[0]}</span>:
-                <span>{this.state.stopwatch[1]}</span>:
-                <span>{this.state.stopwatch[2]}</span>
-              ]
-              <input 
-                type="button" 
-                className="stopwatch-toggle" onClick={this.clickBtn}/>
-            </p>
-          ) : null
-        }
-        {
-          (this.props.timer) ? (
-            (<p className='timer'>
-            [
-              <span>{this.state.timer[0]}</span>:
-              <span>{this.state.timer[1]}</span>:
-              <span>{this.state.timer[2]}</span>
-            ]
-            </p>)
-          ) : null
-        }
-      </p>
-    );
+    return [
+      hh < 10 ? 0 + '' + hh : hh,
+      mm < 10 ? 0 + '' + mm : mm,
+      ss < 10 ? 0 + '' + ss : ss
+    ];
   }
 });
 
@@ -334,4 +381,3 @@ ReactDOM.render(
   <App />,
   document.getElementById('root')
 );
-
