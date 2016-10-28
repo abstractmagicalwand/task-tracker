@@ -1,6 +1,6 @@
 const emitter = new EventEmitter();
 const COUNT_TASK_MAIN_APP = 3;
-
+// save value timer in daring
 const taskDB = [{
   description: 'Купить молока.',
   id: 1,
@@ -10,7 +10,7 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timer: ['00', '00', '10'],
+  //timer: ['00', '00', '10'],
   stopwatch: ['01', '04', '44']
 }, {
   description: 'Выпить колы.',
@@ -21,7 +21,7 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timer: null,
+  //timer: null,
   stopwatch: null
 }, {
   description: 'Познакомиться с девочкой.',
@@ -32,24 +32,89 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timer: ['00', '00', '20'],
+  //timer: ['00', '00', '14'],
   stopwatch: null
 }, ];
 
+const getTask = function(list, id) {
+
+  function searchTask(list, id) {
+    let result;
+
+    list.forEach(function(item, index) {
+      if (item.id == id) result = index;
+    });
+
+    return result;
+  }
+
+  const task = {};
+
+  task.list = list;
+  task.index = searchTask(task.list, id);
+
+  return task;
+};
+
+let tmp = 'main';
 
 const App = React.createClass({
+  getInitialState: function() {
+    return {
+      location: 'main',
+      listTask: false,
+      tasks: taskDB
+    };
+  },
+
+  // refactoring on getter/setter in es6 style
+  setLocation: function(newLocation) {
+    this.location = newLocation;
+  },
+
+  getLocation: function() {
+    return this.location;
+  },
+
   render: function() {
     return (
       <div className="app">
         <Bar />
         <NavigationMenu />
-        <List quantity={COUNT_TASK_MAIN_APP} />
+        <ListViewMode
+          nowThat={this.getLocation} 
+          newThat={this.setLocation} 
+          quantity={COUNT_TASK_MAIN_APP} />
+        <FolderViewMode 
+          tasks={this.state.tasks}
+        />
         <AddTask />
       </div>
     );
   }
 });
 
+const FolderViewMode = React.createClass({
+  showFolder: function(project) {
+    return this.props.tasks.map(function(item, index) {
+      if (item.project == project) {
+        return (
+          <Task 
+            key={index} 
+            data={item.description} 
+            timer={item.timer}
+            stopwatch={item.stopwatch}
+            id={item.id} 
+          />
+        );
+      }
+    });
+  },
+
+  render: function() {
+    return <div className="folder-view-mode"></div>;
+  }
+});
 
 const Bar = React.createClass({
   render: function() {
@@ -61,14 +126,60 @@ const Bar = React.createClass({
 
 
 const NavigationMenu = React.createClass({
+  onClickBtn: function(btn) {
+
+  },
   render: function() {
     return (
-      <div className="navigation-menu"></div>
+      <div className="navigation-menu">
+        <div 
+          className='navigation-menu-btn main'    
+          onClick={this.onClickBtn('main')}>
+          main
+        </div>
+        <div 
+          className='navigation-menu-btn project' 
+          onClick={this.onClickBtn('project')}>
+          project
+        </div>
+        <div 
+          className='navigation-menu-btn tag'     
+          onClick={this.onClickBtn('tag')}>
+          tag
+        </div>
+        <div 
+          className='navigation-menu-btn stats'   
+          onClick={this.onClickBtn('stats')}>
+          stats
+        </div>
+        <div 
+          className='navigation-menu-btn archiv'  
+          onClick={this.onClickBtn('archiv')}>
+          archiv
+        </div>
+        <div 
+          className='navigation-menu-btn setting' 
+          onClick={this.onClickBtn('setting')}>
+          setting
+        </div>
+      </div>
     )
   }
 });
 
-const List = React.createClass({
+const Folder = React.createClass({
+  onClickFolder: function() {
+
+  },
+
+  render: function() {
+    return (
+      <div className="folder" onClick={this.onClickFolder(this.props.name)}>{this.props.name}</div>
+    )
+  }
+});
+
+const ListViewMode = React.createClass({
   getInitialState: function() { return {tasks: taskDB}; },
 
   componentDidMount: function() {
@@ -79,31 +190,24 @@ const List = React.createClass({
     });
 
     emitter.addListener('Del', function(id) {
-      console.log(id);
-      const task = self.getTask(self.state.tasks, id);
-      task.list.splice(task.id, 1);
+      const task = getTask(self.state.tasks, id);
+      task.list.splice(task.index, 1);
+      task.list.timer = null;
       self.setState({tasks: task.list});
     });
 
     emitter.addListener('Done', function(id) {
-      const task = self.getTask(self.state.tasks, id);
-      task.list[task.id].complited = true;
+      const task = getTask(self.state.tasks, id);
+      task.list[task.index].complited = true;
       self.setState({tasks: task.list});
     });
 
-    emitter.addListener('Save', function(o) {
-      console.log(o);
-      const task = self.getTask(self.state.tasks, o.id);
-      task.list[task.id].timer = o.data;
-      self.setState({tasks: task.list});
-    });
   },
 
   componentWillUnmount: function() {
     emitter.removeListener('Add');
     emitter.removeListener('Del');
     emitter.removeListener('Done');
-    emitter.removeListener('Save');
   },
 
   getTask: function(list, id) {
@@ -191,7 +295,7 @@ const AddTask = React.createClass({
       timeDeath: 0,
       notes: [],
       date: new Date(),
-      timer: [0, 0, 0],
+      //timer: [0, 0, 0],
       stopwatch: [0, 0, 0]
     }];
 
@@ -255,7 +359,7 @@ const Task = React.createClass({
           (<Timer 
             index={this.props.index} 
             timer={this.props.timer} 
-            id={this.props.id}/>) : null}
+            id={this.props.id} />) : null}
       </div>
     );
   }
@@ -318,9 +422,9 @@ const Stopwatch = React.createClass({
     }
 
     return [
-      hh < 10 ? 0 + '' + hh : hh,
-      mm < 10 ? 0 + '' + mm : mm,
-      ss < 10 ? 0 + '' + ss : ss
+      hh < 10 ? `0${hh}` : `${hh}`,
+      mm < 10 ? `0${mm}` : `${mm}`,
+      ss < 10 ? `0${ss}` : `${ss}`
     ];
   }
 });
@@ -329,33 +433,27 @@ const Stopwatch = React.createClass({
 const Timer = React.createClass({
   getInitialState: function() {
     return {
-      timer: this.props.timer
+      timer: taskDB[getTask(taskDB, this.props.id).index].timer
     }
   },
 
   componentDidMount: function() {
     const self = this;
 
-    if (!(!this.timer && this.state.timer && self.props.id)) return;
-
+    if (this.timer && !this.state.timer && self.maxValArr(self.state.timer)) return;
+    console.log('CREATE TIMER');
     this.timer = setInterval(function() {
       self.setState({timer: self.tick(self.state.timer)});
 
-      emitter.emit('Save', {
-        id: self.props.id, 
-        data: self.state.timer
-      });
-
       if (self.maxValArr(self.state.timer)) return;
-      
-      self.del();
+      clearInterval(self.timer);
+      self.timer = null;
+      emitter.emit('Del', self.props.id);  
     }, 1000);
   },
 
-  del: function() {
-    clearInterval(this.timer);
-    this.timer = null;
-    emitter.emit('Del', this.props.id);
+  componentWillMount: function() {
+    clearInterval(self.timer);
   },
 
   render: function() {
@@ -377,7 +475,6 @@ const Timer = React.createClass({
         mm = Number(state[1]), 
         ss = Number(state[2]);
 
-
     if (this.maxValArr(state)) {
       if (ss > 0) {
         ss -= 1;
@@ -391,9 +488,9 @@ const Timer = React.createClass({
     }
 
     return [
-      hh < 10 ? 0 + '' + hh : hh,
-      mm < 10 ? 0 + '' + mm : mm,
-      ss < 10 ? 0 + '' + ss : ss
+      hh < 10 ? `0${hh}` : `${hh}`,
+      mm < 10 ? `0${mm}` : `${mm}`,
+      ss < 10 ? `0${ss}` : `${ss}`
     ];
   }
 });

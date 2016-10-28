@@ -142,3 +142,23 @@ table {
   margin: 5px;
   background-color: #c0392b;
 }
+
+.navigation-menu-btn {
+  height: 81.7px;
+  line-height: 81.7px;
+  font-size: 35px;
+  width: auto;
+  text-align: center;
+  font-weight: bold;
+}
+
+.navigation-menu-btn:hover {
+  border-right: 5px solid #7F8C8D;
+  border-left: 5px solid #7F8C8D;
+}
+
+.navigation-menu-btn:active {
+  border-right: 10px solid #7F8C8D;
+  border-left: 10px solid #7F8C8D;
+  background-color: #ecf0f1;
+}
