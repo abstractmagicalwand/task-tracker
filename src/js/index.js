@@ -6,7 +6,7 @@ const taskDB = [{
   id: 1,
   complited: false,
   tags: [],
-  project: [],
+  project: 'LoveYouLoveShe',
   priority: 0,
   timeDeath: 0,
   notes: [],
@@ -17,7 +17,7 @@ const taskDB = [{
   id: 2,
   complited: false,
   tags: [],
-  project: [],
+  project: 'strong',
   priority: 0,
   timeDeath: 0,
   notes: [],
@@ -28,7 +28,7 @@ const taskDB = [{
   id: 3,
   complited: false,
   tags: [],
-  project: [],
+  project: 'loveAllWorld',
   priority: 0,
   timeDeath: 0,
   notes: [],
@@ -61,7 +61,7 @@ let tmp = 'main';
 const App = React.createClass({
   getInitialState: function() {
     return {
-      location: 'main',
+      location: 'project',
       listTask: false,
       tasks: taskDB
     };
@@ -81,10 +81,10 @@ const App = React.createClass({
       <div className="app">
         <Bar />
         <NavigationMenu />
-        <ListViewMode
+        {/*<ListViewMode
           nowThat={this.getLocation} 
           newThat={this.setLocation} 
-          quantity={COUNT_TASK_MAIN_APP} />
+          quantity={COUNT_TASK_MAIN_APP} />*/}
         <FolderViewMode 
           tasks={this.state.tasks}
         />
@@ -95,24 +95,28 @@ const App = React.createClass({
 });
 
 const FolderViewMode = React.createClass({
+
+  getTaskInFolder: function(project) {
+    return this.props.tasks.filter(function(item) {
+      if (item.project == project) return item; 
+    });
+  },
+
   showFolder: function(project) {
+    const folders = [];
+    const self = this;
     return this.props.tasks.map(function(item, index) {
-      if (item.project == project) {
-        return (
-          <Task 
-            key={index} 
-            data={item.description} 
-            timer={item.timer}
-            stopwatch={item.stopwatch}
-            id={item.id} 
-          />
-        );
+      if (!(~folders.indexOf(item.project))) {
+        folders.push(item.project);
+        return <Folder tasks={self.getTaskInFolder} name={`@${item.project}`} />;
       }
     });
   },
 
   render: function() {
-    return <div className="folder-view-mode"></div>;
+    const folders = this.showFolder();
+    console.log(folders);
+    return <div className="folder-view-mode">{folders}</div>;
   }
 });
 
@@ -168,13 +172,18 @@ const NavigationMenu = React.createClass({
 });
 
 const Folder = React.createClass({
-  onClickFolder: function() {
-
+  onClickFolder: function(name) {
+    const tasks = this.props.tasks(name);
   },
 
   render: function() {
     return (
-      <div className="folder" onClick={this.onClickFolder(this.props.name)}>{this.props.name}</div>
+      <div 
+        className="folder" 
+        onClick={this.onClickFolder(this.props.name)}
+        >
+        {this.props.name}
+      </div>
     )
   }
 });
