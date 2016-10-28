@@ -10,7 +10,7 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timer: null,
+  timer: ['00', '00', '10'],
   stopwatch: ['01', '04', '44']
 }, {
   description: 'Выпить колы.',
@@ -32,12 +32,12 @@ const taskDB = [{
   priority: 0,
   timeDeath: 0,
   notes: [],
-  timer: null,
+  timer: ['00', '00', '20'],
   stopwatch: null
 }, ];
 
-const App = React.createClass({
 
+const App = React.createClass({
   render: function() {
     return (
       <div className="app">
@@ -50,6 +50,7 @@ const App = React.createClass({
   }
 });
 
+
 const Bar = React.createClass({
   render: function() {
     return (
@@ -57,6 +58,7 @@ const Bar = React.createClass({
     )
   }
 });
+
 
 const NavigationMenu = React.createClass({
   render: function() {
@@ -88,12 +90,20 @@ const List = React.createClass({
       task.list[task.id].complited = true;
       self.setState({tasks: task.list});
     });
+
+    emitter.addListener('Save', function(o) {
+      console.log(o);
+      const task = self.getTask(self.state.tasks, o.id);
+      task.list[task.id].timer = o.data;
+      self.setState({tasks: task.list});
+    });
   },
 
   componentWillUnmount: function() {
     emitter.removeListener('Add');
     emitter.removeListener('Del');
     emitter.removeListener('Done');
+    emitter.removeListener('Save');
   },
 
   getTask: function(list, id) {
@@ -132,7 +142,8 @@ const List = React.createClass({
             data={item.description} 
             timer={item.timer}
             stopwatch={item.stopwatch}
-            id={item.id} />
+            id={item.id} 
+          />
         );
       }
 
@@ -143,6 +154,7 @@ const List = React.createClass({
     );
   }
 });
+
 
 const AddTask = React.createClass({
   onBtnClickHandler: function(e) {
@@ -202,6 +214,7 @@ const AddTask = React.createClass({
   }
 });
 
+
 const Task = React.createClass({
   getInitialState: function() {
     return {
@@ -238,22 +251,15 @@ const Task = React.createClass({
             />
         </label>
         {this.props.stopwatch ? (<Stopwatch stopwatch={this.props.stopwatch}/>) : null}
-        {this.props.timer     ? (<Timer     />) : null}
+        {this.props.timer     ? 
+          (<Timer 
+            index={this.props.index} 
+            timer={this.props.timer} 
+            id={this.props.id}/>) : null}
       </div>
     );
   }
 });
-
-
-/*    const self = this;
-stopwatch: null,
-
-timer: null,
-
-stopwatchTime: null,
-
-  }
-*/
 
 
 const Stopwatch = React.createClass({
@@ -285,11 +291,9 @@ const Stopwatch = React.createClass({
   render: function() {
     return (
       <p className="stopwatch">
-        [
-          <span>{this.state.stopwatch[0]}</span>:
-          <span>{this.state.stopwatch[1]}</span>:
-          <span>{this.state.stopwatch[2]}</span>
-        ]
+        [<span>{this.state.stopwatch[0]}</span>:
+         <span>{this.state.stopwatch[1]}</span>:
+         <span>{this.state.stopwatch[2]}</span>]
       <input 
         type="button" 
         className="stopwatch-toggle" 
@@ -321,22 +325,39 @@ const Stopwatch = React.createClass({
   }
 });
 
+
 const Timer = React.createClass({
   getInitialState: function() {
-
-  },
-  componentWillUpdate: function() {
-
-    if (!this.timer && this.state.timer) {
-    console.log(self.props.id);
-    self.timer = setInterval(function() {
-    self.setState({timer: self.tick(true, self.state.timer)});
-    if (!self.maxValArr(self.state.timer)) {
-    emitter.emit('Del', self.props.id);
-    clearInterval(self.timer);
+    return {
+      timer: this.props.timer
     }
-    }, 1000)};
   },
+
+  componentDidMount: function() {
+    const self = this;
+
+    if (!(!this.timer && this.state.timer && self.props.id)) return;
+
+    this.timer = setInterval(function() {
+      self.setState({timer: self.tick(self.state.timer)});
+
+      emitter.emit('Save', {
+        id: self.props.id, 
+        data: self.state.timer
+      });
+
+      if (self.maxValArr(self.state.timer)) return;
+      
+      self.del();
+    }, 1000);
+  },
+
+  del: function() {
+    clearInterval(this.timer);
+    this.timer = null;
+    emitter.emit('Del', this.props.id);
+  },
+
   render: function() {
     return (
       <p className='timer'>[
@@ -351,13 +372,13 @@ const Timer = React.createClass({
     return Math.max.apply(null, arr);
   },
 
-  tick: function(timer, state) {
+  tick: function(state) {
     let hh = Number(state[0]), 
         mm = Number(state[1]), 
         ss = Number(state[2]);
 
 
-    if (timer && this.maxValArr(state)) {
+    if (this.maxValArr(state)) {
       if (ss > 0) {
         ss -= 1;
       } else if (ss == 0) {
@@ -376,6 +397,7 @@ const Timer = React.createClass({
     ];
   }
 });
+
 
 ReactDOM.render(
   <App />,
