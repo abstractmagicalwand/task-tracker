@@ -1,6 +1,6 @@
 const emitter = new EventEmitter();
-const COUNT_TASK_MAIN_APP = 3;
-// save value timer in daring
+const PAGE_TASK = 3;
+
 const taskDB = [{
   description: 'Купить молока.',
   id: 1,
@@ -49,55 +49,36 @@ const archiv = [{
   stopwatch: null
 }];
 
-const getTask = function(list, id) {
+const getTask = (list, id) => {
+  let needIndex;
 
-  function searchTask(list, id) {
-    let result;
+  list.forEach(function(item, index) {
+      if (item.id == id) needIndex = index;
+  });
 
-    list.forEach(function(item, index) {
-      if (item.id == id) result = index;
-    });
-
-    return result;
-  }
-
-  const task = {};
-
-  task.list = list;
-  task.index = searchTask(task.list, id);
-
-  return task;
+  return {
+    list: list,
+    index: needIndex
+  };
 };
 
-// list:  list
-// field: ...project/tags etc.
-// type:  field/value
-// task:  true/false
-// value: 
-const getPropTask = function(list, field, type, task, value) { 
-  // return tasks or prop task
+const getPropTask = (list, field, type, task, value) => { 
+  let f;
+
   switch (type) {
-  case 'field':
-  case task:
-      const f = function(item, index) { 
+  case 'field': 
+      f = (task ?  function(item, index) { 
         if (field in item)  return item;
-      };
-      break;
-  case !task:
-      const f = function(item, index) { 
+      } : function(item, index) { 
         if (field in item)  return item[field]; 
-      };
+      });
       break;
   case 'value':
-  case task:
-      const f = function(item, index) { 
+      f = (task ? function(item, index) { 
         if (item[field].indexOf(value))  return item;
-      };
-      break;
-  case !task:
-      const f = function(item, index) { 
+      } : function(item, index) { 
         if (item[field].indexOf(value))  return item[field];
-      };
+      });
       break;
   default:
       break;
@@ -107,13 +88,10 @@ const getPropTask = function(list, field, type, task, value) {
 };
 
 
-let nextPath = 'main';
-
 const App = React.createClass({
   getInitialState: function() {
     return {
       location: 'project',
-      listTask: false,
       tasks: taskDB
     };
   },
@@ -121,66 +99,43 @@ const App = React.createClass({
   componentDidMount: function() {
     const self = this;
 
-    emitter.addListener('Transfer', function(view) {
+    emitter.addListener('Transfer', (view) => {
       self.setState({location: view});
     });
   },
 
-  // refactoring on getter/setter in es6 style
-  setLocation: function(newLocation) {
-    this.setState(newLocation);
-  },
-
-  getLocation: function() {
-    return this.state.location;
+  componentWillMount: function() {
+    emitter.removeListener('Transfer');
   },
 
   takeView: function(path) {
     switch (path) {
     case 'main':
-        return (
-            <Main />
-        );
+        return <Main />;
     case 'project':
-        return (
-          <FolderList 
-            tasks={this.state.tasks}
-          />
-        );
+        return <FolderList tasks={this.state.tasks} />;
     case 'tag':
-        return (
-          <TagsCloud />
-        );
+        return <TagsCloud tasks={this.state.tasks} />;
     case 'setting':
-        return (
-          <Setting />
-        );
+        return <Setting />;
     case 'help':
-        return (
-          <Help />
-        );
+        return <Help />;
     case 'stats':
-        return (
-          <Stats />
-        );
+        return <Stats />;
     case 'archiv':
-        return (
-          <Archiv />
-        );
+        return <Archiv />;
     default:
         break;
     }
   },
 
   render: function() {
-    const result = this.takeView(this.state.location);
-    console.log(this.state.location);
     return (
       <div className="app">
         <Bar />
         <NavigationMenu />
         <PlaceAddTask />
-        {result}
+        {this.takeView(this.state.location)}
       </div>
     );
   }
@@ -309,7 +264,7 @@ const TaskList = React.createClass({
     emitter.removeListener('Done');
   },
 
-  getTask: function(list, id) {
+/*  getTask: function(list, id) {
 
     function searchTask(list, id) {
       let result;
@@ -325,7 +280,7 @@ const TaskList = React.createClass({
     task.id = searchTask(task.list, id);
 
     return task;
-  },
+  },*/
 
   propTypes: {
     data: React.PropTypes.shape({
@@ -601,9 +556,9 @@ const Timer = React.createClass({
 
 const TagsCloud = React.createClass({
   render: function() {
-    return (<div 
-        className="view cloud-tags">
-        {getPropTask(taskDB, 'tags').join('').split(',').join(' ')}
+    return (
+    <div className="view cloud-tags">
+        {getPropTask(this.props.tasks, 'tags', 'field', false, null).join('').split(',').join(' ')}
     </div>);
   }
 });
@@ -653,7 +608,7 @@ const Archiv = React.createClass({
         type    ={'field'}
         task    ={true}
         value   ={null}
-        quantity={COUNT_TASK_MAIN_APP}
+        quantity={PAGE_TASK}
       />
     );
   }
@@ -668,7 +623,7 @@ const Main = React.createClass({
         type    ={'field'}
         task    ={true}
         value   ={null}
-        quantity={COUNT_TASK_MAIN_APP}
+        quantity={PAGE_TASK}
       />
     )
   }
