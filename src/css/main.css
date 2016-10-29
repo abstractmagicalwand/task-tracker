@@ -73,7 +73,7 @@ table {
   display: block;
 }
 
-.list {
+.view, .folder-view-mode {
   background-color: #bdc3c7;
   position: absolute;
   display: block;
@@ -81,6 +81,20 @@ table {
   height: 380px;
   top: 100px;
   left: 370px;
+}
+
+.cloud-tags {
+  text-align: center;
+}
+
+.folder {
+  width: 190px;
+  height: 190px;
+  display: inline-block;
+  background-color: yellow;
+  margin: 8px;
+  text-align: center;
+  line-height: 150px;
 }
 
 .add-task {

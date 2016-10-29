@@ -5,7 +5,7 @@ const taskDB = [{
   description: 'Купить молока.',
   id: 1,
   complited: false,
-  tags: [],
+  tags: ["#horses", "#horse", "#horsesofinstagram", "#TagsForLikes", "#TagsForLikesApp", "#horseshow", "#horseshoe", "#horses_of_instagram", "#horsestagram", "#instahorses", "#wild", "#mane", "#instagood", "#grass", "#field", "#farm", "#nature", "#pony", "#ponies", "#ilovemyhorse", "#babyhorse", "#beautiful", "#pretty", "#photooftheday", "#gallop", "#jockey", "#rider", "#riders", "#riding"],
   project: 'LoveYouLoveShe',
   priority: 0,
   timeDeath: 0,
@@ -16,7 +16,7 @@ const taskDB = [{
   description: 'Выпить колы.',
   id: 2,
   complited: false,
-  tags: [],
+  tags: ["#insects", "#insect", "#bug", "#bugs", "#TagsForLikes", "#TagsForLikesApp", "#bugslife", "#macro", "#closeup", "#nature", "#animals", "#animals", "#instanature", "#instagood", "#macrogardener", "#macrophotography", "#creature", "#creatures", "#macro_creature_feature", "#photooftheday", "#wildlife", "#nature_shooters", "#earth", "#naturelover", "#lovenature"],
   project: 'strong',
   priority: 0,
   timeDeath: 0,
@@ -27,7 +27,7 @@ const taskDB = [{
   description: 'Познакомиться с девочкой.',
   id: 3,
   complited: false,
-  tags: [],
+  tags: ["#onedirection", "#TagsForLikesApp", "#harrystyles", "#niallhoran", "#zaynmalik", "#louistomlinson", "#liampayne", "#TagsForLikes", "#1d", "#directioner", "#1direction", "#niall", "#harry", "#zayn", "#liam", "#louis", "#leeyum", "#zjmalik", "#iphonesia", "#hot", "#love", "#cute", "#happy", "#beautiful", "#boys", "#guys", "#instagood", "#photooftheday"],
   project: 'loveAllWorld',
   priority: 0,
   timeDeath: 0,
@@ -56,7 +56,13 @@ const getTask = function(list, id) {
   return task;
 };
 
-let tmp = 'main';
+const getPropTask = function(list, field) {
+  return list.map(function(item, index) {
+    if (field in item) return item[field];
+  });
+};
+
+let nextPath = 'main';
 
 const App = React.createClass({
   getInitialState: function() {
@@ -67,34 +73,85 @@ const App = React.createClass({
     };
   },
 
+  componentDidMount: function() {
+    const self = this;
+
+    emitter.addListener('Transfer', function(view) {
+      self.setState({location: view});
+    });
+  },
+
   // refactoring on getter/setter in es6 style
   setLocation: function(newLocation) {
-    this.location = newLocation;
+    this.setState(newLocation);
   },
 
   getLocation: function() {
-    return this.location;
+    return this.state.location;
+  },
+
+  takeView: function(path) {
+    switch (path) {
+    case 'main':
+        return ( 
+          <TaskList
+            nowThat={this.getLocation} 
+            newThat={this.setLocation} 
+            quantity={COUNT_TASK_MAIN_APP} />
+        );
+        break;
+    case 'project':
+        return (
+          <FolderList 
+            tasks={this.state.tasks}
+          />
+        );
+        break;
+    case 'tag':
+        return (
+          <TagsCloud />
+        );
+        break;
+    case 'setting':
+        return (
+          <Setting />
+        );
+        break;
+    case 'help':
+        return (
+          <Help />
+        );
+        break;
+    case 'stats':
+        return (
+          <Stats />
+        );
+        break;
+    case 'archiv':
+        return (
+          <Archiv />
+        );
+        break;
+    default:
+        break;
+    }
   },
 
   render: function() {
+    const result = this.takeView(this.state.location);
+    console.log(this.state.location);
     return (
       <div className="app">
         <Bar />
         <NavigationMenu />
-        {/*<ListViewMode
-          nowThat={this.getLocation} 
-          newThat={this.setLocation} 
-          quantity={COUNT_TASK_MAIN_APP} />*/}
-        <FolderViewMode 
-          tasks={this.state.tasks}
-        />
-        <AddTask />
+        <PlaceAddTask />
+        {result}
       </div>
     );
   }
 });
 
-const FolderViewMode = React.createClass({
+const FolderList = React.createClass({
 
   getTaskInFolder: function(project) {
     return this.props.tasks.filter(function(item) {
@@ -115,7 +172,6 @@ const FolderViewMode = React.createClass({
 
   render: function() {
     const folders = this.showFolder();
-    console.log(folders);
     return <div className="folder-view-mode">{folders}</div>;
   }
 });
@@ -130,40 +186,40 @@ const Bar = React.createClass({
 
 
 const NavigationMenu = React.createClass({
-  onClickBtn: function(btn) {
-
+  onClickBtn: function(loc) {
+    emitter.emit('Transfer', loc);
   },
   render: function() {
     return (
       <div className="navigation-menu">
         <div 
           className='navigation-menu-btn main'    
-          onClick={this.onClickBtn('main')}>
+          onClick={this.onClickBtn.bind(this, 'main')}>
           main
         </div>
         <div 
           className='navigation-menu-btn project' 
-          onClick={this.onClickBtn('project')}>
+          onClick={this.onClickBtn.bind(this, 'project')}>
           project
         </div>
         <div 
           className='navigation-menu-btn tag'     
-          onClick={this.onClickBtn('tag')}>
+          onClick={this.onClickBtn.bind(this, 'tag')}>
           tag
         </div>
         <div 
           className='navigation-menu-btn stats'   
-          onClick={this.onClickBtn('stats')}>
+          onClick={this.onClickBtn.bind(this, 'stats')}>
           stats
         </div>
         <div 
           className='navigation-menu-btn archiv'  
-          onClick={this.onClickBtn('archiv')}>
+          onClick={this.onClickBtn.bind(this, 'archiv')}>
           archiv
         </div>
         <div 
           className='navigation-menu-btn setting' 
-          onClick={this.onClickBtn('setting')}>
+          onClick={this.onClickBtn.bind(this, 'setting')}>
           setting
         </div>
       </div>
@@ -188,7 +244,7 @@ const Folder = React.createClass({
   }
 });
 
-const ListViewMode = React.createClass({
+const TaskList = React.createClass({
   getInitialState: function() { return {tasks: taskDB}; },
 
   componentDidMount: function() {
@@ -263,13 +319,13 @@ const ListViewMode = React.createClass({
     });
 
     return (
-      <div className="list">{tasks}</div>
+      <div className="view list">{tasks}</div>
     );
   }
 });
 
 
-const AddTask = React.createClass({
+const PlaceAddTask = React.createClass({
   onBtnClickHandler: function(e) {
     if (!this.refs.textTask.value.length) return;
     const item = this.createTask();
@@ -504,6 +560,38 @@ const Timer = React.createClass({
   }
 });
 
+const TagsCloud = React.createClass({
+  render: function() {
+    return (<div 
+        className="view cloud-tags">
+        {getPropTask(taskDB, 'tags').join('').split(',').join(' ')}
+    </div>);
+  }
+});
+
+const Setting = React.createClass({
+  render: function() {
+    return <div class="view"> </div>
+  }
+});
+
+const Help = React.createClass({
+  render: function() {
+    return <div class="view"> </div>
+  }
+});
+
+const Stats = React.createClass({
+  render: function() {
+    return <div class="view"> </div>
+  }
+});
+
+const Archiv = React.createClass({
+  render: function() {
+    return <div class="view"> </div>
+  }
+});
 
 ReactDOM.render(
   <App />,
