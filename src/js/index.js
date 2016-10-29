@@ -36,6 +36,19 @@ const taskDB = [{
   stopwatch: null
 }, ];
 
+const archiv = [{
+  description: 'Выйти на улицу разок.',
+  id: 1322131231231232,
+  complited: true,
+  tags: ["#onedirection", "#TagsForLikesApp", "#harrystyles", "#niallhoran", "#zaynmalik", "#louistomlinson", "#liampayne", "#TagsForLikes", "#1d", "#directioner", "#1direction", "#niall", "#harry", "#zayn", "#liam", "#louis", "#leeyum", "#zjmalik", "#iphonesia", "#hot", "#love", "#cute", "#happy", "#beautiful", "#boys", "#guys", "#instagood", "#photooftheday"],
+  project: 'loveasdasdsadrld',
+  priority: 0,
+  timeDeath: 0,
+  notes: [],
+  //timer: ['00', '00', '14'],
+  stopwatch: null
+}];
+
 const getTask = function(list, id) {
 
   function searchTask(list, id) {
@@ -56,11 +69,43 @@ const getTask = function(list, id) {
   return task;
 };
 
-const getPropTask = function(list, field) {
-  return list.map(function(item, index) {
-    if (field in item) return item[field];
-  });
+// list:  list
+// field: ...project/tags etc.
+// type:  field/value
+// task:  true/false
+// value: 
+const getPropTask = function(list, field, type, task, value) { 
+  // return tasks or prop task
+  switch (type) {
+  case 'field':
+  case task:
+      const f = function(item, index) { 
+        if (field in item)  return item;
+      };
+      break;
+  case !task:
+      const f = function(item, index) { 
+        if (field in item)  return item[field]; 
+      };
+      break;
+  case 'value':
+  case task:
+      const f = function(item, index) { 
+        if (item[field].indexOf(value))  return item;
+      };
+      break;
+  case !task:
+      const f = function(item, index) { 
+        if (item[field].indexOf(value))  return item[field];
+      };
+      break;
+  default:
+      break;
+  }
+
+  return list.map(f);
 };
+
 
 let nextPath = 'main';
 
@@ -93,45 +138,35 @@ const App = React.createClass({
   takeView: function(path) {
     switch (path) {
     case 'main':
-        return ( 
-          <TaskList
-            nowThat={this.getLocation} 
-            newThat={this.setLocation} 
-            quantity={COUNT_TASK_MAIN_APP} />
+        return (
+            <Main />
         );
-        break;
     case 'project':
         return (
           <FolderList 
             tasks={this.state.tasks}
           />
         );
-        break;
     case 'tag':
         return (
           <TagsCloud />
         );
-        break;
     case 'setting':
         return (
           <Setting />
         );
-        break;
     case 'help':
         return (
           <Help />
         );
-        break;
     case 'stats':
         return (
           <Stats />
         );
-        break;
     case 'archiv':
         return (
           <Archiv />
         );
-        break;
     default:
         break;
     }
@@ -236,8 +271,7 @@ const Folder = React.createClass({
     return (
       <div 
         className="folder" 
-        onClick={this.onClickFolder(this.props.name)}
-        >
+        onClick={this.onClickFolder(this.props.name)}>
         {this.props.name}
       </div>
     )
@@ -298,23 +332,28 @@ const TaskList = React.createClass({
       description: React.PropTypes.string.isRequired
     })
   },
-
+// list:  list
+// field: ...project/tags etc.
+// type:  field/value
+// task:  true/false
+// value: 
   render: function() {
     let quantity = this.props.quantity;
-    const tasks = this.state.tasks.map(function(item, index) {
+    const tasks =  getPropTask(this.props.list, this.props.field, 
+      this.props.type, this.props.task, this.props.value).map((item, index) => {
 
-      if (quantity && !item.complited) {
-        quantity = quantity - 1;
-        return (
-          <Task 
-            key={index} 
-            data={item.description} 
-            timer={item.timer}
-            stopwatch={item.stopwatch}
-            id={item.id} 
-          />
-        );
-      }
+        if (quantity) { // && !item.complited
+          quantity = quantity - 1;
+          return (
+            <Task 
+              key={index} 
+              data={item.description} 
+              timer={item.timer}
+              stopwatch={item.stopwatch}
+              id={item.id} 
+            />
+          );
+        }
 
     });
 
@@ -571,25 +610,67 @@ const TagsCloud = React.createClass({
 
 const Setting = React.createClass({
   render: function() {
-    return <div class="view"> </div>
+    return <div className="view">
+      <p>music</p>
+      <p>save</p>
+      <p>save</p>
+      <p>save</p>
+      <p>save</p>
+      <p>save</p>
+      <p>save</p>
+      <p>save</p>
+      <p>save</p>
+      <p>save</p>
+    </div>
   }
 });
 
 const Help = React.createClass({
   render: function() {
-    return <div class="view"> </div>
+    return <div className="view"> 
+      <h2>DOCS</h2>
+      <h2>Motivation</h2>
+    </div>
   }
 });
 
 const Stats = React.createClass({
   render: function() {
-    return <div class="view"> </div>
+    return (<div className="view">
+        <p>привет</p>
+        <p>привет</p>
+        <p>привет</p>
+    </div>);
   }
 });
 
 const Archiv = React.createClass({
   render: function() {
-    return <div class="view"> </div>
+    return (
+      <TaskList
+        list    ={archiv} 
+        field   ={'description'}
+        type    ={'field'}
+        task    ={true}
+        value   ={null}
+        quantity={COUNT_TASK_MAIN_APP}
+      />
+    );
+  }
+});
+
+const Main = React.createClass({
+  render: function() {
+    return (
+      <TaskList 
+        list    ={taskDB} 
+        field   ={'description'} 
+        type    ={'field'}
+        task    ={true}
+        value   ={null}
+        quantity={COUNT_TASK_MAIN_APP}
+      />
+    )
   }
 });
 
