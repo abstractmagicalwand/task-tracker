@@ -1,40 +1,44 @@
 const emitter = new EventEmitter();
 const PAGE_TASK = 3;
 
-const taskDB = [{
-  description: 'Купить молока.',
-  id: 1,
-  completed: false,
-  tags: ["#horses", "#horse", "#horsesofinstagram", "#TagsForLikes", "#TagsForLikesApp", "#horseshow", "#horseshoe", "#horses_of_instagram", "#horsestagram", "#instahorses", "#wild", "#mane", "#instagood", "#grass", "#field", "#farm", "#nature", "#pony", "#ponies", "#ilovemyhorse", "#babyhorse", "#beautiful", "#pretty", "#photooftheday", "#gallop", "#jockey", "#rider", "#riders", "#riding"],
-  project: 'LoveYouLoveShe',
-  priority: 0,
-  timeDeath: 0,
-  notes: [],
-  //timer: ['00', '00', '10'],
-  stopwatch: ['01', '04', '44']
-}, {
-  description: 'Выпить колы.',
-  id: 2,
-  completed: false,
-  tags: ["#insects", "#insect", "#bug", "#bugs", "#TagsForLikes", "#TagsForLikesApp", "#bugslife", "#macro", "#closeup", "#nature", "#animals", "#animals", "#instanature", "#instagood", "#macrogardener", "#macrophotography", "#creature", "#creatures", "#macro_creature_feature", "#photooftheday", "#wildlife", "#nature_shooters", "#earth", "#naturelover", "#lovenature"],
-  project: 'strong',
-  priority: 0,
-  timeDeath: 0,
-  notes: [],
-  //timer: null,
-  stopwatch: null
-}, {
-  description: 'Познакомиться с девочкой.',
-  id: 3,
-  completed: false,
-  tags: ["#onedirection", "#TagsForLikesApp", "#harrystyles", "#niallhoran", "#zaynmalik", "#louistomlinson", "#liampayne", "#TagsForLikes", "#1d", "#directioner", "#1direction", "#niall", "#harry", "#zayn", "#liam", "#louis", "#leeyum", "#zjmalik", "#iphonesia", "#hot", "#love", "#cute", "#happy", "#beautiful", "#boys", "#guys", "#instagood", "#photooftheday"],
-  project: 'loveAllWorld',
-  priority: 0,
-  timeDeath: 0,
-  notes: [],
-  //timer: ['00', '00', '14'],
-  stopwatch: null
-}, ];
+const taskDB = [
+  {
+    description: 'Купить молока.',
+    id: 1,
+    completed: false,
+    tags: ["#horses", "#horse", "#horsesofinstagram", "#TagsForLikes", "#TagsForLikesApp", "#horseshow", "#horseshoe", "#horses_of_instagram", "#horsestagram", "#instahorses", "#wild", "#mane", "#instagood", "#grass", "#field", "#farm", "#nature", "#pony", "#ponies", "#ilovemyhorse", "#babyhorse", "#beautiful", "#pretty", "#photooftheday", "#gallop", "#jockey", "#rider", "#riders", "#riding"],
+    project: 'LoveYouLoveShe',
+    priority: 0,
+    timeDeath: 0,
+    notes: [],
+    //timer: ['00', '00', '10'],
+    stopwatch: ['01', '04', '44']
+  },
+  {
+    description: 'Выпить колы.',
+    id: 2,
+    completed: false,
+    tags: ["#insects", "#insect", "#bug", "#bugs", "#TagsForLikes", "#TagsForLikesApp", "#bugslife", "#macro", "#closeup", "#nature", "#animals", "#animals", "#instanature", "#instagood", "#macrogardener", "#macrophotography", "#creature", "#creatures", "#macro_creature_feature", "#photooftheday", "#wildlife", "#nature_shooters", "#earth", "#naturelover", "#lovenature"],
+    project: 'strong',
+    priority: 0,
+    timeDeath: 0,
+    notes: [],
+    //timer: null,
+    stopwatch: null
+  },
+  {
+    description: 'Познакомиться с девочкой.',
+    id: 3,
+    completed: false,
+    tags: ["#onedirection", "#TagsForLikesApp", "#harrystyles", "#niallhoran", "#zaynmalik", "#louistomlinson", "#liampayne", "#TagsForLikes", "#1d", "#directioner", "#1direction", "#niall", "#harry", "#zayn", "#liam", "#louis", "#leeyum", "#zjmalik", "#iphonesia", "#hot", "#love", "#cute", "#happy", "#beautiful", "#boys", "#guys", "#instagood", "#photooftheday"],
+    project: 'loveAllWorld',
+    priority: 0,
+    timeDeath: 0,
+    notes: [],
+    //timer: ['00', '00', '14'],
+    stopwatch: null
+  }
+];
 
 const archiv = [{
   description: 'Выйти на улицу разок.',
@@ -88,25 +92,38 @@ const getPropTask = (list, field, type, task, value) => {
 };
 
 
-const App = React.createClass({
-  getInitialState: function() {
-    return {
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       location: 'project',
       tasks: taskDB
     };
-  },
 
-  componentDidMount: function() {
+  }
+
+  componentWillMount() {
+    emitter.removeListener('Transfer');
+  }
+
+  render() {
+    return (
+      <div className="app">
+        <Bar />
+        <NavigationMenu />
+        <PlaceAddTask />
+        {this.takeView(this.state.location)}
+      </div>
+    );
+  }
+
+  componentDidMount() {
     emitter.addListener('Transfer', (view) => {
       this.setState({location: view});
     });
-  },
+  }
 
-  componentWillMount: function() {
-    emitter.removeListener('Transfer');
-  },
-
-  takeView: function(path) {
+  takeView(path) {
     switch (path) {
     case 'main':
         return <Main />;
@@ -125,116 +142,149 @@ const App = React.createClass({
     default:
         break;
     }
-  },
-
-  render: function() {
-    return (
-      <div className="app">
-        <Bar />
-        <NavigationMenu />
-        <PlaceAddTask />
-        {this.takeView(this.state.location)}
-      </div>
-    );
   }
-});
+};
 
-const FolderList = React.createClass({
 
-  getTaskInFolder: function(project) {
-    return this.props.tasks.filter(function(item) {
-      if (item.project == project) return item;
-    });
-  },
+class FolderList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.getTaskInFolder = this.getTaskInFolder.bind(this);
+  }
 
-  showFolder: function(project) {
-    const folders = [];
-    const self = this;
-    return this.props.tasks.map(function(item, index) {
-      if (!(~folders.indexOf(item.project))) {
-        folders.push(item.project);
-        return <Folder tasks={self.getTaskInFolder} name={`@${item.project}`} />;
-      }
-    });
-  },
-
-  render: function() {
+  render() {
     const folders = this.showFolder();
     return <div className="folder-view-mode">{folders}</div>;
   }
-});
 
-const Bar = React.createClass({
-  render: function() {
+  getTaskInFolder(project) {
+    return this.props.tasks.filter(function(item) {
+      if (item.project == project) return item;
+    });
+  }
+
+  showFolder(project) {
+    const folders = [];
+
+    return this.props.tasks.map((item, index) => {
+      if (!(~folders.indexOf(item.project))) {
+        folders.push(item.project);
+        return <Folder tasks={this.getTaskInFolder} name={`@${item.project}`} />;
+      }
+    });
+  }
+};
+
+
+class Bar extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     return <div className="bar"></div>;
   }
-});
+};
 
 
-const NavigationMenu = React.createClass({
-  onClickBtn: function(loc) {
+class NavigationMenu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handlerClickBtn = this.handlerClickBtn.bind(this);
+  }
+
+  handlerClickBtn(loc) {
     emitter.emit('Transfer', loc);
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div className="navigation-menu">
         <div
           className='navigation-menu-btn main'
-          onClick={this.onClickBtn.bind(this, 'main')}>
+          onClick={this.handlerClickBtn.bind(this, 'main')}>
           main
         </div>
         <div
           className='navigation-menu-btn project'
-          onClick={this.onClickBtn.bind(this, 'project')}>
+          onClick={this.handlerClickBtn.bind(this, 'project')}>
           project
         </div>
         <div
           className='navigation-menu-btn tag'
-          onClick={this.onClickBtn.bind(this, 'tag')}>
+          onClick={this.handlerClickBtn.bind(this, 'tag')}>
           tag
         </div>
         <div
           className='navigation-menu-btn stats'
-          onClick={this.onClickBtn.bind(this, 'stats')}>
+          onClick={this.handlerClickBtn.bind(this, 'stats')}>
           stats
         </div>
         <div
           className='navigation-menu-btn archiv'
-          onClick={this.onClickBtn.bind(this, 'archiv')}>
+          onClick={this.handlerClickBtn.bind(this, 'archiv')}>
           archiv
         </div>
         <div
           className='navigation-menu-btn setting'
-          onClick={this.onClickBtn.bind(this, 'setting')}>
+          onClick={this.handlerClickBtn.bind(this, 'setting')}>
           setting
         </div>
       </div>
     )
   }
-});
+};
 
-const Folder = React.createClass({
-  onClickFolder: function(name) {
+class Folder extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handlerClickFolder = this.handlerClickFolder.bind(this);
+  }
+
+  handlerClickFolder(name) {
     const tasks = this.props.tasks(name);
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div
         className="folder"
-        onClick={this.onClickFolder(this.props.name)}>
+        onClick={this.handlerClickFolder(this.props.name)}>
         {this.props.name}
       </div>
     )
   }
-});
+};
 
-const TaskList = React.createClass({
-  getInitialState: function() { return {tasks: taskDB}; },
+class TaskList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tasks: taskDB
+    };
+  }
 
-  componentDidMount: function() {
+  componentWillUnmount() {
+    emitter.removeListener('Add');
+    emitter.removeListener('Del');
+    emitter.removeListener('Done');
+  }
 
+  render() {
+    const tasks = this.getListTask(getPropTask(
+        this.props.list,
+        this.props.field,
+        this.props.type,
+        this.props.task,
+        this.props.value),
+      this.props.quantity);
+
+    return (
+      <div className="view list">{tasks}</div>
+    );
+  }
+
+  componentDidMount() {
     emitter.addListener('Add', (item) => {
       const newTask = item.concat(this.state.tasks);
       this.setState({tasks: newTask});
@@ -255,15 +305,9 @@ const TaskList = React.createClass({
       this.setState({tasks: list});
     });
 
-  },
+  }
 
-  componentWillUnmount: function() {
-    emitter.removeListener('Add');
-    emitter.removeListener('Del');
-    emitter.removeListener('Done');
-  },
-
-  getListTask: function(list, quantity) {
+  getListTask(list, quantity) {
     return list.map((item, index) => {
 
       if (quantity && !item.completed) {
@@ -280,34 +324,42 @@ const TaskList = React.createClass({
       }
 
     });
-  },
-
-  render: function() {
-    const tasks = this.getListTask(getPropTask(
-        this.props.list,
-        this.props.field,
-        this.props.type,
-        this.props.task,
-        this.props.value),
-      this.props.quantity);
-
-    return (
-      <div className="view list">{tasks}</div>
-    );
   }
-});
+};
 
 
-const PlaceAddTask = React.createClass({
-  handlerClickBtn: function(e) {
+class PlaceAddTask extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handlerClickBtn = this.handlerClickBtn.bind(this);
+  }
+
+  handlerClickBtn(e) {
     if (!this.refs.textTask.value.length) return;
     const item = this.createTask();
 
     emitter.emit('Add', item);
     this.refs.textTask.value = "";
-  },
+  }
 
-  parser: function(str) {
+  render() {
+    return (
+      <div className="add-task">
+        <textarea
+          className="add-task-area"
+          placeholder="#tags @project *priority %time death $time start"
+          defaultValue=""
+          ref="textTask">
+        </textarea>
+        <div
+          className="add-task-btn"
+          onClick={this.handlerClickBtn}>
+        </div>
+      </div>
+    );
+  }
+
+  parser(str) {
     const result    = {};
     result.str      = str;
     result.tags     = result.str.match(/#\w*/g);
@@ -319,9 +371,9 @@ const PlaceAddTask = React.createClass({
     result.str      = result.str.trim();
     result.time     = null;
     return result;
-  },
+  }
 
-  createTask: function() {
+  createTask() {
     const newTask = this.parser(this.refs.textTask.value);
 
     const task = [{
@@ -339,38 +391,26 @@ const PlaceAddTask = React.createClass({
     }];
 
     return task;
-  },
-
-  render: function() {
-    return (
-      <div className="add-task">
-        <textarea
-          className="add-task-area"
-          placeholder="#tags @project *priority %time death $time start"
-          defaultValue=""
-          ref="textTask">
-        </textarea>
-        <div
-          className="add-task-btn"
-          onClick={this.handlerClickBtn}>
-        </div>
-      </div>
-    );
   }
-});
+};
 
 
-const Task = React.createClass({
-  getInitialState: function() { return {completed: false}; },
+class Task extends React.Component {
+  constructor(props) {
+    super(props);
+    this.stats = {completed: false};
+    this.handlerDelBtn = this.handlerDelBtn.bind(this);
+    this.handlerCheckComplete = this.handlerCheckComplete.bind(this);
+  }
 
-  handlerDelBtn: function() { emitter.emit('Del', this.props.id); },
+  handlerDelBtn() { emitter.emit('Del', this.props.id); }
 
-  handlerCheckComplete: function() {
+  handlerCheckComplete() {
     this.setState({completed: !this.state.completed});
     emitter.emit('Done', this.props.id);
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div
         className="task">
@@ -403,37 +443,25 @@ const Task = React.createClass({
       </div>
     );
   }
-});
+};
 
 
-const Stopwatch = React.createClass({
-  getInitialState: function() {
-    return {
+class Stopwatch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.stats = {
       stopwatch: this.props.stopwatch,
       stop: true
     };
-  },
+    this.handlerClickBtn = this.handlerClickBtn.bind(this);
+  }
 
-  componentDidUpdate: function() {
-    const self = this;
-
-    if (!this.stopwatch && !this.state.stop && this.state.stopwatch) {
-      this.stopwatch = setInterval(function() {
-        self.setState({stopwatch: self.tick(false, self.state.stopwatch)});
-      }, 1000);
-    } else if (this.stopwatch && this.state.stop) {
-      clearInterval(this.stopwatch);
-      this.stopwatch = null;
-    }
-
-  },
-
-  handlerClickBtn: function(e) {
+  handlerClickBtn(e) {
     e.preventDefault();
     this.setState({stop: !this.state.stop});
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <p className="stopwatch">
         [<span>{this.state.stopwatch[0]}</span>:
@@ -445,9 +473,22 @@ const Stopwatch = React.createClass({
         onClick={this.handlerClickBtn}/>
       </p>
     );
-  },
+  }
 
-  tick: function(timer, state) {
+  componentDidUpdate() {
+    const self = this;
+
+    if (!this.stopwatch && !this.state.stop && this.state.stopwatch) {
+      this.stopwatch = setInterval(function() {
+        self.setState({stopwatch: self.tick(false, self.state.stopwatch)});
+      }, 1000);
+    } else if (this.stopwatch && this.state.stop) {
+      clearInterval(this.stopwatch);
+      this.stopwatch = null;
+    }
+  }
+
+  tick(timer, state) {
     let hh = Number(state[0]),
         mm = Number(state[1]),
         ss = Number(state[2]);
@@ -468,17 +509,32 @@ const Stopwatch = React.createClass({
       ss < 10 ? `0${ss}` : `${ss}`
     ];
   }
-});
+};
 
 
-const Timer = React.createClass({
-  getInitialState: function() {
-    return {
+class Timer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.stats = {
       timer: taskDB[getTask(taskDB, this.props.id).index].timer
     }
-  },
+  }
 
-  componentDidMount: function() {
+  componentWillMount() {
+    clearInterval(this.timer);
+  }
+
+  render() {
+    return (
+      <p className='timer'>[
+        <span>{this.state.timer[0]}</span>:
+        <span>{this.state.timer[1]}</span>:
+        <span>{this.state.timer[2]}</span>
+      ]</p>
+    );
+  }
+
+  componentDidMount() {
     const self = this;
 
     if (this.timer && !this.state.timer && self.maxValArr(self.state.timer)) return;
@@ -491,27 +547,9 @@ const Timer = React.createClass({
       self.timer = null;
       emitter.emit('Del', self.props.id);
     }, 1000);
-  },
+  }
 
-  componentWillMount: function() {
-    clearInterval(self.timer);
-  },
-
-  render: function() {
-    return (
-      <p className='timer'>[
-        <span>{this.state.timer[0]}</span>:
-        <span>{this.state.timer[1]}</span>:
-        <span>{this.state.timer[2]}</span>
-      ]</p>
-    );
-  },
-
-  maxValArr: function(arr) {
-    return Math.max.apply(null, arr);
-  },
-
-  tick: function(state) {
+  tick(state) {
     let hh = Number(state[0]),
         mm = Number(state[1]),
         ss = Number(state[2]);
@@ -534,10 +572,18 @@ const Timer = React.createClass({
       ss < 10 ? `0${ss}` : `${ss}`
     ];
   }
-});
 
-const TagsCloud = React.createClass({
-  render: function() {
+  maxValArr(arr) {
+    return Math.max.apply(null, arr);
+  }
+};
+
+class TagsCloud extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     return (
     <div className="view cloud-tags">
         {getPropTask(this.props.tasks, 'tags', 'field', false, null)
@@ -546,10 +592,14 @@ const TagsCloud = React.createClass({
           .join(' ')}
     </div>);
   }
-});
+};
 
-const Setting = React.createClass({
-  render: function() {
+class Setting extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     return <div className="view">
       <p>music</p>
       <p>save</p>
@@ -563,29 +613,45 @@ const Setting = React.createClass({
       <p>save</p>
     </div>
   }
-});
+};
 
-const Help = React.createClass({
-  render: function() {
-    return <div className="view">
-      <h2>DOCS</h2>
-      <h2>Motivation</h2>
-    </div>
+class Help extends React.Component {
+  constructor(props) {
+    super(props);
   }
-});
 
-const Stats = React.createClass({
-  render: function() {
-    return (<div className="view">
-        <p>привет</p>
-        <p>привет</p>
-        <p>привет</p>
-    </div>);
+  render() {
+    return (
+      <div className="view">
+        <h2>DOCS</h2>
+        <h2>Motivation</h2>
+      </div>
+    );
   }
-});
+};
 
-const Archiv = React.createClass({
-  render: function() {
+class Stats extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return (
+      <div className="view">
+        <p>привет</p>
+        <p>привет</p>
+        <p>привет</p>
+      </div>
+    );
+  }
+};
+
+class Archiv extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
     return (
       <TaskList
         list    ={archiv}
@@ -597,10 +663,14 @@ const Archiv = React.createClass({
       />
     );
   }
-});
+};
 
-const Main = React.createClass({
-  render: function() {
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     return (
       <TaskList
         list    ={taskDB}
@@ -610,9 +680,9 @@ const Main = React.createClass({
         value   ={null}
         quantity={PAGE_TASK}
       />
-    )
+    );
   }
-});
+}
 
 ReactDOM.render(
   <App />,
