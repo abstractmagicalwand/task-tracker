@@ -314,11 +314,11 @@ class TaskList extends React.Component {
         quantity--;
         return (
           <Task
-          key={index}
-          data={item.description}
-          timer={item.timer}
-          stopwatch={item.stopwatch}
-          id={item.id}
+            key={index}
+            data={item.description}
+            timer={item.timer}
+            stopwatch={item.stopwatch}
+            id={item.id}
           />
         );
       }
@@ -449,11 +449,14 @@ class Task extends React.Component {
 class Stopwatch extends React.Component {
   constructor(props) {
     super(props);
-    this.stats = {
-      stopwatch: this.props.stopwatch,
+
+    this.state = {
+      watch: this.props.stopwatch,
       stop: true
     };
+
     this.handlerClickBtn = this.handlerClickBtn.bind(this);
+    this.handlerInterval = this.handlerInterval.bind(this);
   }
 
   handlerClickBtn(e) {
@@ -461,12 +464,16 @@ class Stopwatch extends React.Component {
     this.setState({stop: !this.state.stop});
   }
 
+  handlerInterval() {
+    this.setState({watch: this.tick(this.state.watch)});
+  }
+
   render() {
     return (
       <p className="stopwatch">
-        [<span>{this.state.stopwatch[0]}</span>:
-         <span>{this.state.stopwatch[1]}</span>:
-         <span>{this.state.stopwatch[2]}</span>]
+        [<span>{this.state.watch[0]}</span>:
+         <span>{this.state.watch[1]}</span>:
+         <span>{this.state.watch[2]}</span>]
       <input
         type="button"
         className="stopwatch-toggle"
@@ -476,22 +483,16 @@ class Stopwatch extends React.Component {
   }
 
   componentDidUpdate() {
-    const self = this;
-
-    if (!this.stopwatch && !this.state.stop && this.state.stopwatch) {
-      this.stopwatch = setInterval(function() {
-        self.setState({stopwatch: self.tick(false, self.state.stopwatch)});
-      }, 1000);
-    } else if (this.stopwatch && this.state.stop) {
-      clearInterval(this.stopwatch);
-      this.stopwatch = null;
+    if (this.state.stop) {
+      clearInterval(this.plank);
+      this.plank = null;
+    } else if (!this.plank) {
+      this.plank = setInterval(this.handlerInterval, 1000);
     }
   }
 
-  tick(timer, state) {
-    let hh = Number(state[0]),
-        mm = Number(state[1]),
-        ss = Number(state[2]);
+  tick(state) {
+    let [hh, mm, ss] = state;
 
     if (ss != 59) {
       ss += 1;
