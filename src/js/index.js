@@ -1,50 +1,46 @@
 const emitter = new EventEmitter();
 const PAGE_TASK = 3;
 
-const taskDB = [
-  {
-    description: 'Купить молока.',
-    id: 1,
-    completed: false,
-    tags: ["#horses", "#horse", "#horsesofinstagram", "#TagsForLikes", "#TagsForLikesApp", "#horseshow", "#horseshoe", "#horses_of_instagram", "#horsestagram", "#instahorses", "#wild", "#mane", "#instagood", "#grass", "#field", "#farm", "#nature", "#pony", "#ponies", "#ilovemyhorse", "#babyhorse", "#beautiful", "#pretty", "#photooftheday", "#gallop", "#jockey", "#rider", "#riders", "#riding"],
-    project: 'LoveYouLoveShe',
-    priority: 0,
-    timeDeath: 0,
-    notes: [],
-    //timer: ['00', '00', '10'],
-    stopwatch: ['01', '04', '44']
-  },
-  {
-    description: 'Выпить колы.',
-    id: 2,
-    completed: false,
-    tags: ["#insects", "#insect", "#bug", "#bugs", "#TagsForLikes", "#TagsForLikesApp", "#bugslife", "#macro", "#closeup", "#nature", "#animals", "#animals", "#instanature", "#instagood", "#macrogardener", "#macrophotography", "#creature", "#creatures", "#macro_creature_feature", "#photooftheday", "#wildlife", "#nature_shooters", "#earth", "#naturelover", "#lovenature"],
-    project: 'strong',
-    priority: 0,
-    timeDeath: 0,
-    notes: [],
-    //timer: null,
-    stopwatch: null
-  },
-  {
-    description: 'Познакомиться с девочкой.',
-    id: 3,
-    completed: false,
-    tags: ["#onedirection", "#TagsForLikesApp", "#harrystyles", "#niallhoran", "#zaynmalik", "#louistomlinson", "#liampayne", "#TagsForLikes", "#1d", "#directioner", "#1direction", "#niall", "#harry", "#zayn", "#liam", "#louis", "#leeyum", "#zjmalik", "#iphonesia", "#hot", "#love", "#cute", "#happy", "#beautiful", "#boys", "#guys", "#instagood", "#photooftheday"],
-    project: 'loveAllWorld',
-    priority: 0,
-    timeDeath: 0,
-    notes: [],
-    //timer: ['00', '00', '14'],
-    stopwatch: null
-  }
-];
+const taskDB = [{
+  description: 'Купить молока.',
+  id: 1,
+  completed: false,
+  tags: ['#horses', '#horse', '#horsesofinstagram', '#TagsForLikes', '#TagsForLikesApp', '#horseshow', '#horseshoe', '#horses_of_instagram', '#horsestagram', '#instahorses', '#wild', '#mane', '#instagood', '#grass', '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse', '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop', '#jockey', '#rider', '#riders', '#riding'],
+  project: 'LoveYouLoveShe',
+  priority: 0,
+  timeDeath: 0,
+  notes: [],
+  //timer: ['00', '00', '10'],
+  stopwatch: ['01', '04', '44']
+}, {
+  description: 'Выпить колы.',
+  id: 2,
+  completed: false,
+  tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
+  project: 'strong',
+  priority: 0,
+  timeDeath: 0,
+  notes: [],
+  //timer: null,
+  stopwatch: null
+}, {
+  description: 'Познакомиться с девочкой.',
+  id: 3,
+  completed: false,
+  tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
+  project: 'loveAllWorld',
+  priority: 0,
+  timeDeath: 0,
+  notes: [],
+  //timer: ['00', '00', '14'],
+  stopwatch: null
+}];
 
 const archiv = [{
   description: 'Выйти на улицу разок.',
   id: 1322131231231232,
   completed: true,
-  tags: ["#onedirection", "#TagsForLikesApp", "#harrystyles", "#niallhoran", "#zaynmalik", "#louistomlinson", "#liampayne", "#TagsForLikes", "#1d", "#directioner", "#1direction", "#niall", "#harry", "#zayn", "#liam", "#louis", "#leeyum", "#zjmalik", "#iphonesia", "#hot", "#love", "#cute", "#happy", "#beautiful", "#boys", "#guys", "#instagood", "#photooftheday"],
+  tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
   project: 'loveasdasdsadrld',
   priority: 0,
   timeDeath: 0,
@@ -95,9 +91,9 @@ const getPropTask = (list, field, type, task, value) => {
       break;
   case 'value':
       f = (task ? function(item, index) {
-        if (item[field].indexOf(value))  return item;
+        if (~item[field].indexOf(value))  return item;
       } : function(item, index) {
-        if (item[field].indexOf(value))  return item[field];
+        if (~item[field].indexOf(value))  return item[field];
       });
       break;
   default:
@@ -117,21 +113,23 @@ class App extends React.Component {
     };
 
     this.setView = this.setView.bind(this);
-    this.setViewNote = (back, data) => {
-      if (~back.indexOf('@')) {
-        this.setState({noteBack: back});
+    this.setViewNote = (back) => {
+
+      if (~back[0].indexOf('@')) {
+        this.setState({noteBack: back[0]});
         this.setView('note');
-      } else if (back.indexOf('save')) {
+      } else if (~back[0].indexOf('save')) {
         getPropTask(
           this.state.tasks,
           'project',
           'value',
           true,
-          this.state.noteBack)[0].notes = data;
-          this.setView('project');
-      } else if (back.indexOf('close')) {
-          this.setView('project');
+          this.state.noteBack.slice(1))[0].notes = back[1];
+        this.setView('project');
+      } else if (~back[0].indexOf('close')) {
+        this.setView('project');
       }
+
     };
   }
 
@@ -142,7 +140,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="app">
+      <div className='app'>
         <Bar />
         <NavigationMenu />
         <PlaceAddTask />
@@ -191,7 +189,7 @@ class FolderList extends React.Component {
 
   render() {
     const folders = this.showFolder();
-    return <div className="folder-view-mode">{folders}</div>;
+    return <div className='folder-view-mode'>{folders}</div>;
   }
 
   getTaskInFolder(project) {
@@ -219,7 +217,7 @@ class Bar extends React.Component {
   }
 
   render() {
-    return <div className="bar"></div>;
+    return <div className='bar'></div>;
   }
 };
 
@@ -236,7 +234,7 @@ class NavigationMenu extends React.Component {
 
   render() {
     return (
-      <div className="navigation-menu">
+      <div className='navigation-menu'>
         <div
           className='navigation-menu-btn main'
           onClick={this.handlerClickBtn.bind(this, 'main')}>
@@ -301,7 +299,6 @@ class Folder extends React.Component {
   handlerClickOpenNote(e) {
     e.preventDefault();
     emitter.emit('Note', this.props.name);
-    console.log(this.props.name);
   }
 
   render() {
@@ -356,7 +353,7 @@ class TaskList extends React.Component {
       this.props.quantity);
 
     return (
-      <div className="view list">{tasks}</div>
+      <div className='view list'>{tasks}</div>
     );
   }
 
@@ -413,22 +410,21 @@ class PlaceAddTask extends React.Component {
   handlerClickBtn(e) {
     if (!this.refs.textTask.value.length) return;
     const item = this.createTask();
-
     emitter.emit('Add', item);
-    this.refs.textTask.value = "";
+    this.refs.textTask.value = '';
   }
 
   render() {
     return (
-      <div className="add-task">
+      <div className='add-task'>
         <textarea
-          className="add-task-area"
-          placeholder="#tags @project *priority %time death $time start"
-          defaultValue=""
-          ref="textTask">
+          className='add-task-area'
+          placeholder='#tags @project *priority %time death $time start'
+          defaultValue=''
+          ref='textTask'>
         </textarea>
         <div
-          className="add-task-btn"
+          className='add-task-btn'
           onClick={this.handlerClickBtn}>
         </div>
       </div>
@@ -489,19 +485,19 @@ class Task extends React.Component {
   render() {
     return (
       <div
-        className="task">
-        <p className="task-data">{this.props.data}</p>
+        className='task'>
+        <p className='task-data'>{this.props.data}</p>
         <span
-          className="task-delete"
+          className='task-delete'
           onClick={this.handlerDelBtn}>
         </span>
         <label
-          className="task-label-checkbox"
-          for="checkboxFourInput">
+          className='task-label-checkbox'
+          for='checkboxFourInput'>
             <input
-              type="checkbox"
-              className="task-input-checkbox"
-              id="checkboxFourInput"
+              type='checkbox'
+              className='task-input-checkbox'
+              id='checkboxFourInput'
               onChange={this.handlerCheckComplete}
             />
         </label>
@@ -560,13 +556,13 @@ class Stopwatch extends React.Component {
 
   render() {
     return (
-      <p className="stopwatch">
+      <p className='stopwatch'>
         [<span>{this.state.watch[0]}</span>:
          <span>{this.state.watch[1]}</span>:
          <span>{this.state.watch[2]}</span>]
       <input
-        type="button"
-        className="stopwatch-toggle"
+        type='button'
+        className='stopwatch-toggle'
         onClick={this.handlerClickBtn}/>
       </p>
     );
@@ -649,7 +645,7 @@ class TagsCloud extends React.Component {
 
   render() {
     return (
-    <div className="view cloud-tags">
+    <div className='view cloud-tags'>
         {getPropTask(this.props.tasks, 'tags', 'field', false, null)
           .join('')
           .split(',')
@@ -664,7 +660,7 @@ class Setting extends React.Component {
   }
 
   render() {
-    return <div className="view">
+    return <div className='view'>
       <p>music</p>
       <p>save</p>
       <p>save</p>
@@ -686,7 +682,7 @@ class Help extends React.Component {
 
   render() {
     return (
-      <div className="view">
+      <div className='view'>
         <h2>DOCS</h2>
         <h2>Motivation</h2>
       </div>
@@ -701,7 +697,7 @@ class Stats extends React.Component {
 
   render() {
     return (
-      <div className="view">
+      <div className='view'>
         <p>привет</p>
         <p>привет</p>
         <p>привет</p>
@@ -761,13 +757,19 @@ class Note extends React.Component {
   }
 
   handlerClickSave(e) {
-    emitter.emit('Note', 'save');
+    if(!this.refs.textTask.value.length) return;
+    emitter.emit('Note', ['save', this.refs.textTask.value]);
   }
 
   render() {
     return (
       <div className='view'>
-        <textarea className='note'></textarea>
+        <textarea
+          className='note'
+          defaultValue=''
+          ref='textTask'
+        >
+        </textarea>
         <div className='note-pane'>
           <span onClick={this.handlerClickClose} className='note-save'></span>
           <span onClick={this.handlerClickSave} className='note-close'></span>
@@ -776,6 +778,7 @@ class Note extends React.Component {
     )
   }
 }
+
 
 ReactDOM.render(
   <App />,
