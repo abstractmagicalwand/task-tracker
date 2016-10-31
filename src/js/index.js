@@ -59,11 +59,7 @@ const libTaskTracker = {
         m = +time[1],
         s = +time[2];
 
-    const newTime = func(h, m, s);
-
-    h = newTime[0];
-    m = newTime[1];
-    s = newTime[2];
+    [h, m, s] = func(h, m, s);
 
     return [
       h < 10 ? `0${h}` : `${h}`,
@@ -257,18 +253,29 @@ class NavigationMenu extends React.Component {
 class Folder extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      selected: false
+    },
     this.handlerClickFolder = this.handlerClickFolder.bind(this);
   }
 
   handlerClickFolder(name) {
-    const tasks = this.props.tasks(name);
+    this.setState({selected: !this.state.selected});
   }
 
   render() {
     return (
       <div
-        className="folder"
-        onClick={this.handlerClickFolder(this.props.name)}>
+        className={`folder ${this.state.selected ? 'folder-selected' : ''}`}
+        onClick={this.handlerClickFolder}>
+        {this.state.selected ? (
+          <div className='support'>
+            <span className='deleted'> </span>
+            <span className='edit'>    </span>
+            <span className='add-note'></span>
+          </div>) :
+          null
+        }
         {this.props.name}
       </div>
     )
