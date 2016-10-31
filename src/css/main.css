@@ -95,6 +95,7 @@ table {
   margin: 8px;
   text-align: center;
   line-height: 150px;
+  position: relative;
 }
 
 .add-task {
@@ -183,27 +184,67 @@ table {
 
 .support {
   display: inline-block;
+  position: relative;
+  top: 0px;
+  left: 0px;
   height: 30px;
   width: 30px;
+  left: 10px;
+  top: -60px;
 }
 
 .deleted {
   background-color: red;
   display: inline-block;
+  position: relative;
   height: 10px;
   width: 10px;
+}
+
+.note {
+  height: 350px;
+  width: 400px;
+  position: relative;
+  left: 115px;
+  top: 10px;
+  outline: none;
+  resize: none;
+  overflow: auto;
+  font-family: "DejaVu Sans";
+  font-size: 15px;
 }
 
 .edit {
   background-color: yellow;
   display: inline-block;
+  position: relative;
   height: 10px;
   width: 10px;
 }
 
 .add-note {
   background-color: green;
+  position: relative;
   height: 10px;
   width: 10px;
   display: inline-block;
+}
+
+.note-pane {
+  height: 400px;
+  width: 400px;
+  position: absolute;
+}
+
+.note-save, .note-close {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  background-color: green;
+  position: absolute;
+  top: -360px;
+}
+.note-close {
+  background-color: fuchsia;
+  left: 50px;
 }

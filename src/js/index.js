@@ -115,10 +115,29 @@ class App extends React.Component {
       location: 'project',
       tasks: taskDB
     };
+
+    this.setView = this.setView.bind(this);
+    this.setViewNote = (back, data) => {
+      if (~back.indexOf('@')) {
+        this.setState({noteBack: back});
+        this.setView('note');
+      } else if (back.indexOf('save')) {
+        getPropTask(
+          this.state.tasks,
+          'project',
+          'value',
+          true,
+          this.state.noteBack)[0].notes = data;
+          this.setView('project');
+      } else if (back.indexOf('close')) {
+          this.setView('project');
+      }
+    };
   }
 
   componentWillMount() {
     emitter.removeListener('Transfer');
+    emitter.removeListener('Note');
   }
 
   render() {
@@ -133,10 +152,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    emitter.addListener('Transfer', (view) => {
-      this.setState({location: view});
-    });
+    emitter.addListener('Transfer', this.setView);
+    emitter.addListener('Note', this.setViewNote);
   }
+
+  setView(value) {this.setState({location: value});}
 
   takeView(path) {
     switch (path) {
@@ -154,6 +174,8 @@ class App extends React.Component {
         return <Stats />;
     case 'archiv':
         return <Archiv />;
+    case 'note':
+        return <Note back={this.state.noteBack} />;
     default:
         break;
     }
@@ -256,11 +278,30 @@ class Folder extends React.Component {
     this.state = {
       selected: false
     },
-    this.handlerClickFolder = this.handlerClickFolder.bind(this);
+    this.handlerClickFolder   = this.handlerClickFolder.bind(this);
+    this.handlerClickDelete   = this.handlerClickDelete.bind(this);
+    this.handlerClickEdit     = this.handlerClickEdit.bind(this);
+    this.handlerClickOpenNote = this.handlerClickOpenNote.bind(this);
   }
 
-  handlerClickFolder(name) {
+  handlerClickFolder(e, name) {
+    if (e.target.tagName != 'DIV') return;
+    if (this.state.selected) emitter.emit('Open', name);
     this.setState({selected: !this.state.selected});
+  }
+
+  handlerClickDelete(e) {
+    e.preventDefault();
+  }
+
+  handlerClickEdit(e) {
+    e.preventDefault();
+  }
+
+  handlerClickOpenNote(e) {
+    e.preventDefault();
+    emitter.emit('Note', this.props.name);
+    console.log(this.props.name);
   }
 
   render() {
@@ -270,9 +311,18 @@ class Folder extends React.Component {
         onClick={this.handlerClickFolder}>
         {this.state.selected ? (
           <div className='support'>
-            <span className='deleted'> </span>
-            <span className='edit'>    </span>
-            <span className='add-note'></span>
+            <span
+              onClick={this.handlerClickDelete}
+              className='deleted'>
+            </span>
+            <span
+              onClick={this.handlerClickEdit}
+              className='edit'>
+            </span>
+            <span
+              onClick={this.handlerClickOpenNote}
+              className='add-note'>
+            </span>
           </div>) :
           null
         }
@@ -695,6 +745,35 @@ class Main extends React.Component {
         quantity={PAGE_TASK}
       />
     );
+  }
+}
+
+// props !!! back
+class Note extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handlerClickClose = this.handlerClickClose.bind(this);
+    this.handlerClickSave   = this.handlerClickSave.bind(this);
+  }
+
+  handlerClickClose(e) {
+    emitter.emit('Note', 'close');
+  }
+
+  handlerClickSave(e) {
+    emitter.emit('Note', 'save');
+  }
+
+  render() {
+    return (
+      <div className='view'>
+        <textarea className='note'></textarea>
+        <div className='note-pane'>
+          <span onClick={this.handlerClickClose} className='note-save'></span>
+          <span onClick={this.handlerClickSave} className='note-close'></span>
+        </div>
+      </div>
+    )
   }
 }
 
