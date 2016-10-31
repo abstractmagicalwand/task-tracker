@@ -53,6 +53,26 @@ const archiv = [{
   stopwatch: null
 }];
 
+const libTaskTracker = {
+  tick(time, func) {
+    let h = +time[0],
+        m = +time[1],
+        s = +time[2];
+
+    const newTime = func(h, m, s);
+
+    h = newTime[0];
+    m = newTime[1];
+    s = newTime[2];
+
+    return [
+      h < 10 ? `0${h}` : `${h}`,
+      m < 10 ? `0${m}` : `${m}`,
+      s < 10 ? `0${s}` : `${s}`
+    ];
+  }
+}
+
 const getTask = (list, id) => {
   let needIndex;
 
@@ -99,7 +119,6 @@ class App extends React.Component {
       location: 'project',
       tasks: taskDB
     };
-
   }
 
   componentWillMount() {
@@ -455,6 +474,7 @@ class Stopwatch extends React.Component {
       stop: true
     };
 
+    this.lib = libTaskTracker;
     this.handlerClickBtn = this.handlerClickBtn.bind(this);
     this.handlerInterval = this.handlerInterval.bind(this);
   }
@@ -463,9 +483,22 @@ class Stopwatch extends React.Component {
     e.preventDefault();
     this.setState({stop: !this.state.stop});
   }
+  plus(h, m, s) {
 
+    if (s != 59) {
+      s += 1;
+    } else if (s == 59) {
+      m += 1;
+      s = 0;
+    } else if (m == 59) {
+      h += 1;
+      m = 0;
+    }
+
+    return [h, m, s];
+  }
   handlerInterval() {
-    this.setState({watch: this.tick(this.state.watch)});
+    this.setState({watch: this.lib.tick(this.state.watch, this.plus)});
   }
 
   render() {
@@ -491,25 +524,6 @@ class Stopwatch extends React.Component {
     }
   }
 
-  tick(state) {
-    let [hh, mm, ss] = state;
-
-    if (ss != 59) {
-      ss += 1;
-    } else if (ss == 59) {
-      mm += 1;
-      ss = 0;
-    } else if (mm == 59) {
-      hh += 1;
-      mm = 0;
-    }
-
-    return [
-      hh < 10 ? `0${hh}` : `${hh}`,
-      mm < 10 ? `0${mm}` : `${mm}`,
-      ss < 10 ? `0${ss}` : `${ss}`
-    ];
-  }
 };
 
 
@@ -518,7 +532,8 @@ class Timer extends React.Component {
     super(props);
     this.stats = {
       timer: taskDB[getTask(taskDB, this.props.id).index].timer
-    }
+    };
+    this.lib = libTaskTracker;
   }
 
   componentWillMount() {
@@ -550,28 +565,19 @@ class Timer extends React.Component {
     }, 1000);
   }
 
-  tick(state) {
-    let hh = Number(state[0]),
-        mm = Number(state[1]),
-        ss = Number(state[2]);
+  minus(h, m, s) {
 
-    if (this.maxValArr(state)) {
-      if (ss > 0) {
-        ss -= 1;
-      } else if (ss == 0) {
-        mm -= 1;
-        ss = 59;
-      } else if (mm == 0) {
-        hh -= 1;
-        mm = 59;
-      }
+    if (s > 0) {
+      s -= 1;
+    } else if (s == 0) {
+      m -= 1;
+      s = 59;
+    } else if (m == 0) {
+      h -= 1;
+      m = 59;
     }
 
-    return [
-      hh < 10 ? `0${hh}` : `${hh}`,
-      mm < 10 ? `0${mm}` : `${mm}`,
-      ss < 10 ? `0${ss}` : `${ss}`
-    ];
+    return [h, m, s];
   }
 
   maxValArr(arr) {
