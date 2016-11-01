@@ -1,5 +1,7 @@
 const emitter = new EventEmitter();
-const PAGE_TASK = 3;
+const config = {
+  PAGE_TASK: 3
+};
 
 const taskDB = [{
   description: 'Купить молока.',
@@ -62,46 +64,50 @@ const libTaskTracker = {
       m < 10 ? `0${m}` : `${m}`,
       s < 10 ? `0${s}` : `${s}`
     ];
+  },
+
+  getTask(list, id) {
+    let needIndex;
+
+    list.forEach(function(item, index) {
+        if (item.id == id) needIndex = index;
+    });
+
+    return {
+      list: list,
+      index: needIndex
+    };
+  },
+
+  getPropTask(list, field, type, task, value) {
+    let f;
+
+    switch (type) {
+    case 'field':
+        f = (task ?  function(item, index) {
+          if (field in item)  return item;
+        } : function(item, index) {
+          if (field in item)  return item[field];
+        });
+        break;
+    case 'value':
+        f = (task ? function(item, index) {
+          if (~item[field].indexOf(value))  return item;
+        } : function(item, index) {
+          if (~item[field].indexOf(value))  return item[field];
+        });
+        break;
+    default:
+        break;
+    }
+
+    return list.map(f);
   }
 }
 
-const getTask = (list, id) => {
-  let needIndex;
 
-  list.forEach(function(item, index) {
-      if (item.id == id) needIndex = index;
-  });
 
-  return {
-    list: list,
-    index: needIndex
-  };
-};
 
-const getPropTask = (list, field, type, task, value) => {
-  let f;
-
-  switch (type) {
-  case 'field':
-      f = (task ?  function(item, index) {
-        if (field in item)  return item;
-      } : function(item, index) {
-        if (field in item)  return item[field];
-      });
-      break;
-  case 'value':
-      f = (task ? function(item, index) {
-        if (~item[field].indexOf(value))  return item;
-      } : function(item, index) {
-        if (~item[field].indexOf(value))  return item[field];
-      });
-      break;
-  default:
-      break;
-  }
-
-  return list.map(f);
-};
 
 
 class App extends React.Component {
@@ -113,24 +119,8 @@ class App extends React.Component {
     };
 
     this.setView = this.setView.bind(this);
-    this.setViewNote = (back) => {
-
-      if (~back[0].indexOf('@')) {
-        this.setState({noteBack: back[0]});
-        this.setView('note');
-      } else if (~back[0].indexOf('save')) {
-        getPropTask(
-          this.state.tasks,
-          'project',
-          'value',
-          true,
-          this.state.noteBack.slice(1))[0].notes = back[1];
-        this.setView('project');
-      } else if (~back[0].indexOf('close')) {
-        this.setView('project');
-      }
-
-    };
+    this.setViewNote = this.setViewNote.bind(this);
+    this.lib = libTaskTracker;
   }
 
   componentWillMount() {
@@ -154,7 +144,28 @@ class App extends React.Component {
     emitter.addListener('Note', this.setViewNote);
   }
 
-  setView(value) {this.setState({location: value});}
+  setView(value) { this.setState({location: value}); }
+
+  setViewNote(back, data) {
+
+    if (~back.indexOf('@')) {
+      this.setState({noteBack: back});
+
+      this.setView('note');
+    } else if (~back.indexOf('save')) {
+      this.lib.getPropTask(
+        this.state.tasks,
+        'project',
+        'value',
+        true,
+        this.state.noteBack.slice(1))[0].notes = data;
+
+      this.setView('project');
+    } else if (~back.indexOf('close')) {
+      this.setView('project');
+    }
+
+  }
 
   takeView(path) {
     switch (path) {
@@ -335,6 +346,8 @@ class TaskList extends React.Component {
     this.state = {
       tasks: taskDB
     };
+
+    this.lib = libTaskTracker;
   }
 
   componentWillUnmount() {
@@ -344,7 +357,7 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const tasks = this.getListTask(getPropTask(
+    const tasks = this.getListTask(this.lib.getPropTask(
         this.props.list,
         this.props.field,
         this.props.type,
@@ -365,7 +378,7 @@ class TaskList extends React.Component {
 
     emitter.addListener('Del', (id) => {
       const list = this.state.tasks;
-      const task = getTask(list, id);
+      const task = this.lib.getTask(list, id);
       list.splice(task.index, 1);
       list.timer = null;
       this.setState({tasks: list});
@@ -373,7 +386,7 @@ class TaskList extends React.Component {
 
     emitter.addListener('Done', (id) => {
       const list = this.state.tasks;
-      const task = getTask(list, id);
+      const task = this.lib.getTask(list, id);
       list[task.index].completed = true;
       this.setState({tasks: list});
     });
@@ -583,10 +596,10 @@ class Stopwatch extends React.Component {
 class Timer extends React.Component {
   constructor(props) {
     super(props);
-    this.stats = {
-      timer: taskDB[getTask(taskDB, this.props.id).index].timer
-    };
     this.lib = libTaskTracker;
+    this.stats = {
+      timer: taskDB[this.lib.getTask(taskDB, this.props.id).index].timer
+    };
   }
 
   componentWillMount() {
@@ -641,12 +654,14 @@ class Timer extends React.Component {
 class TagsCloud extends React.Component {
   constructor(props) {
     super(props);
+
+    this.lib = libTaskTracker;
   }
 
   render() {
     return (
     <div className='view cloud-tags'>
-        {getPropTask(this.props.tasks, 'tags', 'field', false, null)
+        {this.lib.getPropTask(this.props.tasks, 'tags', 'field', false, null)
           .join('')
           .split(',')
           .join(' ')}
@@ -719,7 +734,7 @@ class Archiv extends React.Component {
         type    ={'field'}
         task    ={true}
         value   ={null}
-        quantity={PAGE_TASK}
+        quantity={config.PAGE_TASK}
       />
     );
   }
@@ -738,7 +753,7 @@ class Main extends React.Component {
         type    ={'field'}
         task    ={true}
         value   ={null}
-        quantity={PAGE_TASK}
+        quantity={config.PAGE_TASK}
       />
     );
   }
@@ -750,6 +765,8 @@ class Note extends React.Component {
     super(props);
     this.handlerClickClose = this.handlerClickClose.bind(this);
     this.handlerClickSave   = this.handlerClickSave.bind(this);
+
+    this.lib = libTaskTracker;
   }
 
   handlerClickClose(e) {
@@ -758,15 +775,20 @@ class Note extends React.Component {
 
   handlerClickSave(e) {
     if(!this.refs.textTask.value.length) return;
-    emitter.emit('Note', ['save', this.refs.textTask.value]);
+    emitter.emit('Note', 'save', this.refs.textTask.value);
+    console.log('refs', this.refs.textTask.value);
   }
 
   render() {
+    const value = this.lib.getPropTask(taskDB, 'project', 'value', true,
+      this.props.back.slice(1))[0].notes || '';
+
+    console.log('value', value);
     return (
       <div className='view'>
         <textarea
           className='note'
-          defaultValue=''
+          defaultValue={value}
           ref='textTask'
         >
         </textarea>
