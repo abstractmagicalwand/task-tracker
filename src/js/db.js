@@ -1,7 +1,22 @@
 const db = [{
   project: 'ARCHIV',
   note: '',
-  tasks: []
+  tasks: [{
+    description: '{Хухухе!}.',
+    id: 2,
+    completed: false,
+    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes',
+      '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature',
+      '#animals', '#animals', '#instanature', '#instagood', '#macrogardener',
+      '#macrophotography', '#creature', '#creatures', '#macro_creature_feature',
+      '#photooftheday', '#wildlife', '#nature_shooters', '#earth',
+      '#naturelover', '#lovenature'],
+    project: '',
+    priority: 0,
+    timeDeath: 0,
+    note: '',
+    stopwatch: null
+  }]
 }, {
   project: 'SANS',
   note: '',
@@ -18,7 +33,7 @@ const db = [{
     project: '',
     priority: 0,
     timeDeath: 0,
-    notes: '',
+    note: '',
     stopwatch: null
   }]
 }, {

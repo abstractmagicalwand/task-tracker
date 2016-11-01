@@ -49,6 +49,14 @@ const lib = {
     }
 
     return list.map(f);
+  },
+
+  getAllTask(list) {
+    return list.filter(item => {
+      if (~item.project.indexOf('@')) return item;
+    }).reduce((sum, item) => {
+      return sum.concat(item.tasks);
+    }, []);
   }
 };
 

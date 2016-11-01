@@ -1,3 +1,5 @@
+
+
 const taskDB = [{
   description: 'Купить молока.',
   id: 1,
@@ -38,12 +40,14 @@ class App extends React.Component {
     super(props);
     this.state = {
       location: 'project',
-      tasks: taskDB
+      tasks: db
     };
-
-    this.setView = this.setView.bind(this);
+    console.log(props);
+    this.setView     = this.setView.bind(this);
     this.setViewNote = this.setViewNote.bind(this);
-    this.lib = lib;
+    this.lib         = lib;
+    this.getArchiv   = this.getArchiv.bind(this);
+    this.getMain     = this.getMain.bind(this);
   }
 
   componentWillMount() {
@@ -73,7 +77,6 @@ class App extends React.Component {
 
     if (~back.indexOf('@')) {
       this.setState({noteBack: back});
-
       this.setView('note');
     } else if (~back.indexOf('save')) {
       this.lib.getPropTask(
@@ -90,10 +93,19 @@ class App extends React.Component {
 
   }
 
+  getArchiv() {
+    return this.lib.getPropTask(this.state.tasks, 'project', 'value', true, 'ARCHIV')[0].tasks;
+  }
+
+  getMain() {
+    console.log(this.lib.getAllTask(this.state.tasks));
+    return this.lib.getAllTask(this.state.tasks);
+  }
+
   takeView(path) {
     switch (path) {
     case 'main':
-        return <Main />;
+        return <Main tasks={this.getMain()} />;
     case 'project':
         return <FolderList tasks={this.state.tasks} />;
     case 'tag':
@@ -105,53 +117,12 @@ class App extends React.Component {
     case 'stats':
         return <Stats />;
     case 'archiv':
-        return <Archiv />;
+        return <Archiv tasks={this.getArchiv()} />;
     case 'note':
         return <Note back={this.state.noteBack} />;
     default:
         break;
     }
-  }
-};
-
-
-class FolderList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.getTaskInFolder = this.getTaskInFolder.bind(this);
-  }
-
-  render() {
-    const folders = this.showFolder();
-    return <div className='folder-view-mode'>{folders}</div>;
-  }
-
-  getTaskInFolder(project) {
-    return this.props.tasks.filter(function(item) {
-      if (item.project == project) return item;
-    });
-  }
-
-  showFolder(project) {
-    const folders = [];
-
-    return this.props.tasks.map((item, index) => {
-      if (!(~folders.indexOf(item.project))) {
-        folders.push(item.project);
-        return <Folder tasks={this.getTaskInFolder} name={`@${item.project}`} />;
-      }
-    });
-  }
-};
-
-
-class Bar extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return <div className='bar'></div>;
   }
 };
 
@@ -203,6 +174,34 @@ class NavigationMenu extends React.Component {
     )
   }
 };
+
+
+class FolderList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.getTaskInFolder = this.getTasksInFolder.bind(this);
+    this.lib = lib;
+  }
+
+  render() {
+    const folders = this.showFolder();
+    return <div className='folder-view-mode'>{folders}</div>;
+  }
+
+  getTasksInFolder(project) {
+    return this.props.tasks.filter(function(item) {
+      if (item.project == project) return item;
+    })[0].tasks;
+  }
+
+  showFolder(project) {
+    return this.lib.getPropTask(this.props.tasks, 'project', 'field', false, null).map((item) => {
+        if (!~item.indexOf('@')) return;
+        return <Folder tasks={this.getTasksInFolder(item)} name={`${item}`} />;
+    });
+  }
+};
+
 
 class Folder extends React.Component {
   constructor(props) {
@@ -263,13 +262,14 @@ class Folder extends React.Component {
   }
 };
 
+
 class TaskList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: taskDB
+      tasks: this.props.list
     };
-
+    this.getListTask = this.getListTask.bind(this);
     this.lib = lib;
   }
 
@@ -280,13 +280,16 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const tasks = this.getListTask(this.lib.getPropTask(
+    console.log(this.state.tasks);
+    const tasks = this.getListTask(this.state.tasks, this.props.quantity);
+
+/*this.lib.getPropTask(
         this.props.list,
         this.props.field,
         this.props.type,
         this.props.task,
         this.props.value),
-      this.props.quantity);
+      this.props.quantity*/
 
     return (
       <div className='view list'>{tasks}</div>
@@ -294,9 +297,8 @@ class TaskList extends React.Component {
   }
 
   componentDidMount() {
-    emitter.addListener('Add', (item) => {
-      const newTask = item.concat(this.state.tasks);
-      this.setState({tasks: newTask});
+    emitter.addListener('Add', item => {
+      this.setState({tasks: item.concat(this.state.tasks)});
     });
 
     emitter.addListener('Del', (id) => {
@@ -313,7 +315,6 @@ class TaskList extends React.Component {
       list[task.index].completed = true;
       this.setState({tasks: list});
     });
-
   }
 
   getListTask(list, quantity) {
@@ -646,13 +647,13 @@ class Stats extends React.Component {
 
 class Archiv extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   render() {
     return (
       <TaskList
-        list    ={archiv}
+        list    ={this.props.tasks}
         field   ={'description'}
         type    ={'field'}
         task    ={true}
@@ -669,9 +670,10 @@ class Main extends React.Component {
   }
 
   render() {
+    console.log(this.props.tasks);
     return (
       <TaskList
-        list    ={taskDB}
+        list    ={this.props.tasks}
         field   ={'description'}
         type    ={'field'}
         task    ={true}
@@ -724,6 +726,15 @@ class Note extends React.Component {
   }
 }
 
+class Bar extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return <div className='bar'></div>;
+  }
+};
 
 ReactDOM.render(
   <App />,
