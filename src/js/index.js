@@ -1,40 +1,3 @@
-
-
-const taskDB = [{
-  description: 'Купить молока.',
-  id: 1,
-  completed: false,
-  tags: ['#horses', '#horse', '#horsesofinstagram', '#TagsForLikes', '#TagsForLikesApp', '#horseshow', '#horseshoe', '#horses_of_instagram', '#horsestagram', '#instahorses', '#wild', '#mane', '#instagood', '#grass', '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse', '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop', '#jockey', '#rider', '#riders', '#riding'],
-  project: '@LoveYouLoveShe',
-  priority: 0,
-  timeDeath: 0,
-  notes: '',
-  //timer: ['00', '00', '10'],
-  stopwatch: ['01', '04', '44']
-}, {
-  description: 'Выпить колы.',
-  id: 2,
-  completed: false,
-  tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
-  project: 'strong',
-  priority: 0,
-  timeDeath: 0,
-  notes: '',
-  //timer: null,
-  stopwatch: null
-}, {
-  description: 'Познакомиться с девочкой.',
-  id: 3,
-  completed: false,
-  tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
-  project: 'loveAllWorld',
-  priority: 0,
-  timeDeath: 0,
-  notes: '',
-  //timer: ['00', '00', '14'],
-  stopwatch: null
-}];
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -42,7 +5,7 @@ class App extends React.Component {
       location: 'project',
       tasks: db
     };
-    console.log(props);
+
     this.setView     = this.setView.bind(this);
     this.setViewNote = this.setViewNote.bind(this);
     this.lib         = lib;
@@ -84,8 +47,9 @@ class App extends React.Component {
         'project',
         'value',
         true,
-        this.state.noteBack.slice(1))[0].notes = data;
-
+        this.state.noteBack).filter(item => {
+          if (item) return item;
+        })[0].note = data;
       this.setView('project');
     } else if (~back.indexOf('close')) {
       this.setView('project');
@@ -98,7 +62,6 @@ class App extends React.Component {
   }
 
   getMain() {
-    console.log(this.lib.getAllTask(this.state.tasks));
     return this.lib.getAllTask(this.state.tasks);
   }
 
@@ -119,7 +82,7 @@ class App extends React.Component {
     case 'archiv':
         return <Archiv tasks={this.getArchiv()} />;
     case 'note':
-        return <Note back={this.state.noteBack} />;
+        return <Note tasks={this.state.tasks} back={this.state.noteBack} />;
     default:
         break;
     }
@@ -280,19 +243,18 @@ class TaskList extends React.Component {
   }
 
   render() {
-    console.log(this.state.tasks);
-    const tasks = this.getListTask(this.state.tasks, this.props.quantity);
-
-/*this.lib.getPropTask(
-        this.props.list,
-        this.props.field,
-        this.props.type,
-        this.props.task,
-        this.props.value),
-      this.props.quantity*/
-
+    {/*this.lib.getPropTask(
+      this.props.list,
+      this.props.field,
+      this.props.type,
+      this.props.task,
+      this.props.value),
+      this.props.quantity*/}
     return (
-      <div className='view list'>{tasks}</div>
+      <div
+        className='view list'>
+        {this.getListTask(this.state.tasks, this.props.quantity)}
+      </div>
     );
   }
 
@@ -670,7 +632,6 @@ class Main extends React.Component {
   }
 
   render() {
-    console.log(this.props.tasks);
     return (
       <TaskList
         list    ={this.props.tasks}
@@ -688,10 +649,11 @@ class Main extends React.Component {
 class Note extends React.Component {
   constructor(props) {
     super(props);
-    this.handlerClickClose = this.handlerClickClose.bind(this);
-    this.handlerClickSave   = this.handlerClickSave.bind(this);
 
+    this.handlerClickClose = this.handlerClickClose.bind(this);
+    this.handlerClickSave  = this.handlerClickSave.bind(this);
     this.lib = lib;
+    this.getValueNote = this.getValueNote.bind(this);
   }
 
   handlerClickClose(e) {
@@ -701,21 +663,15 @@ class Note extends React.Component {
   handlerClickSave(e) {
     if(!this.refs.textTask.value.length) return;
     emitter.emit('Note', 'save', this.refs.textTask.value);
-    console.log('refs', this.refs.textTask.value);
   }
 
   render() {
-    const value = this.lib.getPropTask(taskDB, 'project', 'value', true,
-      this.props.back.slice(1))[0].notes || '';
-
-    console.log('value', value);
     return (
       <div className='view'>
         <textarea
           className='note'
-          defaultValue={value}
-          ref='textTask'
-        >
+          defaultValue={this.getValueNote()}
+          ref='textTask'>
         </textarea>
         <div className='note-pane'>
           <span onClick={this.handlerClickClose} className='note-save'></span>
@@ -723,6 +679,13 @@ class Note extends React.Component {
         </div>
       </div>
     )
+  }
+
+  getValueNote() {
+    return this.lib.getPropTask(this.props.tasks, 'project', 'value', true,
+      this.props.back).filter(item => {
+        if (item) return item;
+      })[0].note || '';
   }
 }
 
