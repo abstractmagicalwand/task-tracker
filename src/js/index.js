@@ -1,17 +1,12 @@
-const emitter = new EventEmitter();
-const config = {
-  PAGE_TASK: 3
-};
-
 const taskDB = [{
   description: 'Купить молока.',
   id: 1,
   completed: false,
   tags: ['#horses', '#horse', '#horsesofinstagram', '#TagsForLikes', '#TagsForLikesApp', '#horseshow', '#horseshoe', '#horses_of_instagram', '#horsestagram', '#instahorses', '#wild', '#mane', '#instagood', '#grass', '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse', '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop', '#jockey', '#rider', '#riders', '#riding'],
-  project: 'LoveYouLoveShe',
+  project: '@LoveYouLoveShe',
   priority: 0,
   timeDeath: 0,
-  notes: [],
+  notes: '',
   //timer: ['00', '00', '10'],
   stopwatch: ['01', '04', '44']
 }, {
@@ -22,7 +17,7 @@ const taskDB = [{
   project: 'strong',
   priority: 0,
   timeDeath: 0,
-  notes: [],
+  notes: '',
   //timer: null,
   stopwatch: null
 }, {
@@ -33,82 +28,10 @@ const taskDB = [{
   project: 'loveAllWorld',
   priority: 0,
   timeDeath: 0,
-  notes: [],
+  notes: '',
   //timer: ['00', '00', '14'],
   stopwatch: null
 }];
-
-const archiv = [{
-  description: 'Выйти на улицу разок.',
-  id: 1322131231231232,
-  completed: true,
-  tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
-  project: 'loveasdasdsadrld',
-  priority: 0,
-  timeDeath: 0,
-  notes: [],
-  //timer: ['00', '00', '14'],
-  stopwatch: null
-}];
-
-const libTaskTracker = {
-  tick(time, func) {
-    let h = +time[0],
-        m = +time[1],
-        s = +time[2];
-
-    [h, m, s] = func(h, m, s);
-
-    return [
-      h < 10 ? `0${h}` : `${h}`,
-      m < 10 ? `0${m}` : `${m}`,
-      s < 10 ? `0${s}` : `${s}`
-    ];
-  },
-
-  getTask(list, id) {
-    let needIndex;
-
-    list.forEach(function(item, index) {
-        if (item.id == id) needIndex = index;
-    });
-
-    return {
-      list: list,
-      index: needIndex
-    };
-  },
-
-  getPropTask(list, field, type, task, value) {
-    let f;
-
-    switch (type) {
-    case 'field':
-        f = (task ?  function(item, index) {
-          if (field in item)  return item;
-        } : function(item, index) {
-          if (field in item)  return item[field];
-        });
-        break;
-    case 'value':
-        f = (task ? function(item, index) {
-          if (~item[field].indexOf(value))  return item;
-        } : function(item, index) {
-          if (~item[field].indexOf(value))  return item[field];
-        });
-        break;
-    default:
-        break;
-    }
-
-    return list.map(f);
-  }
-}
-
-
-
-
-
 
 class App extends React.Component {
   constructor(props) {
@@ -120,7 +43,7 @@ class App extends React.Component {
 
     this.setView = this.setView.bind(this);
     this.setViewNote = this.setViewNote.bind(this);
-    this.lib = libTaskTracker;
+    this.lib = lib;
   }
 
   componentWillMount() {
@@ -347,7 +270,7 @@ class TaskList extends React.Component {
       tasks: taskDB
     };
 
-    this.lib = libTaskTracker;
+    this.lib = lib;
   }
 
   componentWillUnmount() {
@@ -540,7 +463,7 @@ class Stopwatch extends React.Component {
       stop: true
     };
 
-    this.lib = libTaskTracker;
+    this.lib = lib;
     this.handlerClickBtn = this.handlerClickBtn.bind(this);
     this.handlerInterval = this.handlerInterval.bind(this);
   }
@@ -596,7 +519,7 @@ class Stopwatch extends React.Component {
 class Timer extends React.Component {
   constructor(props) {
     super(props);
-    this.lib = libTaskTracker;
+    this.lib = lib;
     this.stats = {
       timer: taskDB[this.lib.getTask(taskDB, this.props.id).index].timer
     };
@@ -655,7 +578,7 @@ class TagsCloud extends React.Component {
   constructor(props) {
     super(props);
 
-    this.lib = libTaskTracker;
+    this.lib = lib;
   }
 
   render() {
@@ -766,7 +689,7 @@ class Note extends React.Component {
     this.handlerClickClose = this.handlerClickClose.bind(this);
     this.handlerClickSave   = this.handlerClickSave.bind(this);
 
-    this.lib = libTaskTracker;
+    this.lib = lib;
   }
 
   handlerClickClose(e) {
