@@ -1,5 +1,8 @@
 .content {
   background-color: #fff;
+  display: inline-block;
+  width: 750px;
+  margin-top: 60px;
 }
 
 .bar {
@@ -41,4 +44,9 @@
 .sand {
   height: 50px;
   width: 50px;
+}
+
+.task {
+  border: 2px solid #E040FB;
+  margin: 5px;
 }

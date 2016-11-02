@@ -9,10 +9,10 @@ class App extends React.Component {
   render() {
     return (
       <div className='app'>
-        <Content db={this.state.db}/>
         <Bar />
         <Nav />
         <Field />
+        <Content db={this.state.db}/>
       </div>
     );
   }
@@ -27,7 +27,8 @@ class Content extends React.Component {
   render() {
     return (
       <div className='content'>
-        <List type='inbox' db={this.props.db}/>
+        {/*<List type='inbox' db={this.props.db} />*/}
+        <Collection db={this.props.db} />
       </div>
     );
   }
@@ -91,12 +92,11 @@ class List extends React.Component {
   }
 
   getTasks(type, db) {
-    console.log( db.reduce((sum, item) => sum.concat(item.tasks), []) );
     return db.reduce((sum, item) => sum.concat(item.tasks), []);
   }
 
   getCompTasks(tasks) {
-    return tasks.map((task) => <Task info={task} />)
+    return tasks.map(task => <Task info={task} />)
   }
 }
 
@@ -107,7 +107,11 @@ class Collection extends React.Component {
   }
 
   render() {
-    return <div className='collection'></div>;
+    return <div className='collection'>{this.getCompFolders(this.props.db)}</div>;
+  }
+
+  getCompFolders(db) {
+    return db.map(folder => <Folder info={folder} />);
   }
 }
 
@@ -160,7 +164,11 @@ class Task extends React.Component {
   }
 
   render() {
-    return <div className='task'></div>;
+    return (
+      <div className='task'>
+        <p class='descript'>{this.props.info.description}</p>
+      </div>
+    );
   }
 }
 
@@ -171,7 +179,7 @@ class Folder extends React.Component {
   }
 
   render() {
-    return <div className='folder'></div>;
+    return <div className='folder'>{this.props.info.project}</div>;
   }
 }
 
