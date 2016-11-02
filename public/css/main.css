@@ -1,0 +1,44 @@
+.content {
+  background-color: #fff;
+}
+
+.bar {
+  background-color: #00BCD4;
+  height: 100px;
+  width: 100%;
+}
+
+.app {
+  background-color: #fff;
+}
+
+.nav {
+  background-color: #B2EBF2;
+  display: inline-block;
+  height: 375px;
+  width: 150px;
+}
+
+.btn {
+  background-color: #B2EBF2;
+  height: 75px;
+  width: 100px;
+}
+
+.field {
+  background-color: #fff;
+  display: inline-block;
+  position: fixed;
+  height: 50px;
+  width: 100%;
+}
+
+.area {
+  height: 50px;
+  width: 75%;
+}
+
+.sand {
+  height: 50px;
+  width: 50px;
+}
