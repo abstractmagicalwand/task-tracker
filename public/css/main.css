@@ -25,7 +25,11 @@
 .btn {
   background-color: #B2EBF2;
   height: 75px;
-  width: 100px;
+  width: 150px;
+}
+
+.btn:active {
+  background-color: #E040FB;
 }
 
 .field {

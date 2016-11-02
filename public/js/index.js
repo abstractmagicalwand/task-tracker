@@ -6,6 +6,10 @@ class App extends React.Component {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('click123', e => console.log(event.detail.category));
+  }
+
   render() {
     return (
       <div className='app'>
@@ -49,16 +53,26 @@ class Bar extends React.Component {
 class Nav extends React.Component {
   constructor(props) {
     super(props);
+    this.handleClickBtn = this.handleClickBtn.bind(this);
+  }
+
+  handleClickBtn(e) {
+    const event = new CustomEvent('click123', {
+      detail: {category: e.target.getAttribute('name')}
+    });
+
+    e.target.dispatchEvent(event);
+
   }
 
   render() {
     return (
       <div className='nav'>
-        <div className='btn'>Inbox</div>
-        <div className='btn'>Project</div>
-        <div className='btn'>Archiv</div>
-        <div className='btn'>Stats</div>
-        <div className='btn'>Help</div>
+        <div className='btn' name='inbox' onClick={this.handleClickBtn}>Inbox</div>
+        <div className='btn' name='project' onClick={this.handleClickBtn}>Project</div>
+        <div className='btn' name='archiv' onClick={this.handleClickBtn}>Archiv</div>
+        <div className='btn' name='stats' onClick={this.handleClickBtn}>Stats</div>
+        <div className='btn' name='help' onClick={this.handleClickBtn}>Help</div>
       </div>
     );
   }
@@ -161,6 +175,42 @@ class Search extends React.Component {
 class Task extends React.Component {
   constructor(props) {
     super(props);
+
+    this.handleDeleteTask = this.handleDeleteTask.bind(this);
+    this.handleNoteTask = this.handleNoteTask.bind(this);
+    this.handleCompleteTask = this.handleCompleteTask.bind(this);
+    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
+    this.handleCancelTimer = this.handleCancelTimer.bind(this);
+    this.handleEditTask = this.handleEditTask.bind(this);
+    this.handleSelecteTask = this.handleSelecteTask.bind(this);
+  }
+
+  handleDeleteTask() {
+
+  }
+
+  handleNoteTask() {
+
+  }
+
+  handleCompleteTask() {
+
+  }
+
+  handleToggleStopwatch() {
+
+  }
+
+  handleCancelTimer() {
+
+  }
+
+  handleEditTask() {
+
+  }
+
+  handleSelecteTask() {
+
   }
 
   render() {
@@ -176,6 +226,27 @@ class Task extends React.Component {
 class Folder extends React.Component {
   constructor(props) {
     super(props);
+
+    this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
+    this.handleEditFolder = this.handleDeleteFolder.bind(this);
+    this.handleNoteFolder = this.handleNoteFolder.bind(this);
+    this.handleSelecteFolder = this.handleSelecteFolder.bind(this);
+  }
+
+  handleDeleteFolder() {
+
+  }
+
+  handleEditFolder() {
+
+  }
+
+  handleNoteFolder() {
+
+  }
+
+  handleSelecteFolder() {
+
   }
 
   render() {
