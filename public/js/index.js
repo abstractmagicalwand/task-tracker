@@ -27,7 +27,7 @@ class Content extends React.Component {
   render() {
     return (
       <div className='content'>
-        <List db={this.props.db}/>
+        <List type='inbox' db={this.props.db}/>
       </div>
     );
   }
@@ -87,7 +87,16 @@ class List extends React.Component {
   }
 
   render() {
-    return <div className='list'></div>
+    return <div className='list'>{this.getCompTasks(this.getTasks(this.props.type, this.props.db))}</div>
+  }
+
+  getTasks(type, db) {
+    console.log( db.reduce((sum, item) => sum.concat(item.tasks), []) );
+    return db.reduce((sum, item) => sum.concat(item.tasks), []);
+  }
+
+  getCompTasks(tasks) {
+    return tasks.map((task) => <Task info={task} />)
   }
 }
 
@@ -124,6 +133,15 @@ class Stats extends React.Component {
   }
 }
 
+class Note extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return <div className='note'></div>;
+  }
+}
 
 class Search extends React.Component {
   constructor(props) {
@@ -156,7 +174,6 @@ class Folder extends React.Component {
     return <div className='folder'></div>;
   }
 }
-
 
 ReactDOM.render(
   <App />,
