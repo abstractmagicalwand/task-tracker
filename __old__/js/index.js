@@ -9,14 +9,17 @@ class App extends React.Component {
     this.setView     = this.setView.bind(this);
     this.setViewNote = this.setViewNote.bind(this);
     this.lib         = lib;
-    this.getArchiv   = this.getArchiv.bind(this);
     this.getMain     = this.getMain.bind(this);
+  }
+
+  handlerChildReRender() {
+    console.log('sup');
+    this.setState({location: this.state.location});
   }
 
   componentWillMount() {
     emitter.removeListener('Transfer');
     emitter.removeListener('Note');
-    emitter.removeListener('Add');
   }
 
   render() {
@@ -33,7 +36,6 @@ class App extends React.Component {
   componentDidMount() {
     emitter.addListener('Transfer', this.setView);
     emitter.addListener('Note', this.setViewNote);
-    emitter.addListener('Add', this.setTask.bind(null, this.state.tasks));
   }
 
   setView(value) { this.setState({location: value}); }
@@ -59,37 +61,28 @@ class App extends React.Component {
 
   }
 
-  setTask(list, newItem) {
-    let flag = false,
-        sans;
-    console.log(newItem);
-    list.forEach(item => {
-      if (newItem.project === item.project) {
-        item.tasks.unshift(newItem);
-        flag = true;
-      } else if (item.project == 'SANS') {
-        sans = item;
-      }
-    });
-
-    if (flag) return;
-
-    sans.tasks.unshift(newItem);
-    console.log(list);
-  }
-
-  getArchiv() {
-    return this.lib.getPropTask(this.state.tasks, 'project', 'value', true, 'ARCHIV')[0].tasks;
-  }
-
   getMain() {
     return this.lib.getAllTask(this.state.tasks);
+  }
+
+  handlerChildFunc(newTasks) {
+    this.setState({tasks: newTasks});
+    console.log('y');
   }
 
   takeView(path) {
     switch (path) {
     case 'main':
-        return <Main tasks={this.getMain()} />;
+      return (<TaskList
+        re  ={this.handlerChildReRender.bind(this)}
+        proto   ={this.state.tasks}
+        tasks   ={this.getMain()}
+        field   ={'description'}
+        type    ={'field'}
+        task    ={true}
+        value   ={null}
+        quantity={config.PAGE_TASK} />
+      );
     case 'project':
         return <FolderList tasks={this.state.tasks} />;
     case 'tag':
@@ -101,7 +94,7 @@ class App extends React.Component {
     case 'stats':
         return <Stats />;
     case 'archiv':
-        return <Archiv tasks={this.getArchiv()} />;
+        return <Archiv tasks={this.state.tasks} />;
     case 'note':
         return <Note tasks={this.state.tasks} back={this.state.noteBack} />;
     default:
@@ -251,15 +244,18 @@ class TaskList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: this.props.list
+      tasks: this.props.tasks,
+      proto: this.props.proto
     };
     this.getListTask = this.getListTask.bind(this);
     this.lib = lib;
+    this.setTask = this.setTask.bind(this, this.state.proto)
   }
 
   componentWillUnmount() {
     emitter.removeListener('Del');
     emitter.removeListener('Done');
+    emitter.removeListener('Add');
   }
 
   render() {
@@ -294,6 +290,31 @@ class TaskList extends React.Component {
       list[task.index].completed = true;
       this.setState({tasks: list});
     });
+
+    emitter.addListener('Add', this.setTask);
+  }
+
+  setTask(list, newItem) {
+    let flag = false,
+        sans;
+
+    list.forEach(item => {
+      if (newItem.project === item.project) {
+        item.tasks.unshift(newItem);
+        flag = true;
+      } else if (item.project == 'SANS') {
+        sans = item;
+      }
+    });
+
+    if (flag) {
+      this.setState({proto: list});
+      return;
+    }
+
+    sans.tasks.unshift(newItem);
+    this.setState({proto: list});
+    this.props.re();
   }
 
   getListTask(list, quantity) {
@@ -385,7 +406,7 @@ class PlaceAddTask extends React.Component {
 class Task extends React.Component {
   constructor(props) {
     super(props);
-    this.stats = {completed: false};
+    this.state = {completed: false};
     this.handlerDelBtn = this.handlerDelBtn.bind(this);
     this.handlerCheckComplete = this.handlerCheckComplete.bind(this);
   }
@@ -451,6 +472,7 @@ class Stopwatch extends React.Component {
     e.preventDefault();
     this.setState({stop: !this.state.stop});
   }
+
   plus(h, m, s) {
 
     if (s != 59) {
@@ -465,6 +487,7 @@ class Stopwatch extends React.Component {
 
     return [h, m, s];
   }
+
   handlerInterval() {
     this.setState({watch: this.lib.tick(this.state.watch, this.plus)});
   }
@@ -626,12 +649,19 @@ class Stats extends React.Component {
 class Archiv extends React.Component {
   constructor(props) {
     super(props);
+    this.lib = lib;
+    this.getArchiv = this.getArchiv.bind(this);
+  }
+
+  getArchiv() {
+    return this.lib.getPropTask(this.proto.tasks, 'project', 'value', true, 'ARCHIV')[0].tasks;
   }
 
   render() {
     return (
       <TaskList
-        list    ={this.props.tasks}
+        proto   ={this.props.tasks}
+        tasks   ={this.getArchiv()}
         field   ={'description'}
         type    ={'field'}
         task    ={true}
@@ -641,25 +671,6 @@ class Archiv extends React.Component {
     );
   }
 };
-
-class Main extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <TaskList
-        list    ={this.props.tasks}
-        field   ={'description'}
-        type    ={'field'}
-        task    ={true}
-        value   ={null}
-        quantity={config.PAGE_TASK}
-      />
-    );
-  }
-}
 
 // props !!! back
 class Note extends React.Component {

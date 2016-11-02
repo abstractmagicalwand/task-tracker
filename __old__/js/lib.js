@@ -54,6 +54,7 @@ const lib = {
   getAllTask(list) {
     return list.filter(item => {
       if (~item.project.indexOf('@')) return item;
+      if (~item.project.indexOf('SANS')) return item;
     }).reduce((sum, item) => {
       return sum.concat(item.tasks);
     }, []);
