@@ -57,7 +57,8 @@ const lib = {
     }).reduce((sum, item) => {
       return sum.concat(item.tasks);
     }, []);
-  }
+  },
+
 };
 
 const emitter = new EventEmitter();

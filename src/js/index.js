@@ -16,6 +16,7 @@ class App extends React.Component {
   componentWillMount() {
     emitter.removeListener('Transfer');
     emitter.removeListener('Note');
+    emitter.removeListener('Add');
   }
 
   render() {
@@ -32,6 +33,7 @@ class App extends React.Component {
   componentDidMount() {
     emitter.addListener('Transfer', this.setView);
     emitter.addListener('Note', this.setViewNote);
+    emitter.addListener('Add', this.setTask.bind(null, this.state.tasks));
   }
 
   setView(value) { this.setState({location: value}); }
@@ -55,6 +57,25 @@ class App extends React.Component {
       this.setView('project');
     }
 
+  }
+
+  setTask(list, newItem) {
+    let flag = false,
+        sans;
+    console.log(newItem);
+    list.forEach(item => {
+      if (newItem.project === item.project) {
+        item.tasks.unshift(newItem);
+        flag = true;
+      } else if (item.project == 'SANS') {
+        sans = item;
+      }
+    });
+
+    if (flag) return;
+
+    sans.tasks.unshift(newItem);
+    console.log(list);
   }
 
   getArchiv() {
@@ -237,7 +258,6 @@ class TaskList extends React.Component {
   }
 
   componentWillUnmount() {
-    emitter.removeListener('Add');
     emitter.removeListener('Del');
     emitter.removeListener('Done');
   }
@@ -259,9 +279,6 @@ class TaskList extends React.Component {
   }
 
   componentDidMount() {
-    emitter.addListener('Add', item => {
-      this.setState({tasks: item.concat(this.state.tasks)});
-    });
 
     emitter.addListener('Del', (id) => {
       const list = this.state.tasks;
@@ -347,7 +364,7 @@ class PlaceAddTask extends React.Component {
   createTask() {
     const newTask = this.parser(this.refs.textTask.value);
 
-    const task = [{
+    return {
       description: newTask.str,
       id: Math.floor(Math.random() * Math.pow(10, 6)),
       completed: false,
@@ -355,13 +372,12 @@ class PlaceAddTask extends React.Component {
       project: newTask.project,
       priority: newTask.priority,
       timeDeath: 0,
-      notes: [],
+      note: '',
       date: new Date(),
       timer: newTask.timer,
       stopwatch: [0, 0, 0]
-    }];
+    }
 
-    return task;
   }
 };
 
