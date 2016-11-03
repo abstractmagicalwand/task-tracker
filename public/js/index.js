@@ -6,6 +6,7 @@ class App extends React.Component {
     }
 
     this.handleNavBtn = this.handleNavBtn.bind(this);
+    this.handleAddNewTask = this.handleAddNewTask.bind(this);
   }
 
   handleNavBtn(e) {
@@ -13,8 +14,17 @@ class App extends React.Component {
     e.preventDefault(e);
   }
 
+  handleAddNewTask(e) {
+    this.state.db.filter(item => {
+      if (item.project  == 'SANS') return item;
+    })[0].tasks.unshift({description: e.detail.description});
+
+    this.setState({db: this.state.db});
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn', this.handleNavBtn);
+    window.removeEventListener('addNewTask', this.handleAddNewTask);
   }
 
   render() {
@@ -30,6 +40,7 @@ class App extends React.Component {
 
   componentDidMount() {
     window.addEventListener('clickNavBtn', this.handleNavBtn);
+    window.addEventListener('addNewTask', this.handleAddNewTask);
   }
 
 }
@@ -108,7 +119,15 @@ class Field extends React.Component {
   }
 
   handleGetText() {
+    if (!ReactDOM.findDOMNode(this.refs.text).value.length) return;
+
+    const event = new CustomEvent('addNewTask', {
+      detail: {description: ReactDOM.findDOMNode(this.refs.text).value}
+    })
+
     ReactDOM.findDOMNode(this.refs.text).value = '';
+
+    window.dispatchEvent(event);
   }
 
   render() {
@@ -263,6 +282,10 @@ class Folder extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      selecte: false
+    }
+
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
     this.handleEditFolder = this.handleDeleteFolder.bind(this);
     this.handleNoteFolder = this.handleNoteFolder.bind(this);
@@ -282,15 +305,21 @@ class Folder extends React.Component {
   }
 
   handleSelecteFolder() {
-
+    this.setState({selecte: !this.state.selecte});
   }
 
   render() {
-    return <div className='folder'>{this.props.info.project}</div>;
+    return (
+      <div
+        className={'folder' + (this.state.selecte ? ' selecte' : '')}
+        onClick={this.handleSelecteFolder}>
+        {this.props.info.project}
+      </div>
+    );
   }
 }
 
 ReactDOM.render(
   <App />,
   document.getElementById('root')
-)
+);
