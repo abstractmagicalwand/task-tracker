@@ -10,7 +10,7 @@ class App extends React.Component {
 
   handleNavBtn(e) {
     this.setState({viewContent: e.detail.category});
-    e.preventDefault(e)
+    e.preventDefault(e);
   }
 
   componentWillMount() {
@@ -56,6 +56,8 @@ class Content extends React.Component {
         return <Stats />;
     case 'help':
         return <Help />;
+    case 'note':
+        return <Note />;
     }
   }
 }
@@ -102,14 +104,19 @@ class Nav extends React.Component {
 class Field extends React.Component {
   constructor(props) {
     super(props);
+    this.handleGetText = this.handleGetText.bind(this);
+  }
+
+  handleGetText() {
+    ReactDOM.findDOMNode(this.refs.text).value = '';
   }
 
   render() {
     return (
       <div className='field'>
-        <textarea className='area'>
+        <textarea className='area' ref='text'>
         </textarea>
-        <input className='sand' type='button' />
+        <input className='sand' type='button' onClick={this.handleGetText}/>
       </div>
     );
   }
@@ -126,7 +133,16 @@ class List extends React.Component {
   }
 
   getTasks(type, db) {
-    return db.reduce((sum, item) => sum.concat(item.tasks), []);
+    switch (type) {
+    case 'inbox':
+        return db.filter(item => {
+          if (!(item.project == 'ARCHIV'))  return item;
+        }).reduce((sum, item) => sum.concat(item.tasks), []);
+    case 'archiv':
+        return db.filter(item => {
+          if (item.project == 'ARCHIV')  return item;
+        })[0].tasks;
+    }
   }
 
   getCompTasks(tasks) {
