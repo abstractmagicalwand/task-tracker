@@ -69,6 +69,9 @@ class Content extends React.Component {
         return <Help />;
     case 'note':
         return <Note />;
+    default:
+        if (!~this.props.view.indexOf('@')) break;
+        return <List type='project' projectName={this.props.view} db={this.props.db} />;
     }
   }
 }
@@ -123,7 +126,7 @@ class Field extends React.Component {
 
     const event = new CustomEvent('addNewTask', {
       detail: {description: ReactDOM.findDOMNode(this.refs.text).value}
-    })
+    });
 
     ReactDOM.findDOMNode(this.refs.text).value = '';
 
@@ -161,6 +164,10 @@ class List extends React.Component {
         return db.filter(item => {
           if (item.project == 'ARCHIV')  return item;
         })[0].tasks;
+    case 'project':
+        return db.filter(item => {
+          if (item.project == this.props.projectName) return item;
+        })[0].tasks;
     }
   }
 
@@ -180,7 +187,9 @@ class Collection extends React.Component {
   }
 
   getCompFolders(db) {
-    return db.map(folder => <Folder info={folder} />);
+    return db.filter(folder => {
+      if (folder.project != 'ARCHIV' && folder.project != 'SANS') return folder;
+    }).map(folder => <Folder info={folder} />);
   }
 }
 
@@ -305,7 +314,11 @@ class Folder extends React.Component {
   }
 
   handleSelecteFolder() {
-    this.setState({selecte: !this.state.selecte});
+    const event = new CustomEvent('clickNavBtn', {
+      detail: {category: this.props.info.project}
+    });
+
+    window.dispatchEvent(event);
   }
 
   render() {
