@@ -86,3 +86,11 @@
   height: 50px;
   border-radius: 5px;
 }
+
+.delete {
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  border-radius: 5px;
+  display: inline-block;
+}

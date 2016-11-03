@@ -5,17 +5,32 @@ class App extends React.Component {
       db: db
     }
 
-    this.handleNavBtn = this.handleNavBtn.bind(this);
-    this.handleAddNewTask = this.handleAddNewTask.bind(this);
-    this.handleSearchReq = this.handleSearchReq.bind(this);
+    this.handleNavBtnApp = this.handleNavBtnApp.bind(this);
+    this.handleAddNewTaskApp = this.handleAddNewTaskApp.bind(this);
+    this.handleSearchReqApp = this.handleSearchReqApp.bind(this);
+    this.handleDeleteFolderApp = this.handleDeleteFolderApp.bind(this);
+    this.handleDeleteTaskApp = this.handleDeleteTaskApp.bind(this);
   }
 
-  handleNavBtn(e) {
+  handleDeleteFolderApp(e) {
+    e.preventDefault();
+    let index;
+    this.state.db.forEach((folder, i) => {
+      if (folder.project == e.detail.project) index = i;
+    });
+
+    this.state.db.splice(index, 1);
+
+    this.setState({db: this.state.db});
+  }
+
+  handleNavBtnApp(e) {
+    e.preventDefault();
     this.setState({viewContent: e.detail.category});
-    e.preventDefault(e);
   }
 
-  handleAddNewTask(e) {
+  handleAddNewTaskApp(e) {
+    e.preventDefault();
     this.state.db.filter(item => {
       if (item.project  == 'SANS') return item;
     })[0].tasks.unshift({description: e.detail.description});
@@ -23,17 +38,24 @@ class App extends React.Component {
     this.setState({db: this.state.db});
   }
 
-  handleSearchReq(e) {
+  handleSearchReqApp(e) {
+    e.preventDefault();
     this.setState({
       viewContent: 'search',
-      searchValue: e.detail.value
+      value: e.detail.value
     });
   }
 
+  handleDeleteTaskApp(e) {
+
+  }
+
   componentWillMount() {
-    window.removeEventListener('clickNavBtn', this.handleNavBtn);
-    window.removeEventListener('addNewTask', this.handleAddNewTask);
-    window.removeEventListener('searchValue', this.handleSearchReq);
+    window.removeEventListener('clickNavBtn', this.handleNavBtnApp);
+    window.removeEventListener('addNewTask', this.handleAddNewTaskApp);
+    window.removeEventListener('searchValue', this.handleSearchReqApp);
+    window.removeEventListener('deleteFolder', this.handleDeleteFolderApp);
+    window.removeEventListener('deleteTask', this.handleDeleteTaskApp);
   }
 
   render() {
@@ -42,15 +64,17 @@ class App extends React.Component {
         <Bar />
         <Nav />
         <Field />
-        <Content view={this.state.viewContent ? this.state.viewContent : 'inbox'} db={this.state.db} searchValue={this.state.searchValue ? this.state.searchValue : ''}/>
+        <Content view={this.state.viewContent ? this.state.viewContent : 'inbox'} db={this.state.db} value={this.state.value ? this.state.value : ''}/>
       </div>
     );
   }
 
   componentDidMount() {
-    window.addEventListener('clickNavBtn', this.handleNavBtn);
-    window.addEventListener('addNewTask', this.handleAddNewTask);
-    window.addEventListener('searchValue', this.handleSearchReq);
+    window.addEventListener('clickNavBtn', this.handleNavBtnApp);
+    window.addEventListener('addNewTask', this.handleAddNewTaskApp);
+    window.addEventListener('searchValue', this.handleSearchReqApp);
+    window.addEventListener('deleteFolder', this.handleDeleteFolderApp);
+    window.addEventListener('deleteTask', this.handleDeleteTaskApp);
   }
 
 }
@@ -76,7 +100,7 @@ class Content extends React.Component {
     case 'stats':
         return <Stats />;
     case 'search':
-        return <List type='search' value={this.props.searchValue} db={this.props.db} />
+        return <List type='search' value={this.props.value} db={this.props.db} />
     case 'help':
         return <Help />;
     case 'note':
@@ -185,7 +209,6 @@ class List extends React.Component {
         })[0].tasks;
     case 'search':
         return this.getInboxTasks(db).filter((item, d, array) => {
-          console.log(this.props.value);
           if (~item.description.indexOf(this.props.value)) return item;
         });
     }
@@ -199,7 +222,6 @@ class List extends React.Component {
   }
 
   getCompTasks(tasks) {
-    console.log(tasks);
     return tasks.map(task => <Task info={task} />)
   }
 }
@@ -288,7 +310,11 @@ class Task extends React.Component {
   }
 
   handleDeleteTask() {
+    const event = new CustomEvent('deleteTask', {
+      detail: {id: this.props.info.id}
+    });
 
+    window.dispatchEvent(event);
   }
 
   handleNoteTask() {
@@ -319,6 +345,7 @@ class Task extends React.Component {
     return (
       <div className='task'>
         <p class='descript'>{this.props.info.description}</p>
+        <span className='delete' onClick={this.handleDeleteTask}></span>
       </div>
     );
   }
@@ -329,18 +356,18 @@ class Folder extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      selecte: false
-    }
-
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
     this.handleEditFolder = this.handleDeleteFolder.bind(this);
     this.handleNoteFolder = this.handleNoteFolder.bind(this);
-    this.handleSelecteFolder = this.handleSelecteFolder.bind(this);
+    this.handleClickFolder = this.handleClickFolder.bind(this);
   }
 
   handleDeleteFolder() {
+    const event = new CustomEvent('deleteFolder', {
+      detail: {project: this.props.info.project}
+    });
 
+    window.dispatchEvent(event);
   }
 
   handleEditFolder() {
@@ -351,7 +378,8 @@ class Folder extends React.Component {
 
   }
 
-  handleSelecteFolder() {
+  handleClickFolder(e) {
+    if (e.target.tagName != 'DIV') return;
     const event = new CustomEvent('clickNavBtn', {
       detail: {category: this.props.info.project}
     });
@@ -363,8 +391,9 @@ class Folder extends React.Component {
     return (
       <div
         className={'folder' + (this.state.selecte ? ' selecte' : '')}
-        onClick={this.handleSelecteFolder}>
+        onClick={this.handleClickFolder}>
         {this.props.info.project}
+        <span className='delete' onClick={this.handleDeleteFolder}></span>
       </div>
     );
   }
