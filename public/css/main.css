@@ -80,3 +80,9 @@
 .selecte {
   background-color: darkseagreen;
 }
+
+.search {
+  width: 75%;
+  height: 50px;
+  border-radius: 5px;
+}

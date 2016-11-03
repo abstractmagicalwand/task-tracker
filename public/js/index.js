@@ -7,6 +7,7 @@ class App extends React.Component {
 
     this.handleNavBtn = this.handleNavBtn.bind(this);
     this.handleAddNewTask = this.handleAddNewTask.bind(this);
+    this.handleSearchReq = this.handleSearchReq.bind(this);
   }
 
   handleNavBtn(e) {
@@ -22,9 +23,17 @@ class App extends React.Component {
     this.setState({db: this.state.db});
   }
 
+  handleSearchReq(e) {
+    this.setState({
+      viewContent: 'search',
+      searchValue: e.detail.value
+    });
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn', this.handleNavBtn);
     window.removeEventListener('addNewTask', this.handleAddNewTask);
+    window.removeEventListener('searchValue', this.handleSearchReq);
   }
 
   render() {
@@ -33,7 +42,7 @@ class App extends React.Component {
         <Bar />
         <Nav />
         <Field />
-        <Content view={this.state.viewContent ? this.state.viewContent : 'inbox'} db={this.state.db}/>
+        <Content view={this.state.viewContent ? this.state.viewContent : 'inbox'} db={this.state.db} searchValue={this.state.searchValue ? this.state.searchValue : ''}/>
       </div>
     );
   }
@@ -41,6 +50,7 @@ class App extends React.Component {
   componentDidMount() {
     window.addEventListener('clickNavBtn', this.handleNavBtn);
     window.addEventListener('addNewTask', this.handleAddNewTask);
+    window.addEventListener('searchValue', this.handleSearchReq);
   }
 
 }
@@ -65,6 +75,8 @@ class Content extends React.Component {
         return <List type='archiv' db={this.props.db} />;
     case 'stats':
         return <Stats />;
+    case 'search':
+        return <List type='search' value={this.props.searchValue} db={this.props.db} />
     case 'help':
         return <Help />;
     case 'note':
@@ -83,7 +95,11 @@ class Bar extends React.Component {
   }
 
   render() {
-    return <div className='bar'></div>;
+    return (
+      <div className='bar'>
+        <Search />
+      </div>
+    );
   }
 }
 
@@ -155,11 +171,10 @@ class List extends React.Component {
   }
 
   getTasks(type, db) {
+
     switch (type) {
     case 'inbox':
-        return db.filter(item => {
-          if (!(item.project == 'ARCHIV'))  return item;
-        }).reduce((sum, item) => sum.concat(item.tasks), []);
+        return this.getInboxTasks(db);
     case 'archiv':
         return db.filter(item => {
           if (item.project == 'ARCHIV')  return item;
@@ -168,10 +183,23 @@ class List extends React.Component {
         return db.filter(item => {
           if (item.project == this.props.projectName) return item;
         })[0].tasks;
+    case 'search':
+        return this.getInboxTasks(db).filter((item, d, array) => {
+          console.log(this.props.value);
+          if (~item.description.indexOf(this.props.value)) return item;
+        });
     }
+
+  }
+
+  getInboxTasks(db) {
+    return db.filter(item => {
+      if (!(item.project == 'ARCHIV'))  return item;
+    }).reduce((sum, item) => sum.concat(item.tasks), []);
   }
 
   getCompTasks(tasks) {
+    console.log(tasks);
     return tasks.map(task => <Task info={task} />)
   }
 }
@@ -228,10 +256,20 @@ class Note extends React.Component {
 class Search extends React.Component {
   constructor(props) {
     super(props);
+
+    this.handleSearchReq = this.handleSearchReq.bind(this);
+  }
+
+  handleSearchReq(e) {
+    const event = new CustomEvent('searchValue', {
+      detail: {value: e.target.value}
+    })
+
+    window.dispatchEvent(event);
   }
 
   render() {
-    return <div className='search'></div>;
+    return <input className='search' type='text' onChange={this.handleSearchReq}/>;
   }
 }
 
