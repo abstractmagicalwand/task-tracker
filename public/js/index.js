@@ -4,10 +4,17 @@ class App extends React.Component {
     this.state = {
       db: db
     }
+
+    this.handleNavBtn = this.handleNavBtn.bind(this);
   }
 
-  componentDidMount() {
-    window.addEventListener('click123', e => console.log(event.detail.category));
+  handleNavBtn(e) {
+    this.setState({viewContent: e.detail.category});
+    e.preventDefault(e)
+  }
+
+  componentWillMount() {
+    window.removeEventListener('clickNavBtn', this.handleNavBtn);
   }
 
   render() {
@@ -16,25 +23,40 @@ class App extends React.Component {
         <Bar />
         <Nav />
         <Field />
-        <Content db={this.state.db}/>
+        <Content view={this.state.viewContent ? this.state.viewContent : 'inbox'} db={this.state.db}/>
       </div>
     );
   }
-}
 
+  componentDidMount() {
+    window.addEventListener('clickNavBtn', this.handleNavBtn);
+  }
+
+}
 
 class Content extends React.Component {
   constructor(props) {
     super(props);
+    this.getCompView = this.getCompView.bind(this);
   }
 
   render() {
-    return (
-      <div className='content'>
-        {/*<List type='inbox' db={this.props.db} />*/}
-        <Collection db={this.props.db} />
-      </div>
-    );
+    return <div className='content'>{this.getCompView()}</div>;
+  }
+
+  getCompView() {
+    switch (this.props.view) {
+    case 'inbox':
+        return <List type='inbox' db={this.props.db} />;
+    case 'project':
+        return <Collection db={this.props.db} />;
+    case 'archiv':
+        return <List type='archiv' db={this.props.db} />;
+    case 'stats':
+        return <Stats />;
+    case 'help':
+        return <Help />;
+    }
   }
 }
 
@@ -57,12 +79,10 @@ class Nav extends React.Component {
   }
 
   handleClickBtn(e) {
-    const event = new CustomEvent('click123', {
+    const event = new CustomEvent('clickNavBtn', {
       detail: {category: e.target.getAttribute('name')}
     });
-
-    e.target.dispatchEvent(event);
-
+    window.dispatchEvent(event);
   }
 
   render() {
@@ -147,7 +167,7 @@ class Stats extends React.Component {
   }
 
   render() {
-    return <div className='help'></div>;
+    return <div className='stats'></div>;
   }
 }
 

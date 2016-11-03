@@ -54,3 +54,25 @@
   border: 2px solid #E040FB;
   margin: 5px;
 }
+
+.help {
+  background-color: springgreen;
+  width: 750px;
+  height: 300px;
+  display: inline-block;
+}
+
+.stats {
+  background-color: orangered;
+  width: 750px;
+  height: 300px;
+  display: inline-block;
+}
+
+.folder {
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+  background-color: burlywood;
+  margin: 10px;
+}
