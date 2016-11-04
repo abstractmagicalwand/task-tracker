@@ -47,7 +47,20 @@ class App extends React.Component {
   }
 
   handleDeleteTaskApp(e) {
+    const task = {};
 
+    this.state.db.forEach(item => {
+      item.tasks.forEach((item, i, arr) => {
+        if (e.detail.id == item.id) {
+          task.i = i;
+          task.arr = arr;
+        }
+      });
+    });
+
+    task.arr.splice(task.i, 1);
+
+    this.setState({db: this.state.db});
   }
 
   componentWillMount() {
@@ -265,6 +278,7 @@ class Stats extends React.Component {
   }
 }
 
+
 class Note extends React.Component {
   constructor(props) {
     super(props);
@@ -274,6 +288,7 @@ class Note extends React.Component {
     return <div className='note'></div>;
   }
 }
+
 
 class Search extends React.Component {
   constructor(props) {
@@ -322,7 +337,11 @@ class Task extends React.Component {
   }
 
   handleCompleteTask() {
+    const event = new CustomEvent('Complete', {
+      detail: {id: this.props.info.id}
+    });
 
+    window.dispatchEvent(event);
   }
 
   handleToggleStopwatch() {
@@ -389,9 +408,7 @@ class Folder extends React.Component {
 
   render() {
     return (
-      <div
-        className={'folder' + (this.state.selecte ? ' selecte' : '')}
-        onClick={this.handleClickFolder}>
+      <div className='folder' onClick={this.handleClickFolder}>
         {this.props.info.project}
         <span className='delete' onClick={this.handleDeleteFolder}></span>
       </div>
