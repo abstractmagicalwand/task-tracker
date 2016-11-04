@@ -11,7 +11,7 @@ class App extends React.Component {
     this.handleDeleteFolderApp = this.handleDeleteFolderApp.bind(this);
     this.handleDeleteTaskApp   = this.handleDeleteTaskApp.bind(this);
     this.handleCompleteTaskApp = this.handleCompleteTaskApp.bind(this);
-    this.handleEditApp         = this.handleEditApp.bind(this);
+    this.handleSaveEditApp     = this.handleSaveEditApp.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -61,9 +61,18 @@ class App extends React.Component {
     this.setStateDb();
   }
 
-  handleEditApp(e) {
-    console.dir(e.detail);
-    this.state.db[this.getFolderOfDb(e.detail.project)] = e.detail.value;
+  handleSaveEditApp(e) {
+
+    if (e.detail.project) {
+      const folder = this.state.db[this.getFolderOfDb(e.detail.project)];
+      folder.project = e.detail.value;
+
+      folder.tasks.forEach(item => item.project = e.detail.value);
+    } else if (e.detail.id) {
+      const task = this.searchTaskDb(e.detail.id);
+      task.arr[task.i].description = e.detail.value;
+    }
+
     this.setStateDb();
   }
 
@@ -74,7 +83,7 @@ class App extends React.Component {
     window.removeEventListener('deleteFolder', this.handleDeleteFolderApp);
     window.removeEventListener('deleteTask'  , this.handleDeleteTaskApp);
     window.removeEventListener('complete'    , this.handleCompleteTaskApp);
-    window.removeEventListener('save'        , this.handleEditApp);
+    window.removeEventListener('save'        , this.handleSaveEditApp);
   }
 
   render() {
@@ -95,7 +104,7 @@ class App extends React.Component {
     window.addEventListener('deleteFolder', this.handleDeleteFolderApp);
     window.addEventListener('deleteTask'  , this.handleDeleteTaskApp);
     window.addEventListener('complete'    , this.handleCompleteTaskApp);
-    window.addEventListener('save'        , this.handleEditApp);
+    window.addEventListener('save'        , this.handleSaveEditApp);
   }
 
   searchTaskDb(id) {
@@ -395,9 +404,10 @@ class Task extends React.Component {
 
   handleSaveEditTask(e) {
     this.setStateToggleEdit();
+
     window.dispatchEvent(new CustomEvent('save', {
       detail: {
-        value: e.target.value,
+        value: ReactDOM.findDOMNode(this.refs.value).value,
         id: this.props.info.id
       }
     }));
@@ -414,15 +424,20 @@ class Task extends React.Component {
     return (
       <div className='task'>
         {this.state.edit ? <div className='edit'>
-          <input className='edit-field' type='text' onChange={this.handleNewValueTask} defaultValue={`${this.props.info.description}`} />
+          <input className='edit-field' type='text' ref='value' onChange={this.handleNewValueTask} defaultValue={`${this.props.info.description}`} />
           <span className='edit-save' onClick={this.handleSaveEditTask}></span>
           <span className='edit-close' onClick={this.handleEditTask}></span>
         </div> :
         <div>
           <p className='descript'>{this.props.info.description}</p>
           <span className='delete-btn' onClick={this.handleDeleteTask}></span>
-          <span className='edit-btn' onClick={this.handleEditTask}></span>
-          {this.props.info.project != 'ARCHIV' ? <input onClick={this.handleCompleteTask} className='complete' type='checkbox' /> : null}
+
+          {this.props.info.project != 'ARCHIV' ?
+          <span>
+            <span className='edit-btn' onClick={this.handleEditTask}></span>
+            <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
+          </span> :
+          null}
         </div>}
       </div>
     );
@@ -466,9 +481,10 @@ class Folder extends React.Component {
 
   handleSaveEditFolder(e) {
     this.setStateToggleEdit();
+
     window.dispatchEvent(new CustomEvent('save', {
       detail: {
-        value: e.target.value,
+        value: ReactDOM.findDOMNode(this.refs.value).value,
         project: this.props.info.project
       }
     }));
@@ -494,7 +510,7 @@ class Folder extends React.Component {
       <div className='folder' onClick={this.handleClickFolder}>
         {this.state.edit ?
         <div className='edit'>
-          <input className='edit-field' type='text' defaultValue={`${this.props.info.project}`} />
+          <input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.project}`} />
           <span className='edit-save' onClick={this.handleSaveEditFolder}></span>
           <span className='edit-close' onClick={this.handleEditFolder}></span>
         </div> :
