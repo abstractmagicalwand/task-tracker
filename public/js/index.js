@@ -5,23 +5,22 @@ class App extends React.Component {
       db: db
     }
 
-    this.handleNavBtnApp = this.handleNavBtnApp.bind(this);
-    this.handleAddNewTaskApp = this.handleAddNewTaskApp.bind(this);
-    this.handleSearchReqApp = this.handleSearchReqApp.bind(this);
+    this.handleNavBtnApp       = this.handleNavBtnApp.bind(this);
+    this.handleAddNewTaskApp   = this.handleAddNewTaskApp.bind(this);
+    this.handleSearchReqApp    = this.handleSearchReqApp.bind(this);
     this.handleDeleteFolderApp = this.handleDeleteFolderApp.bind(this);
-    this.handleDeleteTaskApp = this.handleDeleteTaskApp.bind(this);
+    this.handleDeleteTaskApp   = this.handleDeleteTaskApp.bind(this);
+    this.handleCompleteTaskApp = this.handleCompleteTaskApp.bind(this);
+
+    this.searchTaskDb = this.searchTaskDb.bind(this);
+    this.setStateDb = this.setStateDb.bind(this);
+    this.getFolderOfDb = this.getFolderOfDb.bind(this);
   }
 
   handleDeleteFolderApp(e) {
     e.preventDefault();
-    let index;
-    this.state.db.forEach((folder, i) => {
-      if (folder.project == e.detail.project) index = i;
-    });
-
-    this.state.db.splice(index, 1);
-
-    this.setState({db: this.state.db});
+    this.state.db.splice(this.getFolderOfDb(e.detail.project), 1);
+    this.setStateDb();
   }
 
   handleNavBtnApp(e) {
@@ -35,7 +34,7 @@ class App extends React.Component {
       if (item.project  == 'SANS') return item;
     })[0].tasks.unshift({description: e.detail.description});
 
-    this.setState({db: this.state.db});
+    this.setStateDb();
   }
 
   handleSearchReqApp(e) {
@@ -47,28 +46,27 @@ class App extends React.Component {
   }
 
   handleDeleteTaskApp(e) {
-    const task = {};
-
-    this.state.db.forEach(item => {
-      item.tasks.forEach((item, i, arr) => {
-        if (e.detail.id == item.id) {
-          task.i = i;
-          task.arr = arr;
-        }
-      });
-    });
-
+    const task = this.searchTaskDb(e.detail.id);
     task.arr.splice(task.i, 1);
+    this.setStateDb();
+  }
 
-    this.setState({db: this.state.db});
+  handleCompleteTaskApp(e) {
+
+    const task = this.searchTaskDb(e.detail.id);
+    task.arr[task.i].complete = true;
+    task.arr[task.i].project  = 'ARCHIV';
+    this.state.db[this.getFolderOfDb('ARCHIV')].tasks.push(task.arr.splice(task.i, 1)[0]);
+    this.setStateDb();
   }
 
   componentWillMount() {
-    window.removeEventListener('clickNavBtn', this.handleNavBtnApp);
-    window.removeEventListener('addNewTask', this.handleAddNewTaskApp);
-    window.removeEventListener('searchValue', this.handleSearchReqApp);
+    window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
+    window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
+    window.removeEventListener('searchValue' , this.handleSearchReqApp);
     window.removeEventListener('deleteFolder', this.handleDeleteFolderApp);
-    window.removeEventListener('deleteTask', this.handleDeleteTaskApp);
+    window.removeEventListener('deleteTask'  , this.handleDeleteTaskApp);
+    window.removeEventListener('complete'    , this.handleCompleteTaskApp);
   }
 
   render() {
@@ -83,11 +81,40 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('clickNavBtn', this.handleNavBtnApp);
-    window.addEventListener('addNewTask', this.handleAddNewTaskApp);
-    window.addEventListener('searchValue', this.handleSearchReqApp);
+    window.addEventListener('clickNavBtn' , this.handleNavBtnApp);
+    window.addEventListener('addNewTask'  , this.handleAddNewTaskApp);
+    window.addEventListener('searchValue' , this.handleSearchReqApp);
     window.addEventListener('deleteFolder', this.handleDeleteFolderApp);
-    window.addEventListener('deleteTask', this.handleDeleteTaskApp);
+    window.addEventListener('deleteTask'  , this.handleDeleteTaskApp);
+    window.addEventListener('complete'    , this.handleCompleteTaskApp);
+  }
+
+  searchTaskDb(id) {
+    const task = {};
+
+    this.state.db.forEach(item => {
+      item.tasks.forEach((item, i, arr) => {
+        if (id == item.id) {
+          task.i = i;
+          task.arr = arr;
+        }
+      });
+    });
+
+    return task;
+  }
+
+  setStateDb() {
+    this.setState({db: this.state.db});
+  }
+
+  getFolderOfDb(project) {
+    let index;
+    this.state.db.forEach((folder, i) => {
+      if (folder.project == project) index = i;
+    });
+
+    return index;
   }
 
 }
@@ -325,23 +352,22 @@ class Task extends React.Component {
   }
 
   handleDeleteTask() {
-    const event = new CustomEvent('deleteTask', {
+    window.dispatchEvent(new CustomEvent('deleteTask', {
       detail: {id: this.props.info.id}
-    });
+    }));
 
-    window.dispatchEvent(event);
   }
 
   handleNoteTask() {
 
   }
 
-  handleCompleteTask() {
-    const event = new CustomEvent('Complete', {
+  handleCompleteTask(e) {
+    window.dispatchEvent(new CustomEvent('complete', {
       detail: {id: this.props.info.id}
-    });
-
-    window.dispatchEvent(event);
+    }));
+    console.log(e.target.checked);
+    e.target.checked = false;
   }
 
   handleToggleStopwatch() {
@@ -363,8 +389,9 @@ class Task extends React.Component {
   render() {
     return (
       <div className='task'>
-        <p class='descript'>{this.props.info.description}</p>
+        <p className='descript'>{this.props.info.description}</p>
         <span className='delete' onClick={this.handleDeleteTask}></span>
+        <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
       </div>
     );
   }
