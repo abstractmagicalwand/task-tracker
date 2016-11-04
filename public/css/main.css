@@ -87,10 +87,24 @@
   border-radius: 5px;
 }
 
-.delete {
+.edit-save, .edit-close, .edit-btn , .delete-btn {
   width: 15px;
   height: 15px;
   background-color: red;
   border-radius: 5px;
   display: inline-block;
 }
+
+.edit-btn {
+  background-color: darkslategray;
+}
+
+.edit-save {
+  background-color: greenyellow;
+}
+
+.edit-close {
+  background-color: orangered;
+}
+
+

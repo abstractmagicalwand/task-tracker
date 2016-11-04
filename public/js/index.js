@@ -11,9 +11,10 @@ class App extends React.Component {
     this.handleDeleteFolderApp = this.handleDeleteFolderApp.bind(this);
     this.handleDeleteTaskApp   = this.handleDeleteTaskApp.bind(this);
     this.handleCompleteTaskApp = this.handleCompleteTaskApp.bind(this);
+    this.handleEditApp         = this.handleEditApp.bind(this);
 
-    this.searchTaskDb = this.searchTaskDb.bind(this);
-    this.setStateDb = this.setStateDb.bind(this);
+    this.searchTaskDb  = this.searchTaskDb.bind(this);
+    this.setStateDb    = this.setStateDb.bind(this);
     this.getFolderOfDb = this.getFolderOfDb.bind(this);
   }
 
@@ -60,6 +61,12 @@ class App extends React.Component {
     this.setStateDb();
   }
 
+  handleEditApp(e) {
+    console.dir(e.detail);
+    this.state.db[this.getFolderOfDb(e.detail.project)] = e.detail.value;
+    this.setStateDb();
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -67,6 +74,7 @@ class App extends React.Component {
     window.removeEventListener('deleteFolder', this.handleDeleteFolderApp);
     window.removeEventListener('deleteTask'  , this.handleDeleteTaskApp);
     window.removeEventListener('complete'    , this.handleCompleteTaskApp);
+    window.removeEventListener('save'        , this.handleEditApp);
   }
 
   render() {
@@ -87,6 +95,7 @@ class App extends React.Component {
     window.addEventListener('deleteFolder', this.handleDeleteFolderApp);
     window.addEventListener('deleteTask'  , this.handleDeleteTaskApp);
     window.addEventListener('complete'    , this.handleCompleteTaskApp);
+    window.addEventListener('save'        , this.handleEditApp);
   }
 
   searchTaskDb(id) {
@@ -342,20 +351,26 @@ class Task extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleDeleteTask = this.handleDeleteTask.bind(this);
-    this.handleNoteTask = this.handleNoteTask.bind(this);
-    this.handleCompleteTask = this.handleCompleteTask.bind(this);
+    this.state = {
+      edit: false
+    }
+
+    this.handleDeleteTask      = this.handleDeleteTask.bind(this);
+    this.handleNoteTask        = this.handleNoteTask.bind(this);
+    this.handleCompleteTask    = this.handleCompleteTask.bind(this);
     this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
-    this.handleCancelTimer = this.handleCancelTimer.bind(this);
-    this.handleEditTask = this.handleEditTask.bind(this);
-    this.handleSelecteTask = this.handleSelecteTask.bind(this);
+    this.handleCancelTimer     = this.handleCancelTimer.bind(this);
+    this.handleEditTask        = this.handleEditTask.bind(this);
+    this.handleNewValueTask    = this.handleNewValueTask.bind(this);
+    this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
+
+    this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
 
   handleDeleteTask() {
     window.dispatchEvent(new CustomEvent('deleteTask', {
       detail: {id: this.props.info.id}
     }));
-
   }
 
   handleNoteTask() {
@@ -378,22 +393,43 @@ class Task extends React.Component {
 
   }
 
-  handleEditTask() {
-
+  handleSaveEditTask(e) {
+    this.setStateToggleEdit();
+    window.dispatchEvent(new CustomEvent('save', {
+      detail: {
+        value: e.target.value,
+        id: this.props.info.id
+      }
+    }));
   }
 
-  handleSelecteTask() {
+  handleEditTask() {
+    this.setStateToggleEdit();
+  }
 
+  handleNewValueTask(e) {
   }
 
   render() {
     return (
       <div className='task'>
-        <p className='descript'>{this.props.info.description}</p>
-        <span className='delete' onClick={this.handleDeleteTask}></span>
-        <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
+        {this.state.edit ? <div className='edit'>
+          <input className='edit-field' type='text' onChange={this.handleNewValueTask} defaultValue={`${this.props.info.description}`} />
+          <span className='edit-save' onClick={this.handleSaveEditTask}></span>
+          <span className='edit-close' onClick={this.handleEditTask}></span>
+        </div> :
+        <div>
+          <p className='descript'>{this.props.info.description}</p>
+          <span className='delete-btn' onClick={this.handleDeleteTask}></span>
+          <span className='edit-btn' onClick={this.handleEditTask}></span>
+          {this.props.info.project != 'ARCHIV' ? <input onClick={this.handleCompleteTask} className='complete' type='checkbox' /> : null}
+        </div>}
       </div>
     );
+  }
+
+  setStateToggleEdit() {
+    this.setState({edit: !this.state.edit});
   }
 }
 
@@ -402,44 +438,78 @@ class Folder extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
-    this.handleEditFolder = this.handleDeleteFolder.bind(this);
-    this.handleNoteFolder = this.handleNoteFolder.bind(this);
-    this.handleClickFolder = this.handleClickFolder.bind(this);
+    this.state = {
+      edit: false
+    }
+
+    this.handleDeleteFolder   = this.handleDeleteFolder.bind(this);
+    this.handleEditFolder     = this.handleEditFolder.bind(this);
+    this.handleNoteFolder     = this.handleNoteFolder.bind(this);
+    this.handleClickFolder    = this.handleClickFolder.bind(this);
+    this.handleSaveEditFolder = this.handleSaveEditFolder.bind(this);
+
+    this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
 
-  handleDeleteFolder() {
-    const event = new CustomEvent('deleteFolder', {
+  handleDeleteFolder(e) {
+      console.log('123')
+    if (!e.target.classList.contains('delete-btn')) return;
+
+    window.dispatchEvent(new CustomEvent('deleteFolder', {
       detail: {project: this.props.info.project}
-    });
-
-    window.dispatchEvent(event);
+    }));
   }
 
-  handleEditFolder() {
+/*  handleCloseEditFolder() {
+    this.setStateToggleEdit();
+  }*/
 
+  handleSaveEditFolder(e) {
+    this.setStateToggleEdit();
+    window.dispatchEvent(new CustomEvent('save', {
+      detail: {
+        value: e.target.value,
+        project: this.props.info.project
+      }
+    }));
+  }
+
+  handleEditFolder(e) {
+    this.setStateToggleEdit();
   }
 
   handleNoteFolder() {
-
+    //
   }
 
   handleClickFolder(e) {
     if (e.target.tagName != 'DIV') return;
-    const event = new CustomEvent('clickNavBtn', {
+    window.dispatchEvent(new CustomEvent('clickNavBtn', {
       detail: {category: this.props.info.project}
-    });
-
-    window.dispatchEvent(event);
+    }));
   }
 
   render() {
     return (
       <div className='folder' onClick={this.handleClickFolder}>
-        {this.props.info.project}
-        <span className='delete' onClick={this.handleDeleteFolder}></span>
+        {this.state.edit ?
+        <div className='edit'>
+          <input className='edit-field' type='text' defaultValue={`${this.props.info.project}`} />
+          <span className='edit-save' onClick={this.handleSaveEditFolder}></span>
+          <span className='edit-close' onClick={this.handleEditFolder}></span>
+        </div> :
+        <div className='folder-'>
+          <p>{`${this.props.info.project}`}</p>
+          <span className='delete-btn' onClick={this.handleDeleteFolder}></span>
+          <span className='edit-btn' onClick={this.handleEditFolder}></span>
+        </div>}
       </div>
     );
+  }
+
+
+  setStateToggleEdit() {
+    this.setState({edit: !this.state.edit});
   }
 }
 
