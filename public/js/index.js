@@ -15,6 +15,7 @@ class App extends React.Component {
     this.handleOpenNoteApp     = this.handleOpenNoteApp.bind(this);
     this.handleSaveNoteApp     = this.handleSaveNoteApp.bind(this);
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
+    this.handleTickApp         = this.handleTickApp.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -116,6 +117,12 @@ class App extends React.Component {
     });
   }
 
+  handleTickApp(e) {
+    const task = this.searchTaskDb(e.detail.id);
+    task.arr[task.i].timeDeath = e.detail.time;
+    this.setStateDb();
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -127,6 +134,7 @@ class App extends React.Component {
     window.removeEventListener('openNote'    , this.handleOpenNoteApp);
     window.removeEventListener('saveNote'    , this.handleSaveNoteApp);
     window.removeEventListener('back'        , this.handleBackContentApp);
+    window.removeEventListener('tick'        , this.handleTickApp);
   }
 
   render() {
@@ -151,6 +159,7 @@ class App extends React.Component {
     window.addEventListener('openNote'    , this.handleOpenNoteApp);
     window.addEventListener('saveNote'    , this.handleSaveNoteApp)
     window.addEventListener('back'        , this.handleBackContentApp);
+    window.addEventListener('tick'        , this.handleTickApp);
   }
 
   searchTaskDb(id) {
@@ -508,6 +517,7 @@ class Task extends React.Component {
             <span className='edit-btn' onClick={this.handleEditTask}></span>
             <span className='note-btn' onClick={this.handleNoteTask}></span>
             <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
+            <Timer id={this.props.info.id} time={this.props.info.timeDeath} />
           </span> :
           null}
         </div>}
@@ -518,6 +528,62 @@ class Task extends React.Component {
   setStateToggleEdit() {
     this.setState({edit: !this.state.edit});
   }
+}
+
+class Timer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.timer = null;
+    this.handleTickTimer = this.handleTickTimer.bind(this);
+  }
+
+  componentWillMount() {
+    this.timer = null;
+  }
+
+  render() {
+    return (
+      <span className='timer'>
+        <span>{this.props.time[0] < 10 ? `0${this.props.time[0]}` : this.props.time[0]}</span>:
+        <span>{this.props.time[1] < 10 ? `0${this.props.time[1]}` : this.props.time[1]}</span>:
+        <span>{this.props.time[2] < 10 ? `0${this.props.time[2]}` : this.props.time[2]}</span>
+      </span>
+    );
+  }
+
+  componentDidMount() {
+    const self = this;
+    this.timer = setInterval(self.handleTickTimer, 1000);
+  }
+
+  handleTickTimer() {
+    let [h, m, s] = this.props.time;
+
+    if (s > 0) {
+      --s;
+    } else if (s = 0) {
+      s = 59;
+      --m;
+    } else if (m == 0) {
+      m = 0;
+      --h;
+    }
+
+    if (Math.max(h, m, s) === 0) {
+      window.dispatchEvent(new CustomEvent('deleteTask', {
+        detail: {id: this.props.id}
+      }));
+    } else {
+      window.dispatchEvent(new CustomEvent('tick', {
+        detail: {
+          time: [h, m, s],
+          id: this.props.id
+        }
+      }));
+    }
+
+  }
+
 }
 
 
