@@ -14,6 +14,7 @@ class App extends React.Component {
     this.handleSaveEditApp     = this.handleSaveEditApp.bind(this);
     this.handleOpenNoteApp     = this.handleOpenNoteApp.bind(this);
     this.handleSaveNoteApp     = this.handleSaveNoteApp.bind(this);
+    this.handleBackContentApp  = this.handleBackContentApp.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -107,6 +108,14 @@ class App extends React.Component {
     });
   }
 
+  handleBackContentApp(e) {
+    if (!this.state.viewLast) return;
+    this.setState({
+      viewContent: this.state.viewLast,
+      viewLast: this.state.viewContent
+    });
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -116,7 +125,8 @@ class App extends React.Component {
     window.removeEventListener('complete'    , this.handleCompleteTaskApp);
     window.removeEventListener('save'        , this.handleSaveEditApp);
     window.removeEventListener('openNote'    , this.handleOpenNoteApp);
-    window.removeEventListener('saveNote'    , this.handleSaveNoteApp)
+    window.removeEventListener('saveNote'    , this.handleSaveNoteApp);
+    window.removeEventListener('back'        , this.handleBackContentApp);
   }
 
   render() {
@@ -140,6 +150,7 @@ class App extends React.Component {
     window.addEventListener('save'        , this.handleSaveEditApp);
     window.addEventListener('openNote'    , this.handleOpenNoteApp);
     window.addEventListener('saveNote'    , this.handleSaveNoteApp)
+    window.addEventListener('back'        , this.handleBackContentApp);
   }
 
   searchTaskDb(id) {
@@ -371,7 +382,7 @@ class Note extends React.Component {
   }
 
   handleClickBackNote(e) {
-    //...
+    window.dispatchEvent(new CustomEvent('back'));
   }
 
   handleClickSaveNote(e) {
