@@ -32,9 +32,9 @@ const db = [{
       '#naturelover', '#lovenature'],
     project: '',
     priority: 0,
-    timeDeath: [0, 0, 20],
+    timeDeath: null,
     note: '',
-    stopwatch: null
+    stopwatch: [0, 0, 0]
   }]
 }, {
   project: '@LoveYouLoveShe',
@@ -52,8 +52,8 @@ const db = [{
       '#jockey', '#rider', '#riders', '#riding'],
     project: '@LoveYouLoveShe',
     priority: 0,
-    timeDeath: [0, 0, 15],
-    stopwatch: ['01', '04', '44']
+    timeDeath: null,
+    stopwatch: [0, 0, 0]
   }]
 }, {
   project: '@loveAllWorld',
@@ -70,8 +70,8 @@ const db = [{
       '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
     project: '@loveAllWorld',
     priority: 0,
-    timeDeath: [0, 0, 10],
-    stopwatch: null
+    timeDeath: null,
+    stopwatch: [0, 0, 0]
   }]
 }, {
   project: '@loveasdasdsadrld',
@@ -88,8 +88,8 @@ const db = [{
         '#photooftheday'],
       project: '@loveasdasdsadrld',
       priority: 0,
-      timeDeath: [0, 0, 5],
+      timeDeath: null,
       note: '',
-      stopwatch: null
+      stopwatch: [0, 0, 0]
   }]
 }];

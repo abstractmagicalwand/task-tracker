@@ -119,7 +119,16 @@ class App extends React.Component {
 
   handleTickApp(e) {
     const task = this.searchTaskDb(e.detail.id);
-    task.arr[task.i].timeDeath = e.detail.time;
+
+    switch (e.detail.type) {
+    case 'timer':
+        task.arr[task.i].timeDeath = e.detail.time;
+        break;
+    case 'stopwatch':
+        task.arr[task.i].stopwatch = e.detail.time;
+        break;
+    }
+
     this.setStateDb();
   }
 
@@ -446,7 +455,6 @@ class Task extends React.Component {
     this.handleDeleteTask      = this.handleDeleteTask.bind(this);
     this.handleNoteTask        = this.handleNoteTask.bind(this);
     this.handleCompleteTask    = this.handleCompleteTask.bind(this);
-    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
     this.handleCancelTimer     = this.handleCancelTimer.bind(this);
     this.handleEditTask        = this.handleEditTask.bind(this);
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
@@ -486,10 +494,6 @@ class Task extends React.Component {
 
   }
 
-  handleToggleStopwatch() {
-
-  }
-
   handleNoteTask(e) {
     if (!e.target.classList.contains('note-btn')) return;
     window.dispatchEvent(new CustomEvent('openNote', {
@@ -517,7 +521,9 @@ class Task extends React.Component {
             <span className='edit-btn' onClick={this.handleEditTask}></span>
             <span className='note-btn' onClick={this.handleNoteTask}></span>
             <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
-            <Timer id={this.props.info.id} time={this.props.info.timeDeath} />
+            <span className='stopwatch-btn' onClick={this.handleToggleStopwatch}></span>
+            <Stopwatch id={this.props.info.id} time={this.props.info.stopwatch} />
+            {/*<Timer id={this.props.info.id} time={this.props.info.timeDeath} />*/}
           </span> :
           null}
         </div>}
@@ -527,6 +533,58 @@ class Task extends React.Component {
 
   setStateToggleEdit() {
     this.setState({edit: !this.state.edit});
+  }
+}
+
+class Stopwatch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.stopwatch = null;
+    this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
+  }
+
+  componentWillMount() {
+    this.stopwatch = null;
+  }
+
+  render() {
+    const s = this.props.time;
+
+    return (
+      <span className='stopwatch'>
+        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}</span>:
+        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}</span>:
+        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
+      </span>
+    );
+  }
+
+  componentDidMount() {
+    const self = this;
+
+    this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
+  }
+
+  handleTickStopwatch() {
+    let [h, m, s] = this.props.time;
+
+    if (s < 59) {
+      ++s;
+    } else if (s == 59) {
+      s = 0;
+      ++m;
+    } else if (m == 59) {
+      m = 0;
+      ++h;
+    }
+
+    window.dispatchEvent(new CustomEvent('tick', {
+      detail: {
+        type: 'stopwatch',
+        time: [h, m, s],
+        id: this.props.id
+      }
+    }));
   }
 }
 
@@ -542,11 +600,12 @@ class Timer extends React.Component {
   }
 
   render() {
+    const t = this.props.time;
     return (
       <span className='timer'>
-        <span>{this.props.time[0] < 10 ? `0${this.props.time[0]}` : this.props.time[0]}</span>:
-        <span>{this.props.time[1] < 10 ? `0${this.props.time[1]}` : this.props.time[1]}</span>:
-        <span>{this.props.time[2] < 10 ? `0${this.props.time[2]}` : this.props.time[2]}</span>
+        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}</span>:
+        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}</span>:
+        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
       </span>
     );
   }
@@ -569,13 +628,14 @@ class Timer extends React.Component {
       --h;
     }
 
-    if (Math.max(h, m, s) === 0) {
+    if (!Math.max(h, m, s)) {
       window.dispatchEvent(new CustomEvent('deleteTask', {
         detail: {id: this.props.id}
       }));
     } else {
       window.dispatchEvent(new CustomEvent('tick', {
         detail: {
+          type: 'timer',
           time: [h, m, s],
           id: this.props.id
         }

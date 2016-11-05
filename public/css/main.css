@@ -87,7 +87,7 @@
   border-radius: 5px;
 }
 
-.edit-save, .edit-close, .edit-btn , .delete-btn, .note-btn {
+.edit-save, .edit-close, .edit-btn , .delete-btn, .note-btn, .stopwatch-btn {
   width: 15px;
   height: 15px;
   background-color: red;
@@ -135,4 +135,8 @@
 
 .note-save {
   background-color: orangered;
+}
+
+.stopwatch-btn {
+  background-color: lawngreen;
 }
