@@ -61,7 +61,7 @@ const db = [{
   tasks: [{
     description: 'Познакомиться с девочкой.',
     id: 3,
-    notes: '',
+    note: '',
     complete: false,
     tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran',
       '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d',

@@ -12,6 +12,8 @@ class App extends React.Component {
     this.handleDeleteTaskApp   = this.handleDeleteTaskApp.bind(this);
     this.handleCompleteTaskApp = this.handleCompleteTaskApp.bind(this);
     this.handleSaveEditApp     = this.handleSaveEditApp.bind(this);
+    this.handleOpenNoteApp     = this.handleOpenNoteApp.bind(this);
+    this.handleSaveNoteApp     = this.handleSaveNoteApp.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -33,7 +35,10 @@ class App extends React.Component {
     e.preventDefault();
     this.state.db.filter(item => {
       if (item.project  == 'SANS') return item;
-    })[0].tasks.unshift({description: e.detail.description});
+    })[0].tasks.unshift({
+      description: e.detail.description,
+      id: Math.floor(Math.random() * Math.pow(100, 10))
+    });
 
     this.setStateDb();
   }
@@ -76,6 +81,32 @@ class App extends React.Component {
     this.setStateDb();
   }
 
+  handleOpenNoteApp(e) {
+    this.setState({
+      viewContent: 'note',
+      value: e.detail.value,
+      edit: e.detail.project || e.detail.id,
+      viewLast: this.state.viewContent
+    });
+
+  }
+
+  handleSaveNoteApp(e) {
+
+    if (typeof this.state.edit == 'number') {
+      const task = this.searchTaskDb(this.state.edit);
+      task.arr[task.i].note = e.detail.value;
+    } else if (typeof this.state.edit == 'string') {
+      this.state.db[this.getFolderOfDb(this.state.edit)].note = e.detail.value;
+    }
+    this.setState({
+      viewContent: this.state.viewLast,
+      edit: null,
+      db: this.state.db,
+      value: null
+    });
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -84,6 +115,8 @@ class App extends React.Component {
     window.removeEventListener('deleteTask'  , this.handleDeleteTaskApp);
     window.removeEventListener('complete'    , this.handleCompleteTaskApp);
     window.removeEventListener('save'        , this.handleSaveEditApp);
+    window.removeEventListener('openNote'    , this.handleOpenNoteApp);
+    window.removeEventListener('saveNote'    , this.handleSaveNoteApp)
   }
 
   render() {
@@ -105,6 +138,8 @@ class App extends React.Component {
     window.addEventListener('deleteTask'  , this.handleDeleteTaskApp);
     window.addEventListener('complete'    , this.handleCompleteTaskApp);
     window.addEventListener('save'        , this.handleSaveEditApp);
+    window.addEventListener('openNote'    , this.handleOpenNoteApp);
+    window.addEventListener('saveNote'    , this.handleSaveNoteApp)
   }
 
   searchTaskDb(id) {
@@ -162,7 +197,7 @@ class Content extends React.Component {
     case 'help':
         return <Help />;
     case 'note':
-        return <Note />;
+        return <Note value={this.props.value} />;
     default:
         if (!~this.props.view.indexOf('@')) break;
         return <List type='project' projectName={this.props.view} db={this.props.db} />;
@@ -223,7 +258,10 @@ class Field extends React.Component {
     if (!ReactDOM.findDOMNode(this.refs.text).value.length) return;
 
     const event = new CustomEvent('addNewTask', {
-      detail: {description: ReactDOM.findDOMNode(this.refs.text).value}
+      detail: {
+        description: ReactDOM.findDOMNode(this.refs.text).value,
+        id: Math.floor(Math.random() * Math.pow(100, 10))
+      }
     });
 
     ReactDOM.findDOMNode(this.refs.text).value = '';
@@ -327,10 +365,31 @@ class Stats extends React.Component {
 class Note extends React.Component {
   constructor(props) {
     super(props);
+
+    this.handleClickBackNote = this.handleClickBackNote.bind(this);
+    this.handleClickSaveNote = this.handleClickSaveNote.bind(this);
+  }
+
+  handleClickBackNote(e) {
+    //...
+  }
+
+  handleClickSaveNote(e) {
+    window.dispatchEvent(new CustomEvent('saveNote', {
+      detail: {
+        value: ReactDOM.findDOMNode(this.refs.text).value
+      }
+    }));
   }
 
   render() {
-    return <div className='note'></div>;
+    return (
+      <div className='note'>
+        <textarea className='note-field' defaultValue={`${this.props.value}`} ref='text'></textarea>
+        <span className='back' onClick={this.handleClickBackNote}></span>
+        <span className='note-save' onClick={this.handleClickSaveNote}></span>
+      </div>
+    );
   }
 }
 
@@ -370,7 +429,6 @@ class Task extends React.Component {
     this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
     this.handleCancelTimer     = this.handleCancelTimer.bind(this);
     this.handleEditTask        = this.handleEditTask.bind(this);
-    this.handleNewValueTask    = this.handleNewValueTask.bind(this);
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
@@ -382,24 +440,15 @@ class Task extends React.Component {
     }));
   }
 
-  handleNoteTask() {
-
-  }
-
   handleCompleteTask(e) {
     window.dispatchEvent(new CustomEvent('complete', {
       detail: {id: this.props.info.id}
     }));
-    console.log(e.target.checked);
     e.target.checked = false;
   }
 
-  handleToggleStopwatch() {
-
-  }
-
-  handleCancelTimer() {
-
+  handleEditTask() {
+    this.setStateToggleEdit();
   }
 
   handleSaveEditTask(e) {
@@ -413,18 +462,29 @@ class Task extends React.Component {
     }));
   }
 
-  handleEditTask() {
-    this.setStateToggleEdit();
+  handleCancelTimer() {
+
   }
 
-  handleNewValueTask(e) {
+  handleToggleStopwatch() {
+
+  }
+
+  handleNoteTask(e) {
+    if (!e.target.classList.contains('note-btn')) return;
+    window.dispatchEvent(new CustomEvent('openNote', {
+      detail: {
+        id: this.props.info.id,
+        value: this.props.info.note
+      }
+    }));
   }
 
   render() {
     return (
       <div className='task'>
         {this.state.edit ? <div className='edit'>
-          <input className='edit-field' type='text' ref='value' onChange={this.handleNewValueTask} defaultValue={`${this.props.info.description}`} />
+          <input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.description}`} />
           <span className='edit-save' onClick={this.handleSaveEditTask}></span>
           <span className='edit-close' onClick={this.handleEditTask}></span>
         </div> :
@@ -435,6 +495,7 @@ class Task extends React.Component {
           {this.props.info.project != 'ARCHIV' ?
           <span>
             <span className='edit-btn' onClick={this.handleEditTask}></span>
+            <span className='note-btn' onClick={this.handleNoteTask}></span>
             <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
           </span> :
           null}
@@ -466,8 +527,15 @@ class Folder extends React.Component {
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
 
+  handleClickFolder(e) {
+    if (e.target.tagName != 'DIV') return;
+    window.dispatchEvent(new CustomEvent('clickNavBtn', {
+      detail: {category: this.props.info.project}
+    }));
+  }
+
   handleDeleteFolder(e) {
-      console.log('123')
+
     if (!e.target.classList.contains('delete-btn')) return;
 
     window.dispatchEvent(new CustomEvent('deleteFolder', {
@@ -475,9 +543,10 @@ class Folder extends React.Component {
     }));
   }
 
-/*  handleCloseEditFolder() {
+  handleEditFolder(e) {
+    if (!e.target.classList.contains('edit-btn')) return;
     this.setStateToggleEdit();
-  }*/
+  }
 
   handleSaveEditFolder(e) {
     this.setStateToggleEdit();
@@ -490,18 +559,13 @@ class Folder extends React.Component {
     }));
   }
 
-  handleEditFolder(e) {
-    this.setStateToggleEdit();
-  }
-
-  handleNoteFolder() {
-    //
-  }
-
-  handleClickFolder(e) {
-    if (e.target.tagName != 'DIV') return;
-    window.dispatchEvent(new CustomEvent('clickNavBtn', {
-      detail: {category: this.props.info.project}
+  handleNoteFolder(e) {
+    if (!e.target.classList.contains('note-btn')) return;
+    window.dispatchEvent(new CustomEvent('openNote', {
+      detail: {
+        value: this.props.info.note,
+        project: this.props.info.project
+      }
     }));
   }
 
@@ -518,6 +582,7 @@ class Folder extends React.Component {
           <p>{`${this.props.info.project}`}</p>
           <span className='delete-btn' onClick={this.handleDeleteFolder}></span>
           <span className='edit-btn' onClick={this.handleEditFolder}></span>
+          <span className='note-btn' onClick={this.handleNoteFolder}></span>
         </div>}
       </div>
     );

@@ -87,7 +87,7 @@
   border-radius: 5px;
 }
 
-.edit-save, .edit-close, .edit-btn , .delete-btn {
+.edit-save, .edit-close, .edit-btn , .delete-btn, .note-btn {
   width: 15px;
   height: 15px;
   background-color: red;
@@ -107,4 +107,32 @@
   background-color: orangered;
 }
 
+.note-btn {
+  background-color: pink;
+}
 
+.note {
+  height: 500px;
+  width: 500px;
+  display: inline-block;
+}
+
+.note-field {
+  height: 500px;
+  width: 500px;
+  background-color: oldlace;
+}
+
+.back, .note-save {
+  height: 50px;
+  width: 200px;
+  display: inline-block;
+}
+
+.back {
+  background-color: darkred;
+}
+
+.note-save {
+  background-color: orangered;
+}
