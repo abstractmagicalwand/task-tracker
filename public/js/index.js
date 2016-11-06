@@ -16,6 +16,7 @@ class App extends React.Component {
     this.handleSaveNoteApp     = this.handleSaveNoteApp.bind(this);
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
     this.handleTickApp         = this.handleTickApp.bind(this);
+    this.handleCancelTimerApp  = this.handleCancelTimerApp.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -101,6 +102,7 @@ class App extends React.Component {
     } else if (typeof this.state.edit == 'string') {
       this.state.db[this.getFolderOfDb(this.state.edit)].note = e.detail.value;
     }
+
     this.setState({
       viewContent: this.state.viewLast,
       edit: null,
@@ -132,6 +134,19 @@ class App extends React.Component {
     this.setStateDb();
   }
 
+  handleCancelTimerApp(e) {
+    const db = this.state.db.slice();
+    db.forEach(item => {
+      item.tasks.forEach((item, i, arr) => {
+        if (e.detail.id == item.id) {
+          item.timeDeath = null;
+        }
+      });
+    });
+
+    this.setState({db: db});
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -144,6 +159,7 @@ class App extends React.Component {
     window.removeEventListener('saveNote'    , this.handleSaveNoteApp);
     window.removeEventListener('back'        , this.handleBackContentApp);
     window.removeEventListener('tick'        , this.handleTickApp);
+    window.removeEventListener('deleteTimer' , this.handleCancelTimerApp);
   }
 
   render() {
@@ -169,6 +185,7 @@ class App extends React.Component {
     window.addEventListener('saveNote'    , this.handleSaveNoteApp)
     window.addEventListener('back'        , this.handleBackContentApp);
     window.addEventListener('tick'        , this.handleTickApp);
+    window.addEventListener('deleteTimer' , this.handleCancelTimerApp);
   }
 
   searchTaskDb(id) {
@@ -603,6 +620,7 @@ class Timer extends React.Component {
     super(props);
     this.timer = null;
     this.handleTickTimer = this.handleTickTimer.bind(this);
+    this.cancel = this.cancel.bind(this);
   }
 
   componentWillMount() {
@@ -612,11 +630,15 @@ class Timer extends React.Component {
 
   render() {
     const t = this.props.time;
+
     return (
-      <span className='timer'>
-        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}</span>:
-        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}</span>:
-        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
+      <span>
+        <span className='timer'>
+          <span>{t[0] < 10 ? `0${t[0]}` : t[0]}</span>:
+          <span>{t[1] < 10 ? `0${t[1]}` : t[1]}</span>:
+          <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
+        </span>
+        <span className='stopwatch-btn' onClick={this.cancel}></span>
       </span>
     );
   }
@@ -655,6 +677,13 @@ class Timer extends React.Component {
 
   }
 
+  cancel() {
+    clearInterval(this.timer);
+    this.timer = null;
+    window.dispatchEvent(new CustomEvent('deleteTimer', {
+      detail: {id: this.props.id}
+    }));
+  }
 }
 
 
