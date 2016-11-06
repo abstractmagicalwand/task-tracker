@@ -1,9 +1,7 @@
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      db: db
-    }
+    this.state = {db: db}
 
     this.handleNavBtnApp       = this.handleNavBtnApp.bind(this);
     this.handleAddNewTaskApp   = this.handleAddNewTaskApp.bind(this);
@@ -36,14 +34,26 @@ class App extends React.Component {
 
   handleAddNewTaskApp(e) {
     e.preventDefault();
-    this.state.db.filter(item => {
+    const db = this.state.db.splice();
+    const folder = this.getFolderOfDb(e.detail.project) || db.length;
+
+    if (folder === db.length) {
+      db.push({
+        project: e.detail.project,
+        tasks: [e.detail],
+        note: ''
+      });
+    } else {
+      db[folder].tasks.push(e.detail);
+    }
+
+    this.setState({db: db});
+    /*this.state.db.filter(item => {
       if (item.project  == 'SANS') return item;
     })[0].tasks.unshift({
       description: e.detail.description,
       id: Math.floor(Math.random() * Math.pow(100, 10))
-    });
-
-    this.setStateDb();
+    });*/
   }
 
   handleSearchReqApp(e) {
@@ -61,7 +71,6 @@ class App extends React.Component {
   }
 
   handleCompleteTaskApp(e) {
-
     const task = this.searchTaskDb(e.detail.id);
     task.arr[task.i].complete = true;
     task.arr[task.i].project  = 'ARCHIV';
@@ -212,7 +221,7 @@ class App extends React.Component {
     this.state.db.forEach((folder, i) => {
       if (folder.project == project) index = i;
     });
-
+    index = index >= 0 || null;
     return index;
   }
 
@@ -298,18 +307,15 @@ class Field extends React.Component {
   constructor(props) {
     super(props);
     this.handleGetText = this.handleGetText.bind(this);
+
+    this.getNewTask = this.getNewTask.bind(this);
   }
 
   handleGetText() {
     if (!ReactDOM.findDOMNode(this.refs.text).value.length) return;
-
     const event = new CustomEvent('addNewTask', {
-      detail: {
-        description: ReactDOM.findDOMNode(this.refs.text).value,
-        id: Math.floor(Math.random() * Math.pow(100, 10))
-      }
+      detail: this.getNewTask(ReactDOM.findDOMNode(this.refs.text).value)
     });
-
     ReactDOM.findDOMNode(this.refs.text).value = '';
 
     window.dispatchEvent(event);
@@ -323,6 +329,27 @@ class Field extends React.Component {
         <input className='sand' type='button' onClick={this.handleGetText}/>
       </div>
     );
+  }
+
+  getNewTask(text) {
+
+    const task = {};
+    task.id = Math.floor(Math.random() * Math.pow(100, 10));
+    task.priority  = text.match(/\*+/)[0].length                   || 1     ;
+    task.project   = text.match(/@[\w\dа-яё]+/i)[0]                || 'SANS';
+    task.tags      = text.match(/#[\w\dа-яё]+/ig)                  || null  ;
+    task.timeDeath = text.match(/\d\d\/\d\d\/\d\d/)[0].split(/\//) || null  ;
+    task.stopwatch = [0, 0, 0];
+
+    text = text
+      .replace(/\*+/,              '')
+      .replace(/@[\w\dа-яё]+/i,    '')
+      .replace(/#[\w\dа-яё]+/ig,   '')
+      .replace(/\d\d\/\d\d\/\d\d/, '');
+
+    task.description = text.trim();
+
+    return task;
   }
 }
 
@@ -600,6 +627,10 @@ class Stopwatch extends React.Component {
 
   componentDidMount() { if (this.interval) this.stop(); }
 
+  componentWillUnmount() {
+    this.stop();
+  }
+
   toggle() { this.interval ? this.stop() : this.play(); }
 
   play() {
@@ -648,6 +679,10 @@ class Timer extends React.Component {
     this.timer = setInterval(self.handleTickTimer, 1000);
   }
 
+  componentWillUnmount() {
+    this.cancel();
+  }
+
   handleTickTimer() {
     let [h, m, s] = this.props.time;
 
@@ -662,6 +697,8 @@ class Timer extends React.Component {
     }
 
     if (!Math.max(h, m, s)) {
+      clearInterval(this.timer);
+      this.timer = null;
       window.dispatchEvent(new CustomEvent('deleteTask', {
         detail: {id: this.props.id}
       }));
@@ -703,6 +740,8 @@ class Folder extends React.Component {
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
+
+
 
   handleClickFolder(e) {
     if (e.target.tagName != 'DIV') return;
@@ -771,7 +810,4 @@ class Folder extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+ReactDOM.render(<App />, document.getElementById('root'));
