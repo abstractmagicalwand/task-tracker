@@ -16,6 +16,7 @@ class App extends React.Component {
     this.handleSaveNoteApp     = this.handleSaveNoteApp.bind(this);
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
     this.handleTickApp         = this.handleTickApp.bind(this);
+    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -119,7 +120,7 @@ class App extends React.Component {
 
   handleTickApp(e) {
     const task = this.searchTaskDb(e.detail.id);
-
+    console.log(e.detail);
     switch (e.detail.type) {
     case 'timer':
         task.arr[task.i].timeDeath = e.detail.time;
@@ -130,6 +131,13 @@ class App extends React.Component {
     }
 
     this.setStateDb();
+  }
+
+  handleToggleStopwatch(e) {
+    const task = this.searchTaskDb(e.detail.id);
+    task.arr[task.i].stopwatchToggle = !task.arr[task.i].stopwatchToggle;
+    this.setStateDb();
+    console.log('stopwatch')
   }
 
   componentWillMount() {
@@ -144,6 +152,7 @@ class App extends React.Component {
     window.removeEventListener('saveNote'    , this.handleSaveNoteApp);
     window.removeEventListener('back'        , this.handleBackContentApp);
     window.removeEventListener('tick'        , this.handleTickApp);
+    window.removeEventListener('stopwatch'   , this.handleToggleStopwatch);
   }
 
   render() {
@@ -169,6 +178,7 @@ class App extends React.Component {
     window.addEventListener('saveNote'    , this.handleSaveNoteApp)
     window.addEventListener('back'        , this.handleBackContentApp);
     window.addEventListener('tick'        , this.handleTickApp);
+    window.addEventListener('stopwatch'   , this.handleToggleStopwatch)
   }
 
   searchTaskDb(id) {
@@ -449,7 +459,8 @@ class Task extends React.Component {
     super(props);
 
     this.state = {
-      edit: false
+      edit: false,
+      stopwatch: true
     }
 
     this.handleDeleteTask      = this.handleDeleteTask.bind(this);
@@ -458,6 +469,7 @@ class Task extends React.Component {
     this.handleCancelTimer     = this.handleCancelTimer.bind(this);
     this.handleEditTask        = this.handleEditTask.bind(this);
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
+    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
@@ -504,6 +516,10 @@ class Task extends React.Component {
     }));
   }
 
+  handleToggleStopwatch(e) {
+    window.dispatchEvent(new CustomEvent('stopwatch', {detail: {id: this.props.info.id}}));
+  }
+
   render() {
     return (
       <div className='task'>
@@ -521,8 +537,8 @@ class Task extends React.Component {
             <span className='edit-btn' onClick={this.handleEditTask}></span>
             <span className='note-btn' onClick={this.handleNoteTask}></span>
             <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
+            {this.props.info.stopwatchToggle ? <Stopwatch id={this.props.info.id} stopwatchToggle={this.props.info.stopwatchToggle} time={this.props.info.stopwatch} />: null}
             <span className='stopwatch-btn' onClick={this.handleToggleStopwatch}></span>
-            <Stopwatch id={this.props.info.id} time={this.props.info.stopwatch} />
             {/*<Timer id={this.props.info.id} time={this.props.info.timeDeath} />*/}
           </span> :
           null}
@@ -541,9 +557,17 @@ class Stopwatch extends React.Component {
     super(props);
     this.stopwatch = null;
     this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
+/*    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);*/
   }
 
+/*  handleToggleStopwatch() {
+    clearInterval(this.stopwatch);
+    this.stopwatch = null;
+    this.props.toggle();
+  }
+*/
   componentWillMount() {
+    clearInterval(this.stopwatch);
     this.stopwatch = null;
   }
 
@@ -560,9 +584,11 @@ class Stopwatch extends React.Component {
   }
 
   componentDidMount() {
-    const self = this;
-
-    this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
+    console.log(this.props.stopwatchToggle);
+    if (this.props.stopwatchToggle) {
+      const self = this;
+      this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
+    }
   }
 
   handleTickStopwatch() {
@@ -570,7 +596,7 @@ class Stopwatch extends React.Component {
 
     if (s < 59) {
       ++s;
-    } else if (s == 59) {
+    } else if (s == 59 && m < 59) {
       s = 0;
       ++m;
     } else if (m == 59) {
@@ -596,6 +622,7 @@ class Timer extends React.Component {
   }
 
   componentWillMount() {
+    clearInterval(this.timer);
     this.timer = null;
   }
 
@@ -620,7 +647,7 @@ class Timer extends React.Component {
 
     if (s > 0) {
       --s;
-    } else if (s = 0) {
+    } else if (s == 0) {
       s = 59;
       --m;
     } else if (m == 0) {

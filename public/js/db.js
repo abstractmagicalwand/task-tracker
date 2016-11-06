@@ -15,7 +15,8 @@ const db = [{
     priority: 0,
     timeDeath: null,
     note: '',
-    stopwatch: null
+    stopwatch: null,
+    stopwatchToggle: false
   }]
 }, {
   project: 'SANS',
@@ -34,7 +35,8 @@ const db = [{
     priority: 0,
     timeDeath: null,
     note: '',
-    stopwatch: [0, 0, 0]
+    stopwatch: [0, 0, 0],
+    stopwatchToggle: false
   }]
 }, {
   project: '@LoveYouLoveShe',
@@ -53,7 +55,8 @@ const db = [{
     project: '@LoveYouLoveShe',
     priority: 0,
     timeDeath: null,
-    stopwatch: [0, 0, 0]
+    stopwatch: [0, 0, 0],
+    stopwatchToggle: false
   }]
 }, {
   project: '@loveAllWorld',
@@ -71,7 +74,8 @@ const db = [{
     project: '@loveAllWorld',
     priority: 0,
     timeDeath: null,
-    stopwatch: [0, 0, 0]
+    stopwatch: [0, 0, 0],
+    stopwatchToggle: false
   }]
 }, {
   project: '@loveasdasdsadrld',
@@ -90,6 +94,7 @@ const db = [{
       priority: 0,
       timeDeath: null,
       note: '',
-      stopwatch: [0, 0, 0]
+      stopwatch: [0, 0, 0],
+      stopwatchToggle: false
   }]
 }];
