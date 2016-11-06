@@ -140,3 +140,7 @@
 .stopwatch-btn {
   background-color: lawngreen;
 }
+
+.spoiler {
+  visibility: hidden;
+}

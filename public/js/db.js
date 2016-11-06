@@ -33,7 +33,7 @@ const db = [{
       '#naturelover', '#lovenature'],
     project: '',
     priority: 0,
-    timeDeath: null,
+    timeDeath: [0, 0, 10],
     note: '',
     stopwatch: [0, 0, 0],
     stopwatchToggle: false

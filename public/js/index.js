@@ -16,7 +16,6 @@ class App extends React.Component {
     this.handleSaveNoteApp     = this.handleSaveNoteApp.bind(this);
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
     this.handleTickApp         = this.handleTickApp.bind(this);
-    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -120,7 +119,7 @@ class App extends React.Component {
 
   handleTickApp(e) {
     const task = this.searchTaskDb(e.detail.id);
-    console.log(e.detail);
+
     switch (e.detail.type) {
     case 'timer':
         task.arr[task.i].timeDeath = e.detail.time;
@@ -131,13 +130,6 @@ class App extends React.Component {
     }
 
     this.setStateDb();
-  }
-
-  handleToggleStopwatch(e) {
-    const task = this.searchTaskDb(e.detail.id);
-    task.arr[task.i].stopwatchToggle = !task.arr[task.i].stopwatchToggle;
-    this.setStateDb();
-    console.log('stopwatch')
   }
 
   componentWillMount() {
@@ -152,7 +144,6 @@ class App extends React.Component {
     window.removeEventListener('saveNote'    , this.handleSaveNoteApp);
     window.removeEventListener('back'        , this.handleBackContentApp);
     window.removeEventListener('tick'        , this.handleTickApp);
-    window.removeEventListener('stopwatch'   , this.handleToggleStopwatch);
   }
 
   render() {
@@ -178,7 +169,6 @@ class App extends React.Component {
     window.addEventListener('saveNote'    , this.handleSaveNoteApp)
     window.addEventListener('back'        , this.handleBackContentApp);
     window.addEventListener('tick'        , this.handleTickApp);
-    window.addEventListener('stopwatch'   , this.handleToggleStopwatch)
   }
 
   searchTaskDb(id) {
@@ -458,18 +448,14 @@ class Task extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      edit: false,
-      stopwatch: true
-    }
+    this.state = {edit: false};
 
     this.handleDeleteTask      = this.handleDeleteTask.bind(this);
     this.handleNoteTask        = this.handleNoteTask.bind(this);
     this.handleCompleteTask    = this.handleCompleteTask.bind(this);
-    this.handleCancelTimer     = this.handleCancelTimer.bind(this);
     this.handleEditTask        = this.handleEditTask.bind(this);
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
-    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);
+
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
@@ -502,10 +488,6 @@ class Task extends React.Component {
     }));
   }
 
-  handleCancelTimer() {
-
-  }
-
   handleNoteTask(e) {
     if (!e.target.classList.contains('note-btn')) return;
     window.dispatchEvent(new CustomEvent('openNote', {
@@ -514,10 +496,6 @@ class Task extends React.Component {
         value: this.props.info.note
       }
     }));
-  }
-
-  handleToggleStopwatch(e) {
-    window.dispatchEvent(new CustomEvent('stopwatch', {detail: {id: this.props.info.id}}));
   }
 
   render() {
@@ -537,9 +515,8 @@ class Task extends React.Component {
             <span className='edit-btn' onClick={this.handleEditTask}></span>
             <span className='note-btn' onClick={this.handleNoteTask}></span>
             <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
-            {this.props.info.stopwatchToggle ? <Stopwatch id={this.props.info.id} stopwatchToggle={this.props.info.stopwatchToggle} time={this.props.info.stopwatch} />: null}
-            <span className='stopwatch-btn' onClick={this.handleToggleStopwatch}></span>
-            {/*<Timer id={this.props.info.id} time={this.props.info.timeDeath} />*/}
+            <Stopwatch id={this.props.info.id} time={this.props.info.stopwatch} />
+            {this.props.info.timeDeath ? <Timer id={this.props.info.id} time={this.props.info.timeDeath} /> : null}
           </span> :
           null}
         </div>}
@@ -555,40 +532,13 @@ class Task extends React.Component {
 class Stopwatch extends React.Component {
   constructor(props) {
     super(props);
+    this.interval  = false;
+    this.stop      = this.stop.bind(this);
+    this.play      = this.play.bind(this);
+    this.toggle    = this.toggle.bind(this);
     this.stopwatch = null;
+
     this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
-/*    this.handleToggleStopwatch = this.handleToggleStopwatch.bind(this);*/
-  }
-
-/*  handleToggleStopwatch() {
-    clearInterval(this.stopwatch);
-    this.stopwatch = null;
-    this.props.toggle();
-  }
-*/
-  componentWillMount() {
-    clearInterval(this.stopwatch);
-    this.stopwatch = null;
-  }
-
-  render() {
-    const s = this.props.time;
-
-    return (
-      <span className='stopwatch'>
-        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}</span>:
-        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}</span>:
-        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
-      </span>
-    );
-  }
-
-  componentDidMount() {
-    console.log(this.props.stopwatchToggle);
-    if (this.props.stopwatchToggle) {
-      const self = this;
-      this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
-    }
   }
 
   handleTickStopwatch() {
@@ -608,9 +558,43 @@ class Stopwatch extends React.Component {
       detail: {
         type: 'stopwatch',
         time: [h, m, s],
-        id: this.props.id
+        id: this.props.id,
+
       }
     }));
+  }
+
+  componentWillMount() { if (!this.interval) this.play(); }
+
+  render() {
+    const s = this.props.time;
+
+    return (
+      <span>
+        <span className={'stopwatch'}>
+          <span>{s[0] < 10 ? `0${s[0]}` : s[0]}</span>:
+          <span>{s[1] < 10 ? `0${s[1]}` : s[1]}</span>:
+          <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
+        </span>
+        <span className='stopwatch-btn' onClick={this.toggle}></span>
+      </span>
+    );
+  }
+
+  componentDidMount() { if (this.interval) this.stop(); }
+
+  toggle() { this.interval ? this.stop() : this.play(); }
+
+  play() {
+    const self = this;
+    this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
+    this.interval = !this.interval;
+  }
+
+  stop() {
+    clearInterval(this.stopwatch);
+    this.stopwatch = null;
+    this.interval = !this.interval;
   }
 }
 
