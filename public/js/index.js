@@ -34,26 +34,21 @@ class App extends React.Component {
 
   handleAddNewTaskApp(e) {
     e.preventDefault();
-    const db = this.state.db.splice();
+    const db = this.state.db.slice();
+    console.log(this.getFolderOfDb(e.detail.project));
     const folder = this.getFolderOfDb(e.detail.project) || db.length;
 
     if (folder === db.length) {
-      db.push({
+      db.unshift({
         project: e.detail.project,
         tasks: [e.detail],
         note: ''
       });
     } else {
-      db[folder].tasks.push(e.detail);
+      db[folder].tasks.unshift(e.detail);
     }
 
     this.setState({db: db});
-    /*this.state.db.filter(item => {
-      if (item.project  == 'SANS') return item;
-    })[0].tasks.unshift({
-      description: e.detail.description,
-      id: Math.floor(Math.random() * Math.pow(100, 10))
-    });*/
   }
 
   handleSearchReqApp(e) {
@@ -105,10 +100,10 @@ class App extends React.Component {
 
   handleSaveNoteApp(e) {
 
-    if (typeof this.state.edit == 'number') {
+    if (typeof this.state.edit === 'number') {
       const task = this.searchTaskDb(this.state.edit);
       task.arr[task.i].note = e.detail.value;
-    } else if (typeof this.state.edit == 'string') {
+    } else if (typeof this.state.edit === 'string') {
       this.state.db[this.getFolderOfDb(this.state.edit)].note = e.detail.value;
     }
 
@@ -147,7 +142,7 @@ class App extends React.Component {
     const db = this.state.db.slice();
     db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {
-        if (e.detail.id == item.id) {
+        if (e.detail.id === item.id) {
           item.timeDeath = null;
         }
       });
@@ -202,7 +197,7 @@ class App extends React.Component {
 
     this.state.db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {
-        if (id == item.id) {
+        if (id === item.id) {
           task.i = i;
           task.arr = arr;
         }
@@ -217,11 +212,11 @@ class App extends React.Component {
   }
 
   getFolderOfDb(project) {
-    let index;
+    let index = null;
     this.state.db.forEach((folder, i) => {
-      if (folder.project == project) index = i;
+      if (folder.project === project) index = i;
     });
-    index = index >= 0 || null;
+
     return index;
   }
 
@@ -332,23 +327,29 @@ class Field extends React.Component {
   }
 
   getNewTask(text) {
+    const priority = /\*+/,
+          project  = /@[\wа-яё]+/i,
+          tags     = /#[\wа-яё]+/ig,
+          death    = /\d\d\/\d\d\/\d\d/;
 
-    const task = {};
-    task.id = Math.floor(Math.random() * Math.pow(100, 10));
-    task.priority  = text.match(/\*+/)[0].length                   || 1     ;
-    task.project   = text.match(/@[\w\dа-яё]+/i)[0]                || 'SANS';
-    task.tags      = text.match(/#[\w\dа-яё]+/ig)                  || null  ;
-    task.timeDeath = text.match(/\d\d\/\d\d\/\d\d/)[0].split(/\//) || null  ;
-    task.stopwatch = [0, 0, 0];
-
-    text = text
-      .replace(/\*+/,              '')
-      .replace(/@[\w\dа-яё]+/i,    '')
-      .replace(/#[\w\dа-яё]+/ig,   '')
-      .replace(/\d\d\/\d\d\/\d\d/, '');
-
-    task.description = text.trim();
-
+    const task = {
+      stopwatch: [0, 0, 0],
+      date: new Date(),
+      stopwatchToggle: false,
+      complete: false,
+      tags: text.match(tags),
+      id: Math.floor(Math.random() * Math.pow(100, 10)),
+      priority: priority.test(text) ? priority.exec(text)[0].length : null,
+      project: project.test(text) ? project.exec(text)[0] : 'SANS',
+      timeDeath: death.test(text) ? death.exec(text)[0].split(/\//) : null,
+      description: text
+        .replace(priority, '')
+        .replace(project,  '')
+        .replace(tags,     '')
+        .replace(death,    '')
+        .trim()
+    };
+    console.log(task);
     return task;
   }
 }
@@ -370,11 +371,11 @@ class List extends React.Component {
         return this.getInboxTasks(db);
     case 'archiv':
         return db.filter(item => {
-          if (item.project == 'ARCHIV')  return item;
+          if (item.project === 'ARCHIV')  return item;
         })[0].tasks;
     case 'project':
         return db.filter(item => {
-          if (item.project == this.props.projectName) return item;
+          if (item.project === this.props.projectName) return item;
         })[0].tasks;
     case 'search':
         return this.getInboxTasks(db).filter((item, d, array) => {
@@ -386,7 +387,7 @@ class List extends React.Component {
 
   getInboxTasks(db) {
     return db.filter(item => {
-      if (!(item.project == 'ARCHIV'))  return item;
+      if (!(item.project === 'ARCHIV'))  return item;
     }).reduce((sum, item) => sum.concat(item.tasks), []);
   }
 
@@ -590,10 +591,10 @@ class Stopwatch extends React.Component {
 
     if (s < 59) {
       ++s;
-    } else if (s == 59 && m < 59) {
+    } else if (s === 59 && m < 59) {
       s = 0;
       ++m;
-    } else if (m == 59) {
+    } else if (m === 59) {
       m = 0;
       ++h;
     }
@@ -688,10 +689,10 @@ class Timer extends React.Component {
 
     if (s > 0) {
       --s;
-    } else if (s == 0) {
+    } else if (s === 0) {
       s = 59;
       --m;
-    } else if (m == 0) {
+    } else if (m === 0) {
       m = 0;
       --h;
     }
