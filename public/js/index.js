@@ -235,24 +235,35 @@ class Content extends React.Component {
   getCompView() {
     switch (this.props.view) {
     case 'inbox':
+        load();
         return <List type='inbox' db={this.props.db} />;
     case 'project':
+        load();
         return <Collection db={this.props.db} />;
     case 'archiv':
+        load();
         return <List type='archiv' db={this.props.db} />;
     case 'stats':
+        load();
         return <Stats />;
     case 'search':
+        load();
         return <List type='search' value={this.props.value} db={this.props.db} />
     case 'help':
+        load();
         return <Help />;
     case 'note':
+        load();
         return <Note value={this.props.value} />;
     default:
+        load();
         if (!~this.props.view.indexOf('@')) break;
         return <List type='project' projectName={this.props.view} db={this.props.db} />;
     }
   }
+
+
+
 }
 
 
@@ -812,3 +823,15 @@ class Folder extends React.Component {
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
+
+
+function load(db) {
+
+  if (db) {
+    Lockr.set('db', db);
+  } else {
+    const oldDB = Lockr.get('db');
+    return oldDB;
+  }
+
+}
