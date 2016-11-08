@@ -15,7 +15,6 @@ class App extends React.Component {
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
     this.handleTickApp         = this.handleTickApp.bind(this);
     this.handleCancelTimerApp  = this.handleCancelTimerApp.bind(this);
-    /*this.handleSaveTimeApp     = this.handleSaveTimeApp.bind(this);*/
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -137,7 +136,6 @@ class App extends React.Component {
     }
 
     task.arr[task.i].now = e.detail.now;
-    console.log(task.arr[task.i].now);
     this.setStateDb();
   }
 
@@ -154,18 +152,6 @@ class App extends React.Component {
     this.setState({db: db});
   }
 
-/*  handleSaveTimeApp(e) {
-    const task = this.searchTaskDb(e.detail.id, this.state.db.slice());
-
-    if (e.detail.timer) {
-      task.arr[task.i].timerStorage = e.detail.timer;
-    } else if (e.detail.stopwatch) {
-      task.arr[task.i].stopwatchStorage = e.detail.stopwatch;
-    }
-    console.dir(db);
-    this.setStateDb(db);
-  }*/
-
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -179,7 +165,6 @@ class App extends React.Component {
     window.removeEventListener('back'        , this.handleBackContentApp);
     window.removeEventListener('tick'        , this.handleTickApp);
     window.removeEventListener('deleteTimer' , this.handleCancelTimerApp);
-    /*window.removeEventListener('saveTime'    , this.handleSaveTimeApp);*/
   }
 
   render() {
@@ -206,7 +191,6 @@ class App extends React.Component {
     window.addEventListener('back'        , this.handleBackContentApp);
     window.addEventListener('tick'        , this.handleTickApp);
     window.addEventListener('deleteTimer' , this.handleCancelTimerApp);
-    /*window.addEventListener('saveTime'    , this.handleSaveTimeApp);*/
   }
 
   searchTaskDb(id, DB) {
@@ -357,7 +341,6 @@ class Field extends React.Component {
     const task = {
       stopwatch: [0, 0, 0],
       date: new Date(),
-      stopwatchToggle: false,
       complete: false,
       tags: text.match(tags),
       id: Math.floor(Math.random() * Math.pow(100, 10)),
@@ -565,8 +548,6 @@ class Task extends React.Component {
   }
 
   render() {
-    /*const timeSw = comeBackTime(this.props.info.stopwatchStorage, this.props.info.stopwatch);*/
-
     return (
       <div className='task'>
         {this.state.edit ? <div className='edit'>
@@ -601,18 +582,19 @@ class Task extends React.Component {
 class Stopwatch extends React.Component {
   constructor(props) {
     super(props);
+
     this.interval  = false;
     this.stop      = this.stop.bind(this);
     this.play      = this.play.bind(this);
     this.toggle    = this.toggle.bind(this);
     this.stopwatch = null;
+    this.old = null;
 
     this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
-    /*this.save = this.save.bind(this);*/
   }
 
   handleTickStopwatch() {
-    let [h, m, s] = this.props.time;
+    let [h, m, s] = this.old || this.props.time;
 
     if (s < 59) {
       ++s;
@@ -639,7 +621,8 @@ class Stopwatch extends React.Component {
   }
 
   render() {
-    const s = this.props.time;
+    let s = this.props.time;
+
     return (
       <span>
         <span className={'stopwatch'}>
@@ -659,17 +642,6 @@ class Stopwatch extends React.Component {
   componentWillUnmount() {
     this.stop();
   }
-
-/*  save() {
-    window.dispatchEvent(new CustomEvent('saveTime', {
-        detail: {
-          stopwatch: new Date(),
-          id: this.props.id
-          }
-      }
-    ));
-    comeBackTime();
-  }*/
 
   toggle() { this.interval ? this.stop() : this.play(); }
 
@@ -755,15 +727,6 @@ class Timer extends React.Component {
 
   }
 
-/*  save(time, id) {
-    window.dispatchEvent(new CustomEvent('saveTime',
-    {detail: {
-      timer: time,
-      id: id
-      }
-    }));
-  }*/
-
   cancel() {
     clearInterval(this.timer);
     this.timer = null;
@@ -772,7 +735,6 @@ class Timer extends React.Component {
     }));
   }
 }
-
 
 class Folder extends React.Component {
   constructor(props) {
@@ -876,8 +838,7 @@ function diffArrs(arrOne, arrTwo) {
   return arrOne;
 }
 
-
-/*function load(db) {
+function load(db) {
 
   if (db) {
     Lockr.set('db', db);
@@ -887,26 +848,5 @@ function diffArrs(arrOne, arrTwo) {
   }
 
 }
-
-function wrapFlag() {
-  let flag = true;
-
-  return function(storageSw, defaultSw) {
-    if (!storageSw && storageSw !== null) flag = !flag;
-    let timeSw, timeTimer;
-
-    if (storageSw) {
-      timeSw = getArrSMH(storageSw);
-      //timeTimer = getArrSMH(this.props.info.timerStorage);
-    } else {
-      timeSw = defaultSw;
-      //timeTimer = this.props.info.timeDeath;
-    }
-
-    return timeSw;
-  };
-};
-
-const comeBackTime = wrapFlag();*/
 
 ReactDOM.render(<App />, document.getElementById('root'));
