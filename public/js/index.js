@@ -15,6 +15,7 @@ class App extends React.Component {
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
     this.handleTickApp         = this.handleTickApp.bind(this);
     this.handleCancelTimerApp  = this.handleCancelTimerApp.bind(this);
+    this.handleSaveTimeApp     = this.handleSaveTimeApp.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -35,7 +36,7 @@ class App extends React.Component {
   handleAddNewTaskApp(e) {
     e.preventDefault();
     const db = this.state.db.slice();
-    console.log(this.getFolderOfDb(e.detail.project));
+
     const folder = this.getFolderOfDb(e.detail.project) || db.length;
 
     if (folder === db.length) {
@@ -151,6 +152,18 @@ class App extends React.Component {
     this.setState({db: db});
   }
 
+  handleSaveTimeApp(e) {
+    const task = this.searchTaskDb(e.detail.id, this.state.db.slice());
+
+    if (e.detail.timer) {
+      task.arr[task.i].timerStorage = e.detail.timer;
+    } else if (e.detail.stopwatch) {
+      task.arr[task.i].stopwatchStorage = e.detail.stopwatch;
+    }
+    console.dir(db);
+    this.setStateDb(db);
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -164,6 +177,7 @@ class App extends React.Component {
     window.removeEventListener('back'        , this.handleBackContentApp);
     window.removeEventListener('tick'        , this.handleTickApp);
     window.removeEventListener('deleteTimer' , this.handleCancelTimerApp);
+    window.removeEventListener('saveTime'    , this.handleSaveTimeApp);
   }
 
   render() {
@@ -190,12 +204,14 @@ class App extends React.Component {
     window.addEventListener('back'        , this.handleBackContentApp);
     window.addEventListener('tick'        , this.handleTickApp);
     window.addEventListener('deleteTimer' , this.handleCancelTimerApp);
+    window.addEventListener('saveTime'    , this.handleSaveTimeApp);
   }
 
-  searchTaskDb(id) {
+  searchTaskDb(id, DB) {
     const task = {};
+    const db = DB || this.state.db
 
-    this.state.db.forEach(item => {
+    db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {
         if (id === item.id) {
           task.i = i;
@@ -207,8 +223,9 @@ class App extends React.Component {
     return task;
   }
 
-  setStateDb() {
-    this.setState({db: this.state.db});
+  setStateDb(DB) {
+    const db = DB || this.state.db;
+    this.setState({db: db});
   }
 
   getFolderOfDb(project) {
@@ -360,7 +377,7 @@ class Field extends React.Component {
         .replace(death,    '')
         .trim()
     };
-    console.log(task);
+
     return task;
   }
 }
@@ -419,7 +436,7 @@ class Collection extends React.Component {
 
   getCompFolders(db) {
     return db.filter(folder => {
-      if (folder.project != 'ARCHIV' && folder.project != 'SANS') return folder;
+      if (folder.project !== 'ARCHIV' && folder.project !== 'SANS') return folder;
     }).map(folder => <Folder info={folder} />);
   }
 }
@@ -555,6 +572,24 @@ class Task extends React.Component {
   }
 
   render() {
+    const now = new Date(),
+          date = [now.getHours(), now.getMinutes(), now.getSeconds()];
+
+    let stopwatchTime, timerTime;
+
+    if (this.props.info.stopwatchStorage && this.state.oldDate !== this.props.info.stopwatchStorage) {
+      stopwatchTime = addArr(diffArr(date, this.props.info.stopwatchStorage), this.props.info.stopwatch);
+      this.setState({oldDate: stopwatchTime});
+    } else {
+      stopwatchTime = this.props.info.stopwatch;
+    }
+
+    if (this.timerStorage) {
+      timerTime = diffArr(diffArr(date, this.timerStorage), this.props.info.timeDeath);
+    } else {
+      timerTime = this.props.info.timeDeath;
+    }
+
     return (
       <div className='task'>
         {this.state.edit ? <div className='edit'>
@@ -566,13 +601,13 @@ class Task extends React.Component {
           <p className='descript'>{this.props.info.description}</p>
           <span className='delete-btn' onClick={this.handleDeleteTask}></span>
 
-          {this.props.info.project != 'ARCHIV' ?
+          {this.props.info.project !== 'ARCHIV' ?
           <span>
             <span className='edit-btn' onClick={this.handleEditTask}></span>
             <span className='note-btn' onClick={this.handleNoteTask}></span>
             <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
-            <Stopwatch id={this.props.info.id} time={this.props.info.stopwatch} />
-            {this.props.info.timeDeath ? <Timer id={this.props.info.id} time={this.props.info.timeDeath} /> : null}
+            <Stopwatch id={this.props.info.id} time={stopwatchTime} />
+            {this.props.info.timeDeath ? <Timer id={this.props.info.id} time={timerTime} /> : null}
           </span> :
           null}
         </div>}
@@ -595,6 +630,7 @@ class Stopwatch extends React.Component {
     this.stopwatch = null;
 
     this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
+    this.save = this.save.bind(this);
   }
 
   handleTickStopwatch() {
@@ -620,7 +656,10 @@ class Stopwatch extends React.Component {
     }));
   }
 
-  componentWillMount() { if (!this.interval) this.play(); }
+  componentWillMount() {
+    if (!this.interval) this.play();
+    window.removeEventListener('clickNavBtn' , this.save);
+  }
 
   render() {
     const s = this.props.time;
@@ -637,10 +676,24 @@ class Stopwatch extends React.Component {
     );
   }
 
-  componentDidMount() { if (this.interval) this.stop(); }
+  componentDidMount() {
+    if (this.interval) this.stop();
+    window.addEventListener('clickNavBtn' , this.save);
+  }
 
   componentWillUnmount() {
     this.stop();
+  }
+
+  save() {
+    console.log('save');
+    window.dispatchEvent(new CustomEvent('saveTime', {
+      detail: {
+        stopwatch: new Date().getTime,
+        id: this.props.id
+        }
+      }
+    ));
   }
 
   toggle() { this.interval ? this.stop() : this.play(); }
@@ -693,6 +746,7 @@ class Timer extends React.Component {
 
   componentWillUnmount() {
     this.cancel();
+    this.save(this.props.time, this.props.id);
   }
 
   handleTickTimer() {
@@ -726,6 +780,15 @@ class Timer extends React.Component {
 
   }
 
+  save(time, id) {
+    window.dispatchEvent(new CustomEvent('saveTime',
+    {detail: {
+      timer: time,
+      id: id
+      }
+    }));
+  }
+
   cancel() {
     clearInterval(this.timer);
     this.timer = null;
@@ -740,9 +803,7 @@ class Folder extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      edit: false
-    }
+    this.state = {edit: false};
 
     this.handleDeleteFolder   = this.handleDeleteFolder.bind(this);
     this.handleEditFolder     = this.handleEditFolder.bind(this);
@@ -756,7 +817,7 @@ class Folder extends React.Component {
 
 
   handleClickFolder(e) {
-    if (e.target.tagName != 'DIV') return;
+    if (e.target.tagName !== 'DIV') return;
     window.dispatchEvent(new CustomEvent('clickNavBtn', {
       detail: {category: this.props.info.project}
     }));
@@ -834,4 +895,14 @@ function load(db) {
     return oldDB;
   }
 
+}
+
+function getSMH(old) {
+  const s = ms => Math.round(((new Date().getTime() - ms) / 1000) % 60);
+  const m = ms => Math.round(((new Date().getTime() - ms) / (1000 * 60)) % 60);
+  const h = ms => {
+    Math.round(((new Date().getTime() - ms) / (1000 * 60 * 60)) % 24);
+  }
+
+  return [h(old.getTime()), m(old.getTime()), s(old.getTime())];
 }
