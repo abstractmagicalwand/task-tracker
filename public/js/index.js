@@ -15,7 +15,7 @@ class App extends React.Component {
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
     this.handleTickApp         = this.handleTickApp.bind(this);
     this.handleCancelTimerApp  = this.handleCancelTimerApp.bind(this);
-    this.handleSaveTimeApp     = this.handleSaveTimeApp.bind(this);
+    /*this.handleSaveTimeApp     = this.handleSaveTimeApp.bind(this);*/
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -136,6 +136,8 @@ class App extends React.Component {
         break;
     }
 
+    task.arr[task.i].now = e.detail.now;
+    console.log(task.arr[task.i].now);
     this.setStateDb();
   }
 
@@ -152,7 +154,7 @@ class App extends React.Component {
     this.setState({db: db});
   }
 
-  handleSaveTimeApp(e) {
+/*  handleSaveTimeApp(e) {
     const task = this.searchTaskDb(e.detail.id, this.state.db.slice());
 
     if (e.detail.timer) {
@@ -162,7 +164,7 @@ class App extends React.Component {
     }
     console.dir(db);
     this.setStateDb(db);
-  }
+  }*/
 
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
@@ -177,7 +179,7 @@ class App extends React.Component {
     window.removeEventListener('back'        , this.handleBackContentApp);
     window.removeEventListener('tick'        , this.handleTickApp);
     window.removeEventListener('deleteTimer' , this.handleCancelTimerApp);
-    window.removeEventListener('saveTime'    , this.handleSaveTimeApp);
+    /*window.removeEventListener('saveTime'    , this.handleSaveTimeApp);*/
   }
 
   render() {
@@ -204,7 +206,7 @@ class App extends React.Component {
     window.addEventListener('back'        , this.handleBackContentApp);
     window.addEventListener('tick'        , this.handleTickApp);
     window.addEventListener('deleteTimer' , this.handleCancelTimerApp);
-    window.addEventListener('saveTime'    , this.handleSaveTimeApp);
+    /*window.addEventListener('saveTime'    , this.handleSaveTimeApp);*/
   }
 
   searchTaskDb(id, DB) {
@@ -252,28 +254,20 @@ class Content extends React.Component {
   getCompView() {
     switch (this.props.view) {
     case 'inbox':
-        load();
         return <List type='inbox' db={this.props.db} />;
     case 'project':
-        load();
         return <Collection db={this.props.db} />;
     case 'archiv':
-        load();
         return <List type='archiv' db={this.props.db} />;
     case 'stats':
-        load();
         return <Stats />;
     case 'search':
-        load();
         return <List type='search' value={this.props.value} db={this.props.db} />
     case 'help':
-        load();
         return <Help />;
     case 'note':
-        load();
         return <Note value={this.props.value} />;
     default:
-        load();
         if (!~this.props.view.indexOf('@')) break;
         return <List type='project' projectName={this.props.view} db={this.props.db} />;
     }
@@ -529,7 +523,6 @@ class Task extends React.Component {
     this.handleEditTask        = this.handleEditTask.bind(this);
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
 
-
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
 
@@ -572,23 +565,7 @@ class Task extends React.Component {
   }
 
   render() {
-    const now = new Date(),
-          date = [now.getHours(), now.getMinutes(), now.getSeconds()];
-
-    let stopwatchTime, timerTime;
-
-    if (this.props.info.stopwatchStorage && this.state.oldDate !== this.props.info.stopwatchStorage) {
-      stopwatchTime = addArr(diffArr(date, this.props.info.stopwatchStorage), this.props.info.stopwatch);
-      this.setState({oldDate: stopwatchTime});
-    } else {
-      stopwatchTime = this.props.info.stopwatch;
-    }
-
-    if (this.timerStorage) {
-      timerTime = diffArr(diffArr(date, this.timerStorage), this.props.info.timeDeath);
-    } else {
-      timerTime = this.props.info.timeDeath;
-    }
+    /*const timeSw = comeBackTime(this.props.info.stopwatchStorage, this.props.info.stopwatch);*/
 
     return (
       <div className='task'>
@@ -602,14 +579,15 @@ class Task extends React.Component {
           <span className='delete-btn' onClick={this.handleDeleteTask}></span>
 
           {this.props.info.project !== 'ARCHIV' ?
-          <span>
-            <span className='edit-btn' onClick={this.handleEditTask}></span>
-            <span className='note-btn' onClick={this.handleNoteTask}></span>
-            <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
-            <Stopwatch id={this.props.info.id} time={stopwatchTime} />
-            {this.props.info.timeDeath ? <Timer id={this.props.info.id} time={timerTime} /> : null}
-          </span> :
-          null}
+            <span>
+              <span className='edit-btn' onClick={this.handleEditTask}></span>
+              <span className='note-btn' onClick={this.handleNoteTask}></span>
+              <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
+              <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />
+              {this.props.info.timeDeath ?
+                <Timer old={this.props.info.now} id={this.props.info.id} time={this.props.info.timeDeath} /> : null}
+            </span> :
+            null}
         </div>}
       </div>
     );
@@ -630,7 +608,7 @@ class Stopwatch extends React.Component {
     this.stopwatch = null;
 
     this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
-    this.save = this.save.bind(this);
+    /*this.save = this.save.bind(this);*/
   }
 
   handleTickStopwatch() {
@@ -651,19 +629,17 @@ class Stopwatch extends React.Component {
         type: 'stopwatch',
         time: [h, m, s],
         id: this.props.id,
-
+        now: new Date().getTime()
       }
     }));
   }
 
   componentWillMount() {
     if (!this.interval) this.play();
-    window.removeEventListener('clickNavBtn' , this.save);
   }
 
   render() {
     const s = this.props.time;
-
     return (
       <span>
         <span className={'stopwatch'}>
@@ -678,23 +654,22 @@ class Stopwatch extends React.Component {
 
   componentDidMount() {
     if (this.interval) this.stop();
-    window.addEventListener('clickNavBtn' , this.save);
   }
 
   componentWillUnmount() {
     this.stop();
   }
 
-  save() {
-    console.log('save');
+/*  save() {
     window.dispatchEvent(new CustomEvent('saveTime', {
-      detail: {
-        stopwatch: new Date().getTime,
-        id: this.props.id
-        }
+        detail: {
+          stopwatch: new Date(),
+          id: this.props.id
+          }
       }
     ));
-  }
+    comeBackTime();
+  }*/
 
   toggle() { this.interval ? this.stop() : this.play(); }
 
@@ -746,7 +721,6 @@ class Timer extends React.Component {
 
   componentWillUnmount() {
     this.cancel();
-    this.save(this.props.time, this.props.id);
   }
 
   handleTickTimer() {
@@ -773,21 +747,22 @@ class Timer extends React.Component {
         detail: {
           type: 'timer',
           time: [h, m, s],
-          id: this.props.id
+          id: this.props.id,
+          now: new Date().getTime()
         }
       }));
     }
 
   }
 
-  save(time, id) {
+/*  save(time, id) {
     window.dispatchEvent(new CustomEvent('saveTime',
     {detail: {
       timer: time,
       id: id
       }
     }));
-  }
+  }*/
 
   cancel() {
     clearInterval(this.timer);
@@ -813,8 +788,6 @@ class Folder extends React.Component {
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
   }
-
-
 
   handleClickFolder(e) {
     if (e.target.tagName !== 'DIV') return;
@@ -883,10 +856,28 @@ class Folder extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+function addArrs(arrOne, arrTwo) {
+  for (let i = arrOne.length; --i >= 0;) arrOne[i] += arrTwo[i];
+  return arrOne;
+}
+
+function getArrSMH(old) {
+  const s = ms => Math.round(((new Date().getTime() - ms) / 1000) % 60);
+  const m = ms => Math.round(((new Date().getTime() - ms) / (1000 * 60)) % 60);
+  const h = ms => {
+    return Math.round(((new Date().getTime() - ms) / (1000 * 60 * 60)) % 24);
+  };
+
+  return [h(old), m(old), s(old)];
+}
+
+function diffArrs(arrOne, arrTwo) {
+  for (let i = arrOne.length; --i >= 0;) arrOne[i] -= arrTwo[i];
+  return arrOne;
+}
 
 
-function load(db) {
+/*function load(db) {
 
   if (db) {
     Lockr.set('db', db);
@@ -897,12 +888,25 @@ function load(db) {
 
 }
 
-function getSMH(old) {
-  const s = ms => Math.round(((new Date().getTime() - ms) / 1000) % 60);
-  const m = ms => Math.round(((new Date().getTime() - ms) / (1000 * 60)) % 60);
-  const h = ms => {
-    Math.round(((new Date().getTime() - ms) / (1000 * 60 * 60)) % 24);
-  }
+function wrapFlag() {
+  let flag = true;
 
-  return [h(old.getTime()), m(old.getTime()), s(old.getTime())];
-}
+  return function(storageSw, defaultSw) {
+    if (!storageSw && storageSw !== null) flag = !flag;
+    let timeSw, timeTimer;
+
+    if (storageSw) {
+      timeSw = getArrSMH(storageSw);
+      //timeTimer = getArrSMH(this.props.info.timerStorage);
+    } else {
+      timeSw = defaultSw;
+      //timeTimer = this.props.info.timeDeath;
+    }
+
+    return timeSw;
+  };
+};
+
+const comeBackTime = wrapFlag();*/
+
+ReactDOM.render(<App />, document.getElementById('root'));
