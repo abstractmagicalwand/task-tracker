@@ -532,7 +532,6 @@ class Task extends React.Component {
 
   handleSaveEditTask(e) {
     this.setStateToggleEdit();
-
     window.dispatchEvent(new CustomEvent('save', {
       detail: {
         value: ReactDOM.findDOMNode(this.refs.value).value,
@@ -554,7 +553,8 @@ class Task extends React.Component {
   render() {
     return (
       <div className='task'>
-        {this.state.edit ? <div className='edit'>
+        {this.state.edit ?
+        <div className='edit'>
           <input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.description}`} />
           <span className='edit-save' onClick={this.handleSaveEditTask}></span>
           <span className='edit-close' onClick={this.handleEditTask}></span>

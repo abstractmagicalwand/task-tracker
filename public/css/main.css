@@ -55,6 +55,7 @@ body {
 }
 
 .task {
+  display: flex;
   justify-content: center;
 }
 
@@ -69,6 +70,11 @@ body {
   flex-flow: column wrap;
 }
 
+.list- {
+  display: flex;
+  flex-flow: column wrap;
+}
+
 .folder {
   height: 200px;
   width: 200px;
@@ -78,6 +84,9 @@ body {
   text-align: center;
   display: flex;
   justify-content: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  cursor: pointer;
 }
 
 .folder- {
@@ -96,25 +105,23 @@ body {
 }
 
 .task {
+  background: #ab87ff;
   display: flex;
-  flex-flow: column wrap;
-  margin: 10px 20px;
+  flex-flow: column;
+  margin: 15px 20px;
+  border-radius: 15px;
 }
 
 .read {
-  background: #ab87ff;
   display: flex;
   flex-flow: row wrap;
-  word-wrap: inherit;
-  white-space: pre-wrap;
 }
 
 .descript {
-  text-indent: 15px;
-  text-transform: lowercase;
-  flex-flow: column wrap;
+  margin: 0px;
+  border: 0px;
+  justify-content: center;
   word-break: break-all;
-  text-size: 10px;
   flex: 1;
 }
 
@@ -127,10 +134,19 @@ body {
 
 .panel {
   display: flex;
-  background: #ab87ff;
 }
 
-.edit-btn, .note-btn, .complete {
+.edit {
+  display: flex;
+  justify-content: center;
+}
+
+.edit-field {
+  border-radius: 20px;
+  border: 0;
+}
+
+.edit-save, .edit-close, .edit-btn, .note-btn, .complete {
   background: fuchsia;
   height: 30px;
   width: 30px;
@@ -150,13 +166,17 @@ body {
 
 .search {
   align-self: center;
-  width: 90%;
+  width: 30%;
   height: 25px;
   display: flex;
   margin: 5px;
   border-radius: 10px;
   border: 0px;
   font-family: sans-serif;
+}
+
+.search:focus {
+  width: 90%;
 }
 
 .field {
@@ -208,13 +228,16 @@ body {
 .swopwatch-table, timer-table {
   display: flex;
   height: 60px;
+
 }
 
 .stopwatch, .timer {
   display: flex;
   flex-flow: column;
   background: #ab87ff;
+  color: mediumvioletred;
   font-size: 25px;
+  font-weight: bold;
 }
 
 .timer {
