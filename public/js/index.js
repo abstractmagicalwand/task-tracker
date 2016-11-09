@@ -172,7 +172,6 @@ class App extends React.Component {
       <div className='app'>
         <Bar />
         <Nav />
-        <Field />
         <Content view={this.state.viewContent ? this.state.viewContent : 'inbox'} db={this.state.db} value={this.state.value ? this.state.value : ''}/>
       </div>
     );
@@ -246,7 +245,7 @@ class Content extends React.Component {
     case 'stats':
         return <Stats />;
     case 'search':
-        return <List type='search' value={this.props.value} db={this.props.db} />
+        return <List type='search' value={this.props.value} db={this.props.db} />;
     case 'help':
         return <Help />;
     case 'note':
@@ -270,7 +269,6 @@ class Bar extends React.Component {
   render() {
     return (
       <div className='bar'>
-        <Search />
       </div>
     );
   }
@@ -366,7 +364,12 @@ class List extends React.Component {
   }
 
   render() {
-    return <div className='list'>{this.getCompTasks(this.getTasks(this.props.type, this.props.db))}</div>
+    return (
+    <div className='list'>
+      <Search />
+      <Field />
+      {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
+    </div>);
   }
 
   getTasks(type, db) {
@@ -752,7 +755,9 @@ class Folder extends React.Component {
   }
 
   handleClickFolder(e) {
+    console.log(e.target.tagName)
     if (e.target.tagName !== 'DIV') return;
+
     window.dispatchEvent(new CustomEvent('clickNavBtn', {
       detail: {category: this.props.info.project}
     }));

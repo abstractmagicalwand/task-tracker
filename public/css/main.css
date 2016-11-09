@@ -1,146 +1,117 @@
+.app {
+  display: flex;
+  background: #b4e1ff;
+  flex-flow: row wrap;
+  font-family: sans-serif;
+  font-size: 20px;
+}
+
 .content {
-  background-color: #fff;
-  display: inline-block;
-  width: 750px;
-  margin-top: 60px;
+  margin: 15px 15px 15px 0px;
+  background: #fface4;
+  display: flex;
+  flex-flow: column;
+  flex: 4;
 }
 
 .bar {
-  background-color: #00BCD4;
+  background: #fface4;
+  display: flex;
   height: 100px;
   width: 100%;
-}
-
-.app {
-  background-color: #fff;
+  margin: 0px 15px;
 }
 
 .nav {
-  background-color: #B2EBF2;
-  display: inline-block;
-  height: 375px;
-  width: 150px;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  margin: 15px;
+  flex: 1;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .btn {
-  background-color: #B2EBF2;
-  height: 75px;
-  width: 150px;
-}
-
-.btn:active {
-  background-color: #E040FB;
-}
-
-.field {
-  background-color: #fff;
-  display: inline-block;
-  position: fixed;
-  height: 50px;
+  background: #ab87ff;
   width: 100%;
+  height: 50px;
+  margin: 5px 0px;
+  border-radius: 3px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
 }
 
-.area {
-  height: 50px;
-  width: 75%;
-}
-
-.sand {
-  height: 50px;
-  width: 50px;
+.btn:hover {
+  background: #fface4
 }
 
 .task {
-  border: 2px solid #E040FB;
-  margin: 5px;
+  justify-content: center;
 }
 
-.help {
-  background-color: springgreen;
-  width: 750px;
-  height: 300px;
-  display: inline-block;
+.collection {
+  display: flex;
+  flex-flow: row wrap;
 }
 
-.stats {
-  background-color: orangered;
-  width: 750px;
-  height: 300px;
-  display: inline-block;
+.list {
+  display: flex;
+  flex-flow: column wrap;
 }
 
 .folder {
-  display: inline-block;
-  width: 200px;
   height: 200px;
-  background-color: burlywood;
-  margin: 10px;
+  width: 200px;
+  border-radius: 5px;
+  margin: 15px;
+  background: #ab87ff;
 }
 
-.selecte {
-  background-color: darkseagreen;
+.folder:hover {
+  background: #f5ffc6;
+}
+
+.bar:active, .folder:active, .btn:active, .task:active {
+  background: #c1ff9b;
+}
+
+.task {
+  background: #ab87ff;
+  display: flex;
+  flex-flow: row;
+  margin: 10px 20px;
 }
 
 .search {
-  width: 75%;
-  height: 50px;
-  border-radius: 5px;
+  align-self: center;
+  width: 90%;
+  height: 25px;
+  display: flex;
+  margin: 5px;
+  border-radius: 15px;
+  border: 0px;
 }
 
-.edit-save, .edit-close, .edit-btn , .delete-btn, .note-btn, .stopwatch-btn {
-  width: 15px;
-  height: 15px;
-  background-color: red;
-  border-radius: 5px;
-  display: inline-block;
+.field {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0 20px;
 }
 
-.edit-btn {
-  background-color: darkslategray;
+.area {
+  flex: 5;
+  border: 0px;
+  border-radius: 2px;
 }
 
-.edit-save {
-  background-color: greenyellow;
+.sand {
+  flex: 1;
 }
 
-.edit-close {
-  background-color: orangered;
-}
-
-.note-btn {
-  background-color: pink;
-}
-
-.note {
-  height: 500px;
-  width: 500px;
-  display: inline-block;
-}
-
-.note-field {
-  height: 500px;
-  width: 500px;
-  background-color: oldlace;
-}
-
-.back, .note-save {
-  height: 50px;
-  width: 200px;
-  display: inline-block;
-}
-
-.back {
-  background-color: darkred;
-}
-
-.note-save {
-  background-color: orangered;
-}
-
-.stopwatch-btn {
-  background-color: lawngreen;
-}
-
-.spoiler {
-  visibility: hidden;
+.delete-btn, .edit-btn, .note-btn {
+  flex: 1;
+  background: red;
 }
