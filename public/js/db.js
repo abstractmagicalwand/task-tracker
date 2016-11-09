@@ -73,7 +73,7 @@ const db = [{
       '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
     project: '@loveAllWorld',
     priority: 0,
-    timeDeath: null,
+    timeDeath: [3, 0, 0],
     stopwatch: [0, 0, 0],
     old: null
   }]

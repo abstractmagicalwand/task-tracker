@@ -1,9 +1,12 @@
+body {
+  background: #b4e1ff;
+}
+
 .app {
   display: flex;
-  background: #b4e1ff;
   flex-flow: row wrap;
   font-family: sans-serif;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .content {
@@ -37,11 +40,14 @@
   width: 100%;
   height: 50px;
   margin: 5px 0px;
-  border-radius: 3px;
+  border-radius: 5px;
   display: flex;
   flex-flow: row;
   justify-content: center;
   align-items: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  cursor: pointer;
 }
 
 .btn:hover {
@@ -55,6 +61,7 @@
 .collection {
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-around;
 }
 
 .list {
@@ -65,9 +72,19 @@
 .folder {
   height: 200px;
   width: 200px;
-  border-radius: 5px;
+  border-radius: 10%;
   margin: 15px;
   background: #ab87ff;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.folder- {
+  display: flex;
+  align-self: center;
+  font-weight: bold;
+  flex-flow: column;
 }
 
 .folder:hover {
@@ -79,10 +96,56 @@
 }
 
 .task {
+  display: flex;
+  flex-flow: column wrap;
+  margin: 10px 20px;
+}
+
+.read {
   background: #ab87ff;
   display: flex;
-  flex-flow: row;
-  margin: 10px 20px;
+  flex-flow: row wrap;
+  word-wrap: inherit;
+  white-space: pre-wrap;
+}
+
+.descript {
+  text-indent: 15px;
+  text-transform: lowercase;
+  flex-flow: column wrap;
+  word-break: break-all;
+  text-size: 10px;
+  flex: 1;
+}
+
+.delete-btn {
+  border-radius: 100%;
+  background: indianred;
+  height: 30px;
+  width: 30px;
+}
+
+.panel {
+  display: flex;
+  background: #ab87ff;
+}
+
+.edit-btn, .note-btn, .complete {
+  background: fuchsia;
+  height: 30px;
+  width: 30px;
+  border-radius: 100%;
+}
+
+.complete {
+  background: #b4e1ff;
+  align-self: center;
+  border-radius: 100%;
+  margin-left: 15px;
+}
+
+.note-btn {
+  background: darkslateblue;
 }
 
 .search {
@@ -91,8 +154,9 @@
   height: 25px;
   display: flex;
   margin: 5px;
-  border-radius: 15px;
+  border-radius: 10px;
   border: 0px;
+  font-family: sans-serif;
 }
 
 .field {
@@ -104,14 +168,68 @@
 .area {
   flex: 5;
   border: 0px;
-  border-radius: 2px;
+  border-radius: 5px;
+  font-family: sans-serif;
+  font-size: 15px;
 }
 
 .sand {
   flex: 1;
 }
 
-.delete-btn, .edit-btn, .note-btn {
+.note {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  padding: 30px;
+}
+
+.note-field {
+  width: 100%;
+  height: 450px;
+  border: 0px;
+}
+
+.back, .note-save {
+  height: 50px;
+  background: #ab87ff;
   flex: 1;
-  background: red;
+}
+
+.note-save {
+  background: #c1ff9b;
+}
+
+.note-buttons {
+  background: #fface4;
+  display: flex;
+}
+
+.swopwatch-table, timer-table {
+  display: flex;
+  height: 60px;
+}
+
+.stopwatch, .timer {
+  display: flex;
+  flex-flow: column;
+  background: #ab87ff;
+  font-size: 25px;
+}
+
+.timer {
+  background: #c1ff9b;
+}
+
+
+
+.stopwatch-btn, .timer-btn {
+  background: #c1ff9b;
+  height: 30px;
+  width: 100%;
+  height: 100%;
+}
+
+.timer-btn {
+  background: #ab87ff;
 }

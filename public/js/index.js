@@ -366,8 +366,7 @@ class List extends React.Component {
   render() {
     return (
     <div className='list'>
-      <Search />
-      <Field />
+      {this.props.type !== 'archiv' ? <div className='list-'><Search /><Field /></div> : null}
       {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
     </div>);
   }
@@ -468,8 +467,10 @@ class Note extends React.Component {
     return (
       <div className='note'>
         <textarea className='note-field' defaultValue={`${this.props.value}`} ref='text'></textarea>
-        <span className='back' onClick={this.handleClickBackNote}></span>
-        <span className='note-save' onClick={this.handleClickSaveNote}></span>
+        <div className='note-buttons'>
+          <span className='back' onClick={this.handleClickBackNote}></span>
+          <span className='note-save' onClick={this.handleClickSaveNote}></span>
+        </div>
       </div>
     );
   }
@@ -558,18 +559,17 @@ class Task extends React.Component {
           <span className='edit-save' onClick={this.handleSaveEditTask}></span>
           <span className='edit-close' onClick={this.handleEditTask}></span>
         </div> :
-        <div>
+        <div className='read'>
+          <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
           <p className='descript'>{this.props.info.description}</p>
-          <span className='delete-btn' onClick={this.handleDeleteTask}></span>
-
           {this.props.info.project !== 'ARCHIV' ?
-            <span>
-              <span className='edit-btn' onClick={this.handleEditTask}></span>
-              <span className='note-btn' onClick={this.handleNoteTask}></span>
-              <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
+            <span className='panel'>
               <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />
               {this.props.info.timeDeath ?
-                <Timer old={this.props.info.now} id={this.props.info.id} time={this.props.info.timeDeath} /> : null}
+              <Timer old={this.props.info.now} id={this.props.info.id} time={this.props.info.timeDeath} /> : null}
+              <span className='edit-btn' onClick={this.handleEditTask}></span>
+              <span className='note-btn' onClick={this.handleNoteTask}></span>
+              <span className='delete-btn' onClick={this.handleDeleteTask}></span>
             </span> :
             null}
         </div>}
@@ -627,8 +627,8 @@ class Stopwatch extends React.Component {
     let s = this.props.time;
 
     return (
-      <span>
-        <span className={'stopwatch'}>
+      <span className='stopwatch'>
+        <span className='stopwatch-table'>
           <span>{s[0] < 10 ? `0${s[0]}` : s[0]}</span>:
           <span>{s[1] < 10 ? `0${s[1]}` : s[1]}</span>:
           <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
@@ -678,13 +678,13 @@ class Timer extends React.Component {
     const t = this.props.time;
 
     return (
-      <span>
-        <span className='timer'>
+      <span className='timer'>
+        <span className='timer-table'>
           <span>{t[0] < 10 ? `0${t[0]}` : t[0]}</span>:
           <span>{t[1] < 10 ? `0${t[1]}` : t[1]}</span>:
           <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
         </span>
-        <span className='stopwatch-btn' onClick={this.cancel}></span>
+        <span className='timer-btn' onClick={this.cancel}></span>
       </span>
     );
   }
@@ -703,11 +703,12 @@ class Timer extends React.Component {
 
     if (s > 0) {
       --s;
-    } else if (s === 0) {
+    } else if (s === 0 && m > 0) {
       s = 59;
       --m;
     } else if (m === 0) {
-      m = 0;
+      s = 59;
+      m = 59;
       --h;
     }
 
