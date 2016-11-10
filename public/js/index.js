@@ -511,6 +511,7 @@ class Task extends React.Component {
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
+    this.compileTask = this.compileTask.bind(this);
   }
 
   handleDeleteTask() {
@@ -550,31 +551,31 @@ class Task extends React.Component {
     }));
   }
 
-  render() {
-    return (
-      <div className='task'>
-        {this.state.edit ?
-        <div className='edit'>
-          <input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.description}`} />
-          <span className='edit-save' onClick={this.handleSaveEditTask}></span>
-          <span className='edit-close' onClick={this.handleEditTask}></span>
-        </div> :
-        <div className='read'>
-          <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />
-          <p className='descript'>{this.props.info.description}</p>
-          {this.props.info.project !== 'ARCHIV' ?
-            <span className='panel'>
-              <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />
-              {this.props.info.timeDeath ?
-              <Timer old={this.props.info.now} id={this.props.info.id} time={this.props.info.timeDeath} /> : null}
-              <span className='edit-btn' onClick={this.handleEditTask}></span>
-              <span className='note-btn' onClick={this.handleNoteTask}></span>
-              <span className='delete-btn' onClick={this.handleDeleteTask}></span>
-            </span> :
-            null}
-        </div>}
-      </div>
-    );
+  render() { return <div className='task'>{this.compileTask()}</div>; }
+
+  compileTask() {
+    const resultTask = [];
+
+    if (this.state.edit) {
+      resultTask.push(<input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.description}`} />, <span className='edit-save' onClick={this.handleSaveEditTask}></span>, <span className='edit-close' onClick={this.handleEditTask}></span>);
+    } else {
+
+      if (this.props.info.project !== 'ARCHIV') {
+        resultTask.push(
+        <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />,
+        <span className='edit-btn' onClick={this.handleEditTask}></span>,
+        <span className='note-btn' onClick={this.handleNoteTask}></span>,
+        <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />)
+      }
+
+      resultTask.splice(1, 0, <p className='descript'>{this.props.info.description}</p>);
+      resultTask.push(<span className='delete-btn' onClick={this.handleDeleteTask}></span>);
+
+      if (this.props.info.timeDeath)
+        resultTask.push(<Timer old={this.props.info.now} id={this.props.info.id} time={this.props.info.timeDeath} />);
+    }
+
+    return resultTask;
   }
 
   setStateToggleEdit() {
