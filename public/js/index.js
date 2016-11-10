@@ -801,24 +801,27 @@ class Folder extends React.Component {
   }
 
   render() {
-    return (
-      <div className='folder' onClick={this.handleClickFolder}>
-        {this.state.edit ?
-        <div className='edit'>
-          <input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.project}`} />
-          <span className='edit-save' onClick={this.handleSaveEditFolder}></span>
-          <span className='edit-close' onClick={this.handleEditFolder}></span>
-        </div> :
-        <div className='folder-'>
-          <p>{`${this.props.info.project}`}</p>
-          <span className='delete-btn' onClick={this.handleDeleteFolder}></span>
-          <span className='edit-btn' onClick={this.handleEditFolder}></span>
-          <span className='note-btn' onClick={this.handleNoteFolder}></span>
-        </div>}
-      </div>
-    );
+    return <div className='folder' onClick={this.handleClickFolder}>{this.compileFolder()}</div>;
   }
 
+  compileFolder() {
+    const resultFolder = [];
+
+    if (this.state.edit) {
+      resultFolder.push(
+        <input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.project}`} />,
+        <span className='edit-save' onClick={this.handleSaveEditFolder}></span>,
+        <span className='edit-close' onClick={this.handleEditFolder}></span>);
+    } else {
+      resultFolder.push(
+        <p>{`${this.props.info.project}`}</p>,
+        <span className='delete-btn' onClick={this.handleDeleteFolder}></span>,
+        <span className='edit-btn' onClick={this.handleEditFolder}></span>,
+        <span className='note-btn' onClick={this.handleNoteFolder}></span>);
+    }
+
+    return resultFolder;
+  }
 
   setStateToggleEdit() {
     this.setState({edit: !this.state.edit});
