@@ -9,14 +9,6 @@ body {
   font-size: 16px;
 }
 
-.content {
-  margin: 15px 15px 15px 0px;
-  background: #fface4;
-  display: flex;
-  flex-flow: column;
-  flex: 4;
-}
-
 .bar {
   background: #fface4;
   display: flex;
@@ -30,7 +22,7 @@ body {
   flex-flow: column;
   justify-content: flex-start;
   margin: 15px;
-  flex: 1;
+  flex: 1 200px;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -54,108 +46,41 @@ body {
   background: #fface4
 }
 
-.task {
+.content {
+  margin: 15px 15px 15px 15px;
+  background: #fface4;
   display: flex;
-  justify-content: center;
+  flex-flow: column wrap;
+  flex: 4 400px;
+  justify-content: flex-start;
+  padding: 10px;
 }
 
-.collection {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
+.archiv {
+  margin: 3px 0px;
 }
 
 .list {
+  height: 100%;
   display: flex;
   flex-flow: column wrap;
-}
-
-.list- {
-  display: flex;
-  flex-flow: column wrap;
-}
-
-.folder {
-  height: 200px;
-  width: 200px;
-  border-radius: 10%;
-  margin: 15px;
-  background: #ab87ff;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  cursor: pointer;
-}
-
-.folder- {
-  display: flex;
-  align-self: center;
-  font-weight: bold;
-  flex-flow: column;
-}
-
-.folder:hover {
-  background: #f5ffc6;
-}
-
-.bar:active, .folder:active, .btn:active, .task:active {
-  background: #c1ff9b;
 }
 
 .task {
-  background: #ab87ff;
   display: flex;
-  flex-flow: column;
-  margin: 15px 20px;
+  flex-flow: row wrap;
+  background: #ab87ff;
   border-radius: 15px;
-}
-
-.descript {
-  margin: 0;
-  justify-content: center;
-  word-break: break-all;
-  flex: 1;
-  align-self: center;
-}
-
-.delete-btn {
-  border-radius: 100%;
-  background: indianred;
-  height: 30px;
-  width: 30px;
-}
-
-.edit-field {
-  border-radius: 20px;
-  border: 0;
-}
-
-.edit-save, .edit-close, .edit-btn, .note-btn, .complete {
-  background: fuchsia;
-  height: 30px;
-  width: 30px;
-  border-radius: 100%;
-}
-
-.complete {
-  background: #b4e1ff;
-  align-self: center;
-  border-radius: 100%;
-  margin-left: 15px;
-}
-
-.note-btn {
-  background: darkslateblue;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .search {
   align-self: center;
   width: 30%;
+  margin: 10px;
   height: 25px;
-  display: flex;
-  margin: 5px;
+  margin-left: 0;
   border-radius: 10px;
   border: 0px;
   font-family: sans-serif;
@@ -181,6 +106,81 @@ body {
 
 .sand {
   flex: 1;
+}
+
+.collection {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.folder {
+  height: 200px;
+  width: 200px;
+  border-radius: 10%;
+  margin: 15px;
+  background: #ab87ff;
+  display: flex;
+  flex-flow: column wrap;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  cursor: pointer;
+}
+
+.folder:hover {
+  background: #f5ffc6;
+}
+
+.folderName {
+  align-self: center;
+  display: inline-block;
+}
+
+.descript {
+  margin: 0;
+  flex: 1;
+  align-self: center;
+}
+
+/*.bar:active, .folder:active, .btn:active, .task:active {
+  background: #c1ff9b;
+}*/
+
+.edit-field {
+  border-radius: 20px;
+  border: 0;
+}
+
+.edit-save, .edit-close, .edit-btn, .note-btn, .delete-btn {
+  background: fuchsia;
+  height: 20px;
+  width: 20px;
+  border-radius: 100%;
+  align-self: center;
+  margin: 5px;
+}
+
+.complete {
+  background: #b4e1ff;
+  align-self: center;
+  border-radius: 100%;
+  margin: 0px 15px 0px 5px;
+  height: 15px;
+  width: 15px;
+  border: 5px solid #fface4;
+}
+
+.complete:active {
+  border: 5px solid #ab87ff;
+  background: #fface4;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+.note-btn {
+  background: darkslateblue;
 }
 
 .note {
@@ -211,35 +211,32 @@ body {
   display: flex;
 }
 
-.swopwatch-table, timer-table {
-  display: flex;
-  height: 60px;
-
-}
-
 .stopwatch, .timer {
   display: flex;
-  flex-flow: column;
+  flex-flow: row;
   background: #ab87ff;
   color: mediumvioletred;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
+  margin: 0;
+  padding: 0;
+  align-items: center;
 }
-
-.timer {
-  background: #c1ff9b;
-}
-
-
 
 .stopwatch-btn, .timer-btn {
   background: #c1ff9b;
   height: 30px;
-  width: 100%;
-  height: 100%;
+  width: 30px;
+  margin: 0;
+}
+
+.timer {
+  background: #c1ff9b;
+  display: flex;
+  flex-flow: row;
 }
 
 .timer-btn {
   background: #ab87ff;
+  margin: 0;
 }
-

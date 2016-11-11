@@ -144,6 +144,7 @@ class App extends React.Component {
     db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {
         if (e.detail.id === item.id) {
+          console.log('delete!');
           item.timeDeath = null;
         }
       });
@@ -366,7 +367,8 @@ class List extends React.Component {
   render() {
     return (
     <div className='list'>
-      {this.props.type !== 'archiv' ? <div className='list-'><Search /><Field /></div> : null}
+      {this.props.type !== 'archiv' ? <Search /> : null}
+      {this.props.type !== 'archiv' ? <Field />  : null}
       {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
     </div>);
   }
@@ -399,7 +401,8 @@ class List extends React.Component {
   }
 
   getCompTasks(tasks) {
-    return tasks.map(task => <Task info={task} />)
+    let item = 0;
+    return tasks.map(task => <Task info={task} item={++item}/>);
   }
 }
 
@@ -562,17 +565,20 @@ class Task extends React.Component {
 
       if (this.props.info.project !== 'ARCHIV') {
         resultTask.push(
-        <input onClick={this.handleCompleteTask} className='complete' type='checkbox' />,
+        <lable onClick={this.handleCompleteTask} className='complete'><input type='checkbox'/></lable>,
+        <p className='descript'>{this.props.info.description}</p>,
+        <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />,
         <span className='edit-btn' onClick={this.handleEditTask}></span>,
         <span className='note-btn' onClick={this.handleNoteTask}></span>,
-        <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />)
+        <span className='delete-btn' onClick={this.handleDeleteTask}></span>);
+      } else {
+        resultTask.push(
+          <p className='descript'>{this.props.info.description}</p>,
+          <span className='delete-btn archiv' onClick={this.handleDeleteTask}></span>);
       }
 
-      resultTask.splice(1, 0, <p className='descript'>{this.props.info.description}</p>);
-      resultTask.push(<span className='delete-btn' onClick={this.handleDeleteTask}></span>);
-
       if (this.props.info.timeDeath)
-        resultTask.push(<Timer old={this.props.info.now} id={this.props.info.id} time={this.props.info.timeDeath} />);
+        resultTask.splice(2, 0, <Timer old={this.props.info.now} id={this.props.info.id} time={this.props.info.timeDeath} />);
     }
 
     return resultTask;
@@ -629,11 +635,9 @@ class Stopwatch extends React.Component {
 
     return (
       <span className='stopwatch'>
-        <span className='stopwatch-table'>
-          <span>{s[0] < 10 ? `0${s[0]}` : s[0]}</span>:
-          <span>{s[1] < 10 ? `0${s[1]}` : s[1]}</span>:
-          <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
-        </span>
+        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}</span>:
+        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}</span>:
+        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
         <span className='stopwatch-btn' onClick={this.toggle}></span>
       </span>
     );
@@ -676,15 +680,14 @@ class Timer extends React.Component {
   }
 
   render() {
+    console.log('render');
     const t = this.props.time;
 
     return (
       <span className='timer'>
-        <span className='timer-table'>
-          <span>{t[0] < 10 ? `0${t[0]}` : t[0]}</span>:
-          <span>{t[1] < 10 ? `0${t[1]}` : t[1]}</span>:
-          <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
-        </span>
+        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}</span>:
+        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}</span>:
+        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
         <span className='timer-btn' onClick={this.cancel}></span>
       </span>
     );
@@ -814,7 +817,7 @@ class Folder extends React.Component {
         <span className='edit-close' onClick={this.handleEditFolder}></span>);
     } else {
       resultFolder.push(
-        <p>{`${this.props.info.project}`}</p>,
+        <p className='folderName'>{`${this.props.info.project}`}</p>,
         <span className='delete-btn' onClick={this.handleDeleteFolder}></span>,
         <span className='edit-btn' onClick={this.handleEditFolder}></span>,
         <span className='note-btn' onClick={this.handleNoteFolder}></span>);
