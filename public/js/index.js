@@ -93,7 +93,7 @@ class App extends React.Component {
       viewContent: 'note',
       value: e.detail.value,
       edit: e.detail.project || e.detail.id,
-      viewLast: this.state.viewContent
+      viewLast: this.state.viewContent || 'inbox'
     });
 
   }
@@ -144,7 +144,6 @@ class App extends React.Component {
     db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {
         if (e.detail.id === item.id) {
-          console.log('delete!');
           item.timeDeath = null;
         }
       });
@@ -324,9 +323,9 @@ class Field extends React.Component {
   render() {
     return (
       <div className='field'>
-        <textarea className='area' ref='text'>
+        <textarea className='area' ref='text' placeholder='Write you task...'>
         </textarea>
-        <input className='sand' type='button' onClick={this.handleGetText}/>
+        <span className='sand' onClick={this.handleGetText}/>
       </div>
     );
   }
@@ -455,6 +454,7 @@ class Note extends React.Component {
   }
 
   handleClickBackNote(e) {
+
     window.dispatchEvent(new CustomEvent('back'));
   }
 
@@ -469,7 +469,7 @@ class Note extends React.Component {
   render() {
     return (
       <div className='note'>
-        <textarea className='note-field' defaultValue={`${this.props.value}`} ref='text'></textarea>
+        <textarea className='note-field' defaultValue={`${this.props.value}`} ref='text' placeholder='Write you note...'></textarea>
         <div className='note-buttons'>
           <span className='back' onClick={this.handleClickBackNote}></span>
           <span className='note-save' onClick={this.handleClickSaveNote}></span>
@@ -680,7 +680,6 @@ class Timer extends React.Component {
   }
 
   render() {
-    console.log('render');
     const t = this.props.time;
 
     return (
@@ -760,7 +759,6 @@ class Folder extends React.Component {
   }
 
   handleClickFolder(e) {
-    console.log(e.target.tagName)
     if (e.target.tagName !== 'DIV') return;
 
     window.dispatchEvent(new CustomEvent('clickNavBtn', {
@@ -787,7 +785,7 @@ class Folder extends React.Component {
 
     window.dispatchEvent(new CustomEvent('save', {
       detail: {
-        value: ReactDOM.findDOMNode(this.refs.value).value,
+        value: ReactDOM.findDOMNode(this.refs.value).value.slice(0, 21),
         project: this.props.info.project
       }
     }));
@@ -812,7 +810,7 @@ class Folder extends React.Component {
 
     if (this.state.edit) {
       resultFolder.push(
-        <input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.project}`} />,
+        <input className='folder-field' type='text' ref='value' defaultValue={`${this.props.info.project}`} />,
         <span className='edit-save' onClick={this.handleSaveEditFolder}></span>,
         <span className='edit-close' onClick={this.handleEditFolder}></span>);
     } else {
