@@ -1,11 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Droid+Sans');
+
 body {
   background: #b4e1ff;
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 15px;
 }
 
 .app {
   display: flex;
   flex-flow: row wrap;
-  font-family: sans-serif;
   font-size: 16px;
 }
 
@@ -83,8 +86,8 @@ body {
   margin-left: 0;
   border-radius: 10px;
   border: 0px;
-  font-family: sans-serif;
   outline: none;
+  font-size: 15px;
   padding-left: 10px;
   transition: width 0.4s ease-in-out;
 }
@@ -98,16 +101,18 @@ body {
 }
 
 .field {
+  font-family: 'Droid Sans', sans-serif;
   display: flex;
   flex-flow: row wrap;
   padding: 0 20px;
 }
 
 .area {
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 15px;
   flex: 5;
   border: 0px;
   border-radius: 5px;
-  font-family: sans-serif;
   font-size: 15px;
   padding-left: 10px;
   resize: none;
@@ -148,6 +153,7 @@ body {
 }
 
 .edit-field {
+  font-family: 'Droid Sans', sans-serif;
   border-radius: 20px;
   border: 0;
   outline: none;
@@ -187,16 +193,26 @@ input[type=checkbox] {
 
 .note-btn {
   background: darkslateblue;
+  flex-flow: column;
 }
+
 
 .note {
   display: flex;
-  flex-flow: column;
+  flex-flow: row;
   justify-content: center;
   padding: 30px;
 }
 
+.note-panel {
+  background: #ab87ff;
+  display: flex;
+  flex-flow: column;
+}
+
 .note-field {
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 16px;
   width: 100%;
   height: 450px;
   border: 0px;
@@ -206,11 +222,6 @@ input[type=checkbox] {
 
 .note-save {
   background: #c1ff9b;
-}
-
-.note-buttons {
-  background: #fface4;
-  display: flex;
 }
 
 .stopwatch, .timer {
@@ -240,6 +251,7 @@ input[type=checkbox] {
 .note-btn {
   background: url('../img/note.png');
 }
+
 
 .stopwatch-btn {
   background: url('../img/play.png');
@@ -281,25 +293,12 @@ input[type=checkbox] {
   padding: 0px 0px 0px 30px;
 }
 
-/*
-.stopwatch-btn {
-  background: url('../img/Play Filled.png');
-}
-
-.note-save {
-  background: url('../img/Save as-48.png');
-}
-
-.back {
-  background: url('../img/Exit-48.png');
-}
-*/
-
 .sand:hover {
   transform: rotate(90deg);
 }
 
 .edit-field {
+  font-family: 'Droid Sans', sans-serif;
   flex: 1;
   height: 50%;
   align-self: center;
@@ -323,8 +322,13 @@ input[type=checkbox] {
 }
 
 .folder-field {
+  font-family: 'Droid Sans', sans-serif;
   width: 195px;
   margin-top: 15px;
-  justify-center: center;
+  justify-content: center;
   outline: none;
+}
+
+.archiv {
+  padding: 0px 0px 0px 20px;
 }

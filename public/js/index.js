@@ -469,11 +469,11 @@ class Note extends React.Component {
   render() {
     return (
       <div className='note'>
-        <textarea className='note-field' defaultValue={`${this.props.value}`} ref='text' placeholder='Write you note...'></textarea>
-        <div className='note-buttons'>
-          <span className='back' onClick={this.handleClickBackNote}></span>
-          <span className='note-save' onClick={this.handleClickSaveNote}></span>
+        <div className='note-panel'>
+          <span className='exit' onClick={this.handleClickBackNote}></span>
+          <span className='save' onClick={this.handleClickSaveNote}></span>
         </div>
+        <textarea className='note-field' defaultValue={`${this.props.value}`} ref='text' placeholder='Write you note...'></textarea>
       </div>
     );
   }
@@ -556,6 +556,11 @@ class Task extends React.Component {
 
   render() { return <div className='task'>{this.compileTask()}</div>; }
 
+  componentDidMount() {
+    console.log(document.querySelector('.edit-field'));
+    if (this.state.edit) document.querySelector('.edit-field').focus();
+  }
+
   compileTask() {
     const resultTask = [];
 
@@ -583,8 +588,8 @@ class Task extends React.Component {
         );
       } else {
         resultTask.push(
-          <p className='descript'>{this.props.info.description}</p>,
-          <span className='delete-btn archiv' onClick={this.handleDeleteTask}></span>
+          <p className='descript archiv'>{this.props.info.description}</p>,
+          <span className='delete-btn' onClick={this.handleDeleteTask}></span>
         );
       }
 
