@@ -269,6 +269,18 @@ input[type=checkbox] {
   background: url('../img/exit.png')
 }
 
+.sand {
+  background: url('../img/add.png');
+}
+
+.search {
+  background: url('../img/search.png');
+  background-color: white;
+  background-position: 2px 2px;
+  background-repeat: no-repeat;
+  padding: 0px 0px 0px 30px;
+}
+
 /*
 .stopwatch-btn {
   background: url('../img/Play Filled.png');
@@ -281,10 +293,7 @@ input[type=checkbox] {
 .back {
   background: url('../img/Exit-48.png');
 }
-
-.sand {
-  background: url('../img/Rocket-48.png');
-}*/
+*/
 
 .sand:hover {
   transform: rotate(90deg);
