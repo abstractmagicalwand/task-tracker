@@ -560,21 +560,32 @@ class Task extends React.Component {
     const resultTask = [];
 
     if (this.state.edit) {
-      resultTask.push(<input className='edit-field' type='text' ref='value' defaultValue={`${this.props.info.description}`} />, <span className='edit-save' onClick={this.handleSaveEditTask}></span>, <span className='edit-close' onClick={this.handleEditTask}></span>);
+      resultTask.push(
+        <input
+          className='edit-field'
+          type='text'
+          ref='value'
+          defaultValue={`${this.props.info.description}`}
+        />,
+        <span className='save' onClick={this.handleSaveEditTask}></span>,
+        <span className='exit' onClick={this.handleEditTask}></span>
+      );
     } else {
 
       if (this.props.info.project !== 'ARCHIV') {
         resultTask.push(
-        <lable onClick={this.handleCompleteTask} className='complete'><input type='checkbox'/></lable>,
-        <p className='descript'>{this.props.info.description}</p>,
-        <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />,
-        <span className='edit-btn' onClick={this.handleEditTask}></span>,
-        <span className='note-btn' onClick={this.handleNoteTask}></span>,
-        <span className='delete-btn' onClick={this.handleDeleteTask}></span>);
+          <lable onClick={this.handleCompleteTask} className='complete'><input type='checkbox'/></lable>,
+          <p className='descript'>{this.props.info.description}</p>,
+          <Stopwatch old={this.props.info.now} id={this.props.info.id} time={this.props.info.stopwatch} />,
+          <span className='edit-btn' onClick={this.handleEditTask}></span>,
+          <span className='note-btn' onClick={this.handleNoteTask}></span>,
+          <span className='delete-btn' onClick={this.handleDeleteTask}></span>
+        );
       } else {
         resultTask.push(
           <p className='descript'>{this.props.info.description}</p>,
-          <span className='delete-btn archiv' onClick={this.handleDeleteTask}></span>);
+          <span className='delete-btn archiv' onClick={this.handleDeleteTask}></span>
+        );
       }
 
       if (this.props.info.timeDeath)
@@ -592,13 +603,16 @@ class Task extends React.Component {
 class Stopwatch extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      iterval: false
+    };
 
-    this.interval  = false;
     this.stop      = this.stop.bind(this);
     this.play      = this.play.bind(this);
     this.toggle    = this.toggle.bind(this);
     this.stopwatch = null;
-    this.old = null;
+    this.old       = null;
+    this.compile   = this.compile.bind(this);
 
     this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
   }
@@ -627,51 +641,68 @@ class Stopwatch extends React.Component {
   }
 
   componentWillMount() {
-    if (!this.interval) this.play();
+    if (!this.state.interval) this.play();
   }
 
   render() {
-    let s = this.props.time;
-
-    return (
-      <span className='stopwatch'>
-        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}</span>:
-        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}</span>:
-        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
-        <span className='stopwatch-btn' onClick={this.toggle}></span>
-      </span>
-    );
+    return <span className='stopwatch'>{this.compile()}</span>;
   }
 
   componentDidMount() {
-    if (this.interval) this.stop();
+    if (this.state.interval) this.stop();
   }
 
   componentWillUnmount() {
     this.stop();
   }
 
-  toggle() { this.interval ? this.stop() : this.play(); }
+  compile() {
+    const result = [],
+          s = this.props.time;
+
+    if (this.state.interval) {
+      result.push(
+        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}:</span>,
+        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}:</span>,
+        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
+      );
+    }
+    result.push(
+      <span
+        className={'stopwatch-btn' + (this.state.interval ? '' : ' pause')}
+        onClick={this.toggle}
+      />
+    );
+
+    return result;
+  }
+
+  toggle() { this.state.interval ? this.stop() : this.play(); }
 
   play() {
     const self = this;
     this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
-    this.interval = !this.interval;
+    this.setState({interval: !this.state.interval});
   }
 
   stop() {
     clearInterval(this.stopwatch);
     this.stopwatch = null;
-    this.interval = !this.interval;
+    this.setState({interval: !this.state.interval});
   }
 }
 
 class Timer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      spoiler: true
+    };
     this.timer = null;
     this.handleTickTimer = this.handleTickTimer.bind(this);
     this.cancel = this.cancel.bind(this);
+    this.spoiler = this.spoiler.bind(this);
+    this.compile = this.compile.bind(this);
   }
 
   componentWillMount() {
@@ -680,16 +711,32 @@ class Timer extends React.Component {
   }
 
   render() {
-    const t = this.props.time;
+    return (<span className='timer'>{this.compile()}</span>);
+  }
 
-    return (
-      <span className='timer'>
-        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}</span>:
-        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}</span>:
-        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
-        <span className='timer-btn' onClick={this.cancel}></span>
-      </span>
-    );
+  compile() {
+    const result = [],
+          t = this.props.time;
+
+    if (!this.state.spoiler) {
+      result.push(
+        <span className='timer-btn' onClick={this.cancel}></span>,
+        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}:</span>,
+        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}:</span>,
+        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>,
+        <span className='timer-spoiler-off-btn' onClick={this.spoiler} />
+      );
+    } else {
+      result.push(
+        <span className='timer-spoiler-btn' onClick={this.spoiler} />
+      );
+    }
+
+    return result;
+  }
+
+  spoiler() {
+    this.setState({spoiler: !this.state.spoiler});
   }
 
   componentDidMount() {
@@ -816,7 +863,7 @@ class Folder extends React.Component {
     } else {
       resultFolder.push(
         <p className='folderName'>{`${this.props.info.project}`}</p>,
-        <span className='delete-btn' onClick={this.handleDeleteFolder}></span>,
+        <span className='delete-btn' onClick={this.handleDeleteFolder} alt="delete"/>,
         <span className='edit-btn' onClick={this.handleEditFolder}></span>,
         <span className='note-btn' onClick={this.handleNoteFolder}></span>);
     }

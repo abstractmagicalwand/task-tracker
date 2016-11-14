@@ -90,7 +90,7 @@ body {
 }
 
 .search-icon {
-  background: url('../img/Detective-48.png');
+  background: url('../img/search.png');
 }
 
 .search:focus {
@@ -112,10 +112,6 @@ body {
   padding-left: 10px;
   resize: none;
 }
-
-/*.sand {
-  flex: 1;
-}*/
 
 .collection {
   display: flex;
@@ -151,43 +147,25 @@ body {
   align-self: center;
 }
 
-/*.bar:active, .folder:active, .btn:active, .task:active {
-  background: #c1ff9b;
-}*/
-
 .edit-field {
   border-radius: 20px;
   border: 0;
   outline: none;
 }
 
-/*.edit-save, .edit-close, .edit-btn, .note-btn, .delete-btn {
-  background: fuchsia;
-  height: 20px;
-  width: 20px;
-  border-radius: 100%;
-  align-self: center;
-  margin: 5px;
-}*/
-
-
-
-
-
 .delete-btn {
-  background: url('../img/Delete-48.png');
-  width: 50px;
-  height: 50px;
+  background: url('../img/delete.png');
+  height: 48px;
+  width: 48px;
   align-self: center;
 }
 
 .edit-btn {
-  background: url('../img/Edit-48.png');
+  background: url('../img/edit.png');
   width: 48px;
   height: 48px;
   align-self: center;
 }
-
 
 .complete {
   background: #b4e1ff;
@@ -200,7 +178,6 @@ body {
 }
 
 .complete:active {
-  border: 5px solid #ab87ff;
   background: #fface4;
 }
 
@@ -227,13 +204,6 @@ input[type=checkbox] {
   resize: none;
 }
 
-/*
-.back, .note-save {
-  height: 50px;
-  background: #ab87ff;
-  flex: 1;
-}
-*/
 .note-save {
   background: #c1ff9b;
 }
@@ -255,40 +225,53 @@ input[type=checkbox] {
   align-items: center;
 }
 
-.stopwatch-btn, .timer-btn {
-  background: #c1ff9b;
-  height: 30px;
-  width: 30px;
-  margin: 0;
-}
-
 .timer {
-  background: #c1ff9b;
   display: flex;
   flex-flow: row;
 }
 
-.stopwatch-btn, .back, .timer-btn, .note-btn, .note-save, .sand, .edit-save, .edit-close {
-  background: url('../img/Self-Destruct Button-48.png');
+.stopwatch-btn, .back, .timer-btn, .note-btn, .note-save, .sand, .exit,
+.save, .timer-spoiler-btn, .timer-spoiler-off-btn {
   width: 48px;
   height: 48px;
   align-self: center;
 }
 
-.stopwatch-btn {
-  background: url('../img/Play Filled.png');
+.note-btn {
+  background: url('../img/note.png');
 }
 
-.play {
-  background: url('../img/Play Filled.png');
+.stopwatch-btn {
+  background: url('../img/play.png');
 }
 
 .pause {
-  background: url('../img/Pause Filled.png');
+  background: url('../img/pause.png');
 }
 
-.note-btn {
-  background: url('../img/Note-48.png');
+.timer-btn {
+  background: url('../img/cancel.png')
+}
+
+.timer-spoiler-btn {
+  background: url('../img/timer-on.png');
+}
+
+.timer-spoiler-off-btn {
+  background: url('../img/timer-off.png');
+}
+
+.save {
+  background: url('../img/save.png');
+}
+
+.exit {
+  background: url('../img/exit.png')
+}
+
+/*
+.stopwatch-btn {
+  background: url('../img/Play Filled.png');
 }
 
 .note-save {
@@ -301,7 +284,7 @@ input[type=checkbox] {
 
 .sand {
   background: url('../img/Rocket-48.png');
-}
+}*/
 
 .sand:hover {
   transform: rotate(90deg);
