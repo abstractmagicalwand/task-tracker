@@ -3,8 +3,6 @@ import ReactDOM  from 'react-dom';
 import Stopwatch from './stopwatch.jsx';
 import Timer     from './timer.jsx';
 
-let keyId = 0;
-
 export default class Task extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +16,10 @@ export default class Task extends React.Component {
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
-    this.compileTask = this.compileTask.bind(this);
+    this.edit = this.edit.bind(this);
+    this.contentPanel = this.contentPanel.bind(this);
+    this.archiv = this.archiv.bind(this);
+    this.timer = this.timer.bind(this);
   }
 
   handleDeleteTask() {
@@ -59,65 +60,79 @@ export default class Task extends React.Component {
   }
 
   render() {
-    return <div className='task'>{this.compileTask()}</div>;
+    return (
+      <div className='task'>
+        {
+          this.edit()}
+          {this.contentPanel()}
+          {this.timer()}
+          {this.archiv()}
+
+      </div>
+    );
   }
 
   componentDidMount() {
     if (this.state.edit) document.querySelector('.edit-field').focus();
   }
 
-  compileTask() {
-    const resultTask = [];
+  timer() {
+    if (!this.props.info.timeDeath) return;
+    return (
+      <Timer
+        className='wrap'
+        old={this.props.info.now}
+        id={this.props.info.id}
+        time={this.props.info.timeDeath}
+      />
+    );
+  }
 
-    if (this.state.edit) {
-      resultTask.push(
+  edit() {
+    if (!this.state.edit) return;
+    return (
+      <span className='wrap'>
         <input
-          key={++keyId}
           className='edit-field'
           type='text'
           ref='value'
           defaultValue={`${this.props.info.description}`}
-        />,
-        <span className='save' key={++keyId} onClick={this.handleSaveEditTask}></span>,
-        <span className='exit' key={++keyId} onClick={this.handleEditTask}></span>
-      );
-    } else {
-      if (this.props.info.project !== 'ARCHIV') {
-        resultTask.push(
-          <lable
-            key={++keyId}
-            onClick={this.handleCompleteTask}
-            className='complete'>
-          <input key={++keyId} type='checkbox'/></lable>,
-          <p key={++keyId} className='descript'>{this.props.info.description}</p>,
-          <Stopwatch
-            key={++keyId}
-            old={this.props.info.now}
-            id={this.props.info.id}
-            time={this.props.info.stopwatch}
-          />,
-          <span key={++keyId} className='edit-btn' onClick={this.handleEditTask}></span>,
-          <span key={++keyId} className='note-btn' onClick={this.handleNoteTask}></span>,
-          <span key={++keyId} className='delete-btn' onClick={this.handleDeleteTask}></span>
-        );
-      } else {
-        resultTask.push(
-          <p key={++keyId} className='descript archiv'>{this.props.info.description}</p>,
-          <span key={++keyId} className='delete-btn' onClick={this.handleDeleteTask}></span>
-        );
-      }
+        />
+        <span className='save' onClick={this.handleSaveEditTask}></span>
+        <span className='exit' onClick={this.handleEditTask}></span>
+      </span>
+    );
+  }
 
-      if (this.props.info.timeDeath) {
-        resultTask.splice(2, 0, <Timer
-          key={++keyId}
+  contentPanel() {
+    if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
+    return (
+      <span className='wrap'>
+        <lable
+          onClick={this.handleCompleteTask}
+          className='complete'>
+        <input type='checkbox'/></lable>
+        <p className='descript'>{this.props.info.description}</p>
+        <Stopwatch
           old={this.props.info.now}
           id={this.props.info.id}
-          time={this.props.info.timeDeath}
-        />);
-      }
-    }
+          time={this.props.info.stopwatch}
+        />
+        <span className='edit-btn' onClick={this.handleEditTask}></span>
+        <span className='note-btn' onClick={this.handleNoteTask}></span>
+        <span className='delete-btn' onClick={this.handleDeleteTask}></span>
+      </span>
+    );
+  }
 
-    return resultTask;
+  archiv() {
+    if (this.props.info.project !== 'ARCHIV') return;
+    return (
+      <span className='wrap'>
+        <p className='descript archiv'>{this.props.info.description}</p>
+        <span className='delete-btn' onClick={this.handleDeleteTask}></span>
+      </span>
+    );
   }
 
   setStateToggleEdit() {
