@@ -141,9 +141,17 @@ body {
   background: #f5ffc6;
 }
 
-.folderName {
+.folder-panel {
+  display: flex;
+  flex-flow: row;
+  flex: 1;
+  justify-content: center;
+}
+
+.folder-name {
   align-self: center;
   display: inline-block;
+  flex: 2;
 }
 
 .descript {
@@ -321,14 +329,25 @@ input[type=checkbox] {
   background: url('../img/Multiply-48.png');
 }
 
+.archiv {
+  padding: 0px 0px 0px 20px;
+}
+
 .folder-field {
   font-family: 'Droid Sans', sans-serif;
   width: 195px;
-  margin-top: 15px;
+  margin-top: 75px;
   justify-content: center;
   outline: none;
 }
 
-.archiv {
-  padding: 0px 0px 0px 20px;
+.folder-edit-panel {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+}
+
+.folder-edit {
+  display: flex;
+  flex-flow: column;
 }

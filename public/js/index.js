@@ -811,7 +811,9 @@ class Folder extends React.Component {
   }
 
   handleClickFolder(e) {
-    if (e.target.tagName !== 'DIV') return;
+    const tag = e.target.tagName;
+
+    if (tag != 'DIV' && tag != 'P') return;
 
     window.dispatchEvent(new CustomEvent('clickNavBtn', {
       detail: {category: this.props.info.project}
@@ -862,15 +864,32 @@ class Folder extends React.Component {
 
     if (this.state.edit) {
       resultFolder.push(
-        <input className='folder-field' type='text' ref='value' defaultValue={`${this.props.info.project}`} />,
-        <span className='edit-save' onClick={this.handleSaveEditFolder}></span>,
-        <span className='edit-close' onClick={this.handleEditFolder}></span>);
+        <span className='folder-edit'>
+        <input
+          className='folder-field'
+          type='text'
+          ref='value'
+          defaultValue={`${this.props.info.project}`}
+        />
+        <span className='folder-edit-panel'>
+          <span className='save' onClick={this.handleSaveEditFolder}></span>
+          <span className='exit' onClick={this.handleEditFolder}></span>
+        </span>
+        </span>
+      );
     } else {
       resultFolder.push(
-        <p className='folderName'>{`${this.props.info.project}`}</p>,
-        <span className='delete-btn' onClick={this.handleDeleteFolder} alt="delete"/>,
-        <span className='edit-btn' onClick={this.handleEditFolder}></span>,
-        <span className='note-btn' onClick={this.handleNoteFolder}></span>);
+        <p
+          className='folder-name'
+          onClick={this.handleClickFolder}>
+          {`${this.props.info.project}`}
+        </p>,
+        <span className='folder-panel'>
+          <span className='delete-btn' onClick={this.handleDeleteFolder} />
+          <span className='edit-btn' onClick={this.handleEditFolder} />
+          <span className='note-btn' onClick={this.handleNoteFolder} />
+        </span>
+      );
     }
 
     return resultFolder;
