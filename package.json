@@ -29,6 +29,19 @@
     "url": "git://github.com/magicwantabstract/task-tracker"
   },
   "devDependencies": {
-    "express": "^4.14.0"
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "css-loader": "^0.25.0",
+    "express": "^4.14.0",
+    "file-loader": "^0.9.0",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.3"
+  },
+  "dependencies": {
+    "lockr": "^0.8.4",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
   }
 }

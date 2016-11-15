@@ -321,14 +321,6 @@ input[type=checkbox] {
   margin-right: 3px;
 }
 
-.edit-save {
-  background: url('../img/Save as-48.png');
-}
-
-.edit-close {
-  background: url('../img/Multiply-48.png');
-}
-
 .archiv {
   padding: 0px 0px 0px 20px;
 }

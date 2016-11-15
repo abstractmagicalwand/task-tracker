@@ -98,3 +98,5 @@ const db = [{
       old: null
   }]
 }];
+
+export {db};
