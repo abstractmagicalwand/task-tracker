@@ -9,14 +9,18 @@ export default class Search extends React.Component {
   }
 
   handleSearchReq(e) {
-    const event = new CustomEvent('searchValue', {
+    window.dispatchEvent(new CustomEvent('searchValue', {
       detail: {value: e.target.value}
-    })
-
-    window.dispatchEvent(event);
+    }));
   }
 
   render() {
-    return <input className='search' type='text' onChange={this.handleSearchReq}/>;
+    return (
+      <input
+        className='search'
+        type='text'
+        onChange={this.handleSearchReq}
+      />
+    );
   }
 };

@@ -33,8 +33,9 @@ export default class List extends React.Component {
           if (item.project === this.props.projectName) return item;
         })[0].tasks;
     case 'search':
+        const val = this.props.value;
         return this.getInboxTasks(db).filter((item, d, array) => {
-          if (~item.description.indexOf(this.props.value)) return item;
+          if (~item.description.search(new RegExp(`${val}`, 'i'))) return item;
         });
     }
 
