@@ -3,7 +3,6 @@ import ReactDOM   from 'react-dom';
 import List       from './list.jsx';
 import Collection from './collection.jsx';
 import Stats      from './stats.jsx';
-import Help       from './help.jsx';
 import Note       from './note.jsx';
 
 export default class Content extends React.Component {
@@ -28,8 +27,6 @@ export default class Content extends React.Component {
         return <Stats />;
     case 'search':
         return <List type='search' value={this.props.value} db={this.props.db} />;
-    case 'help':
-        return <Help />;
     case 'note':
         return <Note value={this.props.value} />;
     default:

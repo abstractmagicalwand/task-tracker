@@ -17,7 +17,14 @@ body {
   display: flex;
   height: 100px;
   width: 100%;
-  margin: 0px 15px;
+  margin-bottom: 5px;
+}
+
+.help {
+  background: #BDBDBD;
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .nav {
@@ -117,6 +124,7 @@ body {
   font-size: 15px;
   padding-left: 10px;
   resize: none;
+  outline-color: #03A9F4;
 }
 
 .collection {
@@ -139,7 +147,7 @@ body {
 }
 
 .folder:hover {
-  background: #f5ffc6;
+  background: #9E9E9E;
 }
 
 .folder-panel {
@@ -336,6 +344,7 @@ input[type=checkbox] {
   margin-top: 75px;
   justify-content: center;
   outline: none;
+  border: 0px;
 }
 
 .folder-edit-panel {

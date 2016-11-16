@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {db}     from '../db/index.js';
 import Content  from '../component/content.jsx';
 import Nav      from '../component/nav.jsx';
-import Bar      from '../component/bar.jsx';
+import Help     from '../component/help.jsx';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -177,13 +177,12 @@ export default class App extends React.Component {
   render() {
     return (
       <div className='app'>
-        <Bar />
         <Nav />
         <Content
           view={this.state.viewContent ? this.state.viewContent : 'inbox'}
           db={this.state.db}
           value={this.state.value ? this.state.value : ''}/>
-        {/*<Help />*/}
+        <Help />
       </div>
     );
   }

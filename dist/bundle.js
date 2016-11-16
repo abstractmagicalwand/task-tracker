@@ -21981,9 +21981,9 @@
 	
 	var _nav2 = _interopRequireDefault(_nav);
 	
-	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 187);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 184);
 	
-	var _bar2 = _interopRequireDefault(_bar);
+	var _help2 = _interopRequireDefault(_help);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22188,12 +22188,12 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'app' },
-	        _react2.default.createElement(_bar2.default, null),
 	        _react2.default.createElement(_nav2.default, null),
 	        _react2.default.createElement(_content2.default, {
 	          view: this.state.viewContent ? this.state.viewContent : 'inbox',
 	          db: this.state.db,
-	          value: this.state.value ? this.state.value : '' })
+	          value: this.state.value ? this.state.value : '' }),
+	        _react2.default.createElement(_help2.default, null)
 	      );
 	    }
 	  }, {
@@ -22379,10 +22379,6 @@
 	
 	var _stats2 = _interopRequireDefault(_stats);
 	
-	var _help = __webpack_require__(/*! ./help.jsx */ 184);
-	
-	var _help2 = _interopRequireDefault(_help);
-	
 	var _note = __webpack_require__(/*! ./note.jsx */ 185);
 	
 	var _note2 = _interopRequireDefault(_note);
@@ -22430,8 +22426,6 @@
 	                    return _react2.default.createElement(_stats2.default, null);
 	                case 'search':
 	                    return _react2.default.createElement(_list2.default, { type: 'search', value: this.props.value, db: this.props.db });
-	                case 'help':
-	                    return _react2.default.createElement(_help2.default, null);
 	                case 'note':
 	                    return _react2.default.createElement(_note2.default, { value: this.props.value });
 	                default:
@@ -23738,6 +23732,10 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
+	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 187);
+	
+	var _bar2 = _interopRequireDefault(_bar);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23772,6 +23770,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'nav' },
+	        _react2.default.createElement(_bar2.default, null),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'btn', name: 'inbox', onClick: this.handleClickBtn },
@@ -23791,11 +23790,6 @@
 	          'div',
 	          { className: 'btn', name: 'stats', onClick: this.handleClickBtn },
 	          'Stats'
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'btn', name: 'help', onClick: this.handleClickBtn },
-	          'Help'
 	        )
 	      );
 	    }
@@ -23901,7 +23895,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Droid+Sans);", ""]);
 	
 	// module
-	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 100px;\n  width: 100%;\n  margin: 0px 15px;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 15px 15px 15px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 10px;\n}\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task {\n  display: flex;\n  flex-flow: row wrap;\n  background: #03A9F4;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder:hover {\n  background: #f5ffc6;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 192) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 193) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.complete {\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 30px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 450px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer {\n  display: flex;\n  flex-flow: row;\n  background: #03A9F4;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .timer-btn, .note-btn, .note-save, .sand, .exit,\n.save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 194) + ");\n}\n\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 195) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 196) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 197) + ")\n}\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 198) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 199) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 200) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 201) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 202) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
+	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 100px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  height: 100%;\n  width: 100%;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 15px 15px 15px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 10px;\n}\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task {\n  display: flex;\n  flex-flow: row wrap;\n  background: #03A9F4;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 192) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 193) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.complete {\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 30px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 450px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer {\n  display: flex;\n  flex-flow: row;\n  background: #03A9F4;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .timer-btn, .note-btn, .note-save, .sand, .exit,\n.save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 194) + ");\n}\n\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 195) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 196) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 197) + ")\n}\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 198) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 199) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 200) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 201) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 202) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
 	
 	// exports
 

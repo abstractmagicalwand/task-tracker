@@ -1,5 +1,6 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
+import Bar      from '../component/bar.jsx';
 
 export default class Nav extends React.Component {
   constructor(props) {
@@ -17,11 +18,11 @@ export default class Nav extends React.Component {
   render() {
     return (
       <div className='nav'>
+        <Bar />
         <div className='btn' name='inbox' onClick={this.handleClickBtn}>Inbox</div>
         <div className='btn' name='project' onClick={this.handleClickBtn}>Project</div>
         <div className='btn' name='archiv' onClick={this.handleClickBtn}>Archiv</div>
         <div className='btn' name='stats' onClick={this.handleClickBtn}>Stats</div>
-        <div className='btn' name='help' onClick={this.handleClickBtn}>Help</div>
       </div>
     );
   }
