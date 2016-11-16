@@ -16,10 +16,10 @@ export default class Task extends React.Component {
     this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
-    this.edit = this.edit.bind(this);
-    this.contentPanel = this.contentPanel.bind(this);
-    this.archiv = this.archiv.bind(this);
-    this.timer = this.timer.bind(this);
+    this.edit               = this.edit.bind(this);
+    this.content            = this.content.bind(this);
+    this.archiv             = this.archiv.bind(this);
+    this.timer              = this.timer.bind(this);
   }
 
   handleDeleteTask() {
@@ -62,12 +62,10 @@ export default class Task extends React.Component {
   render() {
     return (
       <div className='task'>
-        {
-          this.edit()}
-          {this.contentPanel()}
-          {this.timer()}
-          {this.archiv()}
+        {this.edit()}
 
+        {this.content()}
+        {this.archiv()}
       </div>
     );
   }
@@ -104,7 +102,7 @@ export default class Task extends React.Component {
     );
   }
 
-  contentPanel() {
+  content() {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
     return (
       <span className='wrap'>
@@ -113,6 +111,7 @@ export default class Task extends React.Component {
           className='complete'>
         <input type='checkbox'/></lable>
         <p className='descript'>{this.props.info.description}</p>
+        {this.timer()}
         <Stopwatch
           old={this.props.info.now}
           id={this.props.info.id}

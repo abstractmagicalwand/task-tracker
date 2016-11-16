@@ -183,6 +183,7 @@ export default class App extends React.Component {
           view={this.state.viewContent ? this.state.viewContent : 'inbox'}
           db={this.state.db}
           value={this.state.value ? this.state.value : ''}/>
+        {/*<Help />*/}
       </div>
     );
   }

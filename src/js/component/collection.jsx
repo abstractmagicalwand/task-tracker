@@ -12,9 +12,8 @@ export default class Collection extends React.Component {
   }
 
   getCompFolders(db) {
-    let i = 0;
     return db.filter(folder => {
       if (folder.project !== 'ARCHIV' && folder.project !== 'SANS') return folder;
-    }).map(folder => <Folder key={++i} info={folder} />);
+    }).map(folder => <Folder key={folder.project} info={folder} />);
   }
 };

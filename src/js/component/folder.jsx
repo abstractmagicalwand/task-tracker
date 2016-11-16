@@ -1,8 +1,6 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
 
-let keyId = 0;
-
 export default class Folder extends React.Component {
   constructor(props) {
     super(props);
@@ -16,6 +14,8 @@ export default class Folder extends React.Component {
     this.handleSaveEditFolder = this.handleSaveEditFolder.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
+    this.edit               = this.edit.bind(this);
+    this.content            = this.content.bind(this);
   }
 
   handleClickFolder(e) {
@@ -68,17 +68,37 @@ export default class Folder extends React.Component {
       <div
         className='folder'
         onClick={this.handleClickFolder}>
-        {this.compile()}
+        {this.content()}
+        {this.edit()}
       </div>
     );
   }
 
-  compile() {
-    const resultFolder = [];
+  content() {
+    if (this.state.edit) return;
 
-    if (this.state.edit) {
-      resultFolder.push(
-        <span className='folder-edit' key={++keyId}>
+    return (
+      <span className='wrap'>
+        <p
+          className='folder-name'
+          onClick={this.handleClickFolder}>
+          {`${this.props.info.project}`}
+        </p>
+        <span className='folder-panel'>
+          <span className='delete-btn' onClick={this.handleDeleteFolder} />
+          <span className='edit-btn' onClick={this.handleEditFolder} />
+          <span className='note-btn' onClick={this.handleNoteFolder} />
+        </span>
+      </span>
+    );
+  }
+
+  edit() {
+    if (!this.state.edit) return;
+
+    return (
+      <span className='wrap'>
+        <span className='folder-edit'>
           <input
             className='folder-field'
             type='text'
@@ -90,24 +110,8 @@ export default class Folder extends React.Component {
             <span className='exit' onClick={this.handleEditFolder}></span>
           </span>
         </span>
-      );
-    } else {
-      resultFolder.push(
-        <p
-          key={++keyId}
-          className='folder-name'
-          onClick={this.handleClickFolder}>
-          {`${this.props.info.project}`}
-        </p>,
-        <span key={++keyId} className='folder-panel'>
-          <span className='delete-btn' onClick={this.handleDeleteFolder} />
-          <span className='edit-btn' onClick={this.handleEditFolder} />
-          <span className='note-btn' onClick={this.handleNoteFolder} />
-        </span>
-      );
-    }
-
-    return resultFolder;
+      </span>
+    );
   }
 
   setStateToggleEdit() {
