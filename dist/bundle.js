@@ -21977,11 +21977,11 @@
 	
 	var _content2 = _interopRequireDefault(_content);
 	
-	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 186);
+	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 185);
 	
 	var _nav2 = _interopRequireDefault(_nav);
 	
-	var _help = __webpack_require__(/*! ../component/help.jsx */ 184);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 187);
 	
 	var _help2 = _interopRequireDefault(_help);
 	
@@ -22192,8 +22192,7 @@
 	        _react2.default.createElement(_content2.default, {
 	          view: this.state.viewContent ? this.state.viewContent : 'inbox',
 	          db: this.state.db,
-	          value: this.state.value ? this.state.value : '' }),
-	        _react2.default.createElement(_help2.default, null)
+	          value: this.state.value ? this.state.value : '' })
 	      );
 	    }
 	  }, {
@@ -22379,7 +22378,7 @@
 	
 	var _stats2 = _interopRequireDefault(_stats);
 	
-	var _note = __webpack_require__(/*! ./note.jsx */ 185);
+	var _note = __webpack_require__(/*! ./note.jsx */ 184);
 	
 	var _note2 = _interopRequireDefault(_note);
 	
@@ -23574,58 +23573,6 @@
 /***/ },
 /* 184 */
 /*!***********************************!*\
-  !*** ./src/js/component/help.jsx ***!
-  \***********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Help = function (_React$Component) {
-	  _inherits(Help, _React$Component);
-	
-	  function Help(props) {
-	    _classCallCheck(this, Help);
-	
-	    return _possibleConstructorReturn(this, (Help.__proto__ || Object.getPrototypeOf(Help)).call(this, props));
-	  }
-	
-	  _createClass(Help, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement('div', { className: 'help' });
-	    }
-	  }]);
-	
-	  return Help;
-	}(_react2.default.Component);
-	
-	exports.default = Help;
-
-/***/ },
-/* 185 */
-/*!***********************************!*\
   !*** ./src/js/component/note.jsx ***!
   \***********************************/
 /***/ function(module, exports, __webpack_require__) {
@@ -23710,7 +23657,7 @@
 	;
 
 /***/ },
-/* 186 */
+/* 185 */
 /*!**********************************!*\
   !*** ./src/js/component/nav.jsx ***!
   \**********************************/
@@ -23732,9 +23679,13 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 187);
+	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 186);
 	
 	var _bar2 = _interopRequireDefault(_bar);
+	
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 187);
+	
+	var _help2 = _interopRequireDefault(_help);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -23790,7 +23741,8 @@
 	          'div',
 	          { className: 'btn', name: 'stats', onClick: this.handleClickBtn },
 	          'Stats'
-	        )
+	        ),
+	        _react2.default.createElement(_help2.default, null)
 	      );
 	    }
 	  }]);
@@ -23802,7 +23754,7 @@
 	;
 
 /***/ },
-/* 187 */
+/* 186 */
 /*!**********************************!*\
   !*** ./src/js/component/bar.jsx ***!
   \**********************************/
@@ -23855,6 +23807,111 @@
 	;
 
 /***/ },
+/* 187 */
+/*!***********************************!*\
+  !*** ./src/js/component/help.jsx ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Help = function (_React$Component) {
+	  _inherits(Help, _React$Component);
+	
+	  function Help(props) {
+	    _classCallCheck(this, Help);
+	
+	    return _possibleConstructorReturn(this, (Help.__proto__ || Object.getPrototypeOf(Help)).call(this, props));
+	  }
+	
+	  _createClass(Help, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'help' },
+	        _react2.default.createElement(
+	          'h3',
+	          { className: 'help-title' },
+	          'Spells'
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'help-prop' },
+	            'timer death:'
+	          ),
+	          ' hh/mm/ss'
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'help-prop' },
+	            'priority:'
+	          ),
+	          ' * '
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'count stars, level priority'
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'help-prop' },
+	            'project:'
+	          ),
+	          ' @name-project'
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'help-prop' },
+	            'tags:'
+	          ),
+	          ' #nameTag'
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Help;
+	}(_react2.default.Component);
+	
+	exports.default = Help;
+
+/***/ },
 /* 188 */
 /*!**************************!*\
   !*** ./src/css/main.css ***!
@@ -23895,7 +23952,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Droid+Sans);", ""]);
 	
 	// module
-	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 100px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  height: 100%;\n  width: 100%;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 15px 15px 15px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 10px;\n}\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task {\n  display: flex;\n  flex-flow: row wrap;\n  background: #03A9F4;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 192) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 193) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.complete {\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 30px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 450px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer {\n  display: flex;\n  flex-flow: row;\n  background: #03A9F4;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .timer-btn, .note-btn, .note-save, .sand, .exit,\n.save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 194) + ");\n}\n\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 195) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 196) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 197) + ")\n}\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 198) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 199) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 200) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 201) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 202) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
+	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 90px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  align-self: center;\n  flex-flow: column;\n  justify-content: center;\n  flex: 1;\n  width: 100%;\n}\n\n.help-title {\n  font-size: 20px;\n  font-weight: bold;\n  align-self: center;\n}\n\n.help-prop {\n  text-decoration: underline;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 0px 15px 5px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 0px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 10px;\n}\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task {\n  display: flex;\n  flex-flow: row wrap;\n  background: #03A9F4;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 192) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 193) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.complete {\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 30px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 450px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer {\n  display: flex;\n  flex-flow: row;\n  background: #03A9F4;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .timer-btn, .note-btn, .note-save, .sand, .exit,\n.save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 194) + ");\n}\n\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 195) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 196) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 197) + ")\n}\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 198) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 199) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 200) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 201) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 202) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
 	
 	// exports
 

@@ -15,7 +15,7 @@ body {
 .bar {
   background: #BDBDBD;
   display: flex;
-  height: 100px;
+  height: 90px;
   width: 100%;
   margin-bottom: 5px;
 }
@@ -23,15 +23,28 @@ body {
 .help {
   background: #BDBDBD;
   display: flex;
-  height: 100%;
+  align-self: center;
+  flex-flow: column;
+  justify-content: center;
+  flex: 1;
   width: 100%;
+}
+
+.help-title {
+  font-size: 20px;
+  font-weight: bold;
+  align-self: center;
+}
+
+.help-prop {
+  text-decoration: underline;
 }
 
 .nav {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
-  margin: 15px;
+  margin: 0px 15px 5px;
   flex: 1 200px;
   font-weight: bold;
   text-transform: uppercase;
@@ -57,7 +70,7 @@ body {
 }
 
 .content {
-  margin: 15px 15px 15px 15px;
+  margin: 0px 15px;
   background: #BDBDBD;
   display: flex;
   flex-flow: column wrap;

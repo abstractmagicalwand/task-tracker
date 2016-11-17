@@ -1,6 +1,7 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
 import Bar      from '../component/bar.jsx';
+import Help     from '../component/help.jsx';
 
 export default class Nav extends React.Component {
   constructor(props) {
@@ -23,6 +24,7 @@ export default class Nav extends React.Component {
         <div className='btn' name='project' onClick={this.handleClickBtn}>Project</div>
         <div className='btn' name='archiv' onClick={this.handleClickBtn}>Archiv</div>
         <div className='btn' name='stats' onClick={this.handleClickBtn}>Stats</div>
+        <Help />
       </div>
     );
   }
