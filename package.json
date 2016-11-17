@@ -17,7 +17,8 @@
   "license": "MIT",
   "main": "./server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "code . && node server.js | chromium-browser http://localhost:3000 | webpack -w -d"
   },
   "author": {
     "name": "magicwantabstract",
