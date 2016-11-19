@@ -26,7 +26,7 @@ export default class List extends React.Component {
         return this.getInboxTasks(db);
     case 'archiv':
         return db.filter(item => {
-          if (item.project === 'ARCHIV')  return item;
+          if (item.project === 'ARCHIV') return item;
         })[0].tasks;
     case 'project':
         return db.filter(item => {

@@ -76,7 +76,8 @@ export default class App extends React.Component {
     const task = this.searchTaskDb(e.detail.id);
     task.arr[task.i].complete = true;
     task.arr[task.i].project  = 'ARCHIV';
-    this.state.db[this.getFolderOfDb('ARCHIV')].tasks.push(task.arr.splice(task.i, 1)[0]);
+    console.log(task.arr[task.i]);
+    this.state.db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
     this.setStateDb();
   }
 

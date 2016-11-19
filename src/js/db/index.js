@@ -22,7 +22,7 @@ const db = [{
   note: '',
   tasks: [{
     description: 'Drink milk.',
-    id: 2,
+    id: 232,
     complete: false,
     tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes',
       '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature',
@@ -30,7 +30,7 @@ const db = [{
       '#macrophotography', '#creature', '#creatures', '#macro_creature_feature',
       '#photooftheday', '#wildlife', '#nature_shooters', '#earth',
       '#naturelover', '#lovenature'],
-    project: '', // did not go to archiv (!)
+    project: '',
     priority: 0,
     timeDeath: null,
     note: '',

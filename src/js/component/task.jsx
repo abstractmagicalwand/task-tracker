@@ -63,7 +63,6 @@ export default class Task extends React.Component {
     return (
       <div className='task'>
         {this.edit()}
-
         {this.content()}
         {this.archiv()}
       </div>
