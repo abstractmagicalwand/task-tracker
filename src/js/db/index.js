@@ -2,7 +2,7 @@ const db = [{
   project: 'ARCHIV',
   note: '',
   tasks: [{
-    description: '{Хухухе!}.',
+    description: 'Me very old task. Mb completed?',
     id: 2,
     complete: false,
     tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes',
@@ -15,14 +15,13 @@ const db = [{
     priority: 0,
     timeDeath: null,
     note: '',
-    stopwatch: null,
-    old: 0
+    stopwatch: null
   }]
 }, {
   project: 'SANS',
   note: '',
   tasks: [{
-    description: 'Выпить колы.',
+    description: 'Drink milk.',
     id: 2,
     complete: false,
     tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes',
@@ -31,18 +30,17 @@ const db = [{
       '#macrophotography', '#creature', '#creatures', '#macro_creature_feature',
       '#photooftheday', '#wildlife', '#nature_shooters', '#earth',
       '#naturelover', '#lovenature'],
-    project: '',
+    project: '', // did not go to archiv (!)
     priority: 0,
     timeDeath: null,
     note: '',
-    stopwatch: [0, 0, 0],
-    old: null
+    stopwatch: [0, 0, 0]
   }]
 }, {
-  project: '@LoveYouLoveShe',
+  project: '@shop',
   note: '',
   tasks: [{
-    description: 'Купить молока.',
+    description: 'Buy milk.',
     id: 1,
     note: '',
     complete: false,
@@ -52,17 +50,16 @@ const db = [{
       '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse',
       '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop',
       '#jockey', '#rider', '#riders', '#riding'],
-    project: '@LoveYouLoveShe',
+    project: '@shop',
     priority: 0,
     timeDeath: null,
     stopwatch: [0, 0, 0],
-    old: null
   }]
 }, {
-  project: '@loveAllWorld',
+  project: '@social',
   note: '',
   tasks: [{
-    description: 'Познакомиться с девочкой.',
+    description: 'Will meet with girl.',
     id: 3,
     note: '',
     complete: false,
@@ -71,17 +68,16 @@ const db = [{
       '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam',
       '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute',
       '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
-    project: '@loveAllWorld',
+    project: '@social',
     priority: 0,
     timeDeath: [3, 0, 0],
     stopwatch: [0, 0, 0],
-    old: null
   }]
 }, {
-  project: '@loveasdasdsadrld',
+  project: '@sport',
   note: '',
   tasks: [{
-      description: 'Выйти на улицу разок.',
+      description: 'Scamper.',
       id: 1322131231231232,
       complete: false,
       tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran',
@@ -90,12 +86,11 @@ const db = [{
         '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute',
         '#happy', '#beautiful', '#boys', '#guys', '#instagood',
         '#photooftheday'],
-      project: '@loveasdasdsadrld',
+      project: '@sport',
       priority: 0,
       timeDeath: null,
       note: '',
       stopwatch: [0, 0, 0],
-      old: null
   }]
 }];
 
