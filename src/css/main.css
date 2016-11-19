@@ -204,6 +204,7 @@ body {
   height: 48px;
   width: 48px;
   align-self: center;
+  cursor: pointer;
 }
 
 .edit-btn {
@@ -211,9 +212,11 @@ body {
   width: 48px;
   height: 48px;
   align-self: center;
+  cursor: pointer;
 }
 
 .complete {
+  cursor: pointer;
   background: #9E9E9E;
   align-self: center;
   border-radius: 100%;
@@ -287,12 +290,12 @@ input[type=checkbox] {
   width: 48px;
   height: 48px;
   align-self: center;
+  cursor: pointer;
 }
 
 .note-btn {
   background: url('../img/note.png');
 }
-
 
 .stopwatch-btn {
   background: url('../img/play.png');
