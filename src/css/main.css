@@ -30,6 +30,12 @@ body {
   width: 100%;
 }
 
+.help>p {
+  margin: 20px;
+  font-weight: 500;
+  text-transform: initial;
+}
+
 .help-title {
   font-size: 20px;
   font-weight: bold;
@@ -37,14 +43,16 @@ body {
 }
 
 .help-prop {
+  font-weight: bold;;
   text-decoration: underline;
+  text-transform: uppercase;
 }
 
 .nav {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
-  margin: 0px 15px 5px;
+  margin: 5px 15px;
   flex: 1 200px;
   font-weight: bold;
   text-transform: uppercase;
@@ -70,14 +78,15 @@ body {
 }
 
 .content {
-  margin: 0px 15px;
+  margin: 5px 15px;
   background: #BDBDBD;
   display: flex;
   flex-flow: column wrap;
   flex: 4 400px;
   justify-content: flex-start;
-  padding: 10px;
+  padding: 0px 10px 0px 10px;
 }
+
 
 .archiv {
   margin: 3px 0px;
@@ -89,7 +98,7 @@ body {
   flex-flow: column wrap;
 }
 
-.task {
+.task>.wrap {
   display: flex;
   flex-flow: row wrap;
   background: #03A9F4;
@@ -146,7 +155,7 @@ body {
   justify-content: space-around;
 }
 
-.folder {
+.folder>.wrap {
   height: 200px;
   width: 200px;
   border-radius: 10%;
@@ -246,7 +255,7 @@ input[type=checkbox] {
   background-color: #F5F5F5;
   font-size: 16px;
   width: 100%;
-  height: 450px;
+  height: 560px;
   border: 0px;
   outline: none;
   resize: none;
