@@ -18,7 +18,10 @@ export default class Content extends React.Component {
   getCompView() {
     switch (this.props.view) {
     case 'inbox':
-        return <List type='inbox' db={this.props.db} />;
+        return <List
+            journal={this.props.journal}
+            type='inbox' db={this.props.db}
+        />;
     case 'project':
         return <Collection db={this.props.db} />;
     case 'archiv':
@@ -26,12 +29,21 @@ export default class Content extends React.Component {
     case 'stats':
         return <Stats />;
     case 'search':
-        return <List type='search' value={this.props.value} db={this.props.db} />;
+        return <List
+            journal={this.props.journal}
+            type='search' value={this.props.value}
+            db={this.props.db}
+        />;
     case 'note':
         return <Note value={this.props.value} />;
     default:
         if (!~this.props.view.indexOf('@')) break;
-        return <List type='project' projectName={this.props.view} db={this.props.db} />;
+        return <List
+            type='project'
+            journal={this.props.journal}
+            projectName={this.props.view}
+            db={this.props.db}
+        />;
     }
   }
 

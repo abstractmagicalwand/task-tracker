@@ -37,7 +37,7 @@ export default class Timer extends React.Component {
   show() {
     if (this.state.spoiler) return;
     const t = this.props.time;
-    console.log(...this.props.time);
+
     return (
       <span className='wrap'>
         <span className='timer-btn' onClick={this.cancel}></span>
@@ -80,7 +80,7 @@ export default class Timer extends React.Component {
       detail: {
         type: 'timer',
         time: [h, m, s],
-        id: this.props.id,
+        id: this.props.id
       }
     }));
 

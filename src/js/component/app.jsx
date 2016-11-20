@@ -1,9 +1,9 @@
-import React    from 'react';
-import ReactDOM from 'react-dom';
-import Content  from '../component/content.jsx';
-import Nav      from '../component/nav.jsx';
-import Help     from '../component/help.jsx';
-import {db}     from '../db/index.js';
+import React     from 'react';
+import ReactDOM  from 'react-dom';
+import Content   from '../component/content.jsx';
+import Nav       from '../component/nav.jsx';
+import Help      from '../component/help.jsx';
+import {db}      from '../db/index.js';
 import {journal} from '../db/journal.js';
 
 export default class App extends React.Component {
@@ -14,40 +14,39 @@ export default class App extends React.Component {
       journal: journal
     };
 
-    this.tmpJournal = [...journal];
-
-    this.handleNavBtnApp       = this.handleNavBtnApp.bind(this);
-    this.handleAddNewTaskApp   = this.handleAddNewTaskApp.bind(this);
-    this.handleSearchReqApp    = this.handleSearchReqApp.bind(this);
-    this.handleDeleteFolderApp = this.handleDeleteFolderApp.bind(this);
-    this.handleDeleteTaskApp   = this.handleDeleteTaskApp.bind(this);
-    this.handleCompleteTaskApp = this.handleCompleteTaskApp.bind(this);
-    this.handleSaveEditApp     = this.handleSaveEditApp.bind(this);
-    this.handleOpenNoteApp     = this.handleOpenNoteApp.bind(this);
-    this.handleSaveNoteApp     = this.handleSaveNoteApp.bind(this);
-    this.handleBackContentApp  = this.handleBackContentApp.bind(this);
-    this.handleTickApp         = this.handleTickApp.bind(this);
-    this.handleCancelTimerApp  = this.handleCancelTimerApp.bind(this);
-    this.handleSetJournalApp   = this.handleSetJournalApp.bind(this);
-    this.handleGetJournalApp   = this.handleGetJournalApp.bind(this);
+    this.handleNavBtn       = this.handleNavBtn.bind(this);
+    this.handleAddNewTask   = this.handleAddNewTask.bind(this);
+    this.handleSearchReq    = this.handleSearchReq.bind(this);
+    this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
+    this.handleDeleteTask   = this.handleDeleteTask.bind(this);
+    this.handleCompleteTask = this.handleCompleteTask.bind(this);
+    this.handleSaveEdit     = this.handleSaveEdit.bind(this);
+    this.handleOpenNote     = this.handleOpenNote.bind(this);
+    this.handleSaveNote     = this.handleSaveNote.bind(this);
+    this.handleBackContent  = this.handleBackContent.bind(this);
+    this.handleTick         = this.handleTick.bind(this);
+    this.handleCancelTimer  = this.handleCancelTimer.bind(this);
+    this.handleSetJournal   = this.handleSetJournal.bind(this);
+    this.getJournal         = this.getJournal.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
-    this.setStateDb    = this.setStateDb.bind(this);
+    this.setStateDB    = this.setStateDB.bind(this);
     this.getFolderOfDb = this.getFolderOfDb.bind(this);
   }
 
-  handleDeleteFolderApp(e) {
+  handleDeleteFolder(e) {
     e.preventDefault();
-    this.state.db.splice(this.getFolderOfDb(e.detail.project), 1);
-    this.setStateDb();
+    const db = [...this.state.db]
+    db.splice(this.getFolderOfDb(e.detail.project), 1);
+    this.setStateDB(db);
   }
 
-  handleNavBtnApp(e) {
+  handleNavBtn(e) {
     e.preventDefault();
     this.setState({viewContent: e.detail.category});
   }
 
-  handleAddNewTaskApp(e) {
+  handleAddNewTask(e) {
     e.preventDefault();
     const db = this.state.db.slice();
 
@@ -66,7 +65,7 @@ export default class App extends React.Component {
     this.setState({db: db});
   }
 
-  handleSearchReqApp(e) {
+  handleSearchReq(e) {
     e.preventDefault();
     this.setState({
       viewContent: 'search',
@@ -74,24 +73,26 @@ export default class App extends React.Component {
     });
   }
 
-  handleDeleteTaskApp(e) {
+  handleDeleteTask(e) {
     const task = this.searchTaskDb(e.detail.id);
     task.arr.splice(task.i, 1);
-    this.setStateDb();
+    this.setStateDB([...this.state.db]);
   }
 
-  handleCompleteTaskApp(e) {
-    const task = this.searchTaskDb(e.detail.id);
+  handleCompleteTask(e) {
+    const task = this.searchTaskDb(e.detail.id),
+          db   = [...this.state.db];
     task.arr[task.i].complete = true;
     task.arr[task.i].project  = 'ARCHIV';
-    this.state.db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
-    this.setStateDb();
+    db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
+    this.setStateDB(db);
   }
 
-  handleSaveEditApp(e) {
+  handleSaveEdit(e) {
+    const db = [...this.state.db];
 
     if (e.detail.project) {
-      const folder = this.state.db[this.getFolderOfDb(e.detail.project)];
+      const folder = db[this.getFolderOfDb(e.detail.project)];
       folder.project = e.detail.value;
 
       folder.tasks.forEach(item => item.project = e.detail.value);
@@ -100,20 +101,20 @@ export default class App extends React.Component {
       task.arr[task.i].description = e.detail.value;
     }
 
-    this.setStateDb();
+    this.setStateDB(db);
   }
 
-  handleOpenNoteApp(e) {
+  handleOpenNote(e) {
     this.setState({
       viewContent: 'note',
-      value: e.detail.value,
-      edit: e.detail.project || e.detail.id,
-      viewLast: this.state.viewContent || 'inbox'
+      value      : e.detail.value,
+      edit       : e.detail.project || e.detail.id,
+      viewLast   : this.state.viewContent || 'inbox'
     });
 
   }
 
-  handleSaveNoteApp(e) {
+  handleSaveNote(e) {
 
     if (typeof this.state.edit === 'number') {
       const task = this.searchTaskDb(this.state.edit);
@@ -130,7 +131,7 @@ export default class App extends React.Component {
     });
   }
 
-  handleBackContentApp(e) {
+  handleBackContent(e) {
     if (!this.state.viewLast) return;
     this.setState({
       viewContent: this.state.viewLast,
@@ -138,7 +139,7 @@ export default class App extends React.Component {
     });
   }
 
-  handleTickApp(e) {
+  handleTick(e) {
     const task = this.searchTaskDb(e.detail.id);
 
     switch (e.detail.type) {
@@ -151,10 +152,10 @@ export default class App extends React.Component {
     }
 
     task.arr[task.i].now = e.detail.now;
-    this.setStateDb();
+    this.setStateDB([...this.state.db]);
   }
 
-  handleCancelTimerApp(e) {
+  handleCancelTimer(e) {
     const db = this.state.db.slice();
     db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {
@@ -167,59 +168,57 @@ export default class App extends React.Component {
     this.setState({db: db});
   }
 
-  handleSetJournalApp(e) {
-    this.tmpJournal.push(e.detail);
-    this.setState({journal: this.tmpJournal});
-  }
+  handleSetJournal(e) {
 
-  handleGetJournalApp(e) {
-
+    journal.push(e.detail);
   }
 
   componentWillMount() {
-    window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
-    window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
-    window.removeEventListener('searchValue' , this.handleSearchReqApp);
-    window.removeEventListener('deleteFolder', this.handleDeleteFolderApp);
-    window.removeEventListener('deleteTask'  , this.handleDeleteTaskApp);
-    window.removeEventListener('complete'    , this.handleCompleteTaskApp);
-    window.removeEventListener('save'        , this.handleSaveEditApp);
-    window.removeEventListener('openNote'    , this.handleOpenNoteApp);
-    window.removeEventListener('saveNote'    , this.handleSaveNoteApp);
-    window.removeEventListener('back'        , this.handleBackContentApp);
-    window.removeEventListener('tick'        , this.handleTickApp);
-    window.removeEventListener('deleteTimer' , this.handleCancelTimerApp);
-    window.removeEventListener('getJournal'  , this.handleGetJournalApp);
-    window.removeEventListener('setJournal'  , this.handleSetJournalApp);
+    window.removeEventListener('clickNavBtn' , this.handleNavBtn);
+    window.removeEventListener('addNewTask'  , this.handleAddNewTask);
+    window.removeEventListener('searchValue' , this.handleSearchReq);
+    window.removeEventListener('deleteFolder', this.handleDeleteFolder);
+    window.removeEventListener('deleteTask'  , this.handleDeleteTask);
+    window.removeEventListener('complete'    , this.handleCompleteTask);
+    window.removeEventListener('save'        , this.handleSaveEdit);
+    window.removeEventListener('openNote'    , this.handleOpenNote);
+    window.removeEventListener('saveNote'    , this.handleSaveNote);
+    window.removeEventListener('back'        , this.handleBackContent);
+    window.removeEventListener('tick'        , this.handleTick);
+    window.removeEventListener('deleteTimer' , this.handleCancelTimer);
+    window.removeEventListener('getJournal'  , this.handleGetJournal);
+    window.removeEventListener('setJournal'  , this.handleSetJournal);
   }
 
   render() {
+    console.log(journal);
     return (
       <div className='app'>
         <Nav />
         <Content
           view={this.state.viewContent ? this.state.viewContent : 'inbox'}
           db={this.state.db}
+          journal={journal}
           value={this.state.value ? this.state.value : ''}/>
       </div>
     );
   }
 
   componentDidMount() {
-    window.addEventListener('clickNavBtn' , this.handleNavBtnApp);
-    window.addEventListener('addNewTask'  , this.handleAddNewTaskApp);
-    window.addEventListener('searchValue' , this.handleSearchReqApp);
-    window.addEventListener('deleteFolder', this.handleDeleteFolderApp);
-    window.addEventListener('deleteTask'  , this.handleDeleteTaskApp);
-    window.addEventListener('complete'    , this.handleCompleteTaskApp);
-    window.addEventListener('save'        , this.handleSaveEditApp);
-    window.addEventListener('openNote'    , this.handleOpenNoteApp);
-    window.addEventListener('saveNote'    , this.handleSaveNoteApp)
-    window.addEventListener('back'        , this.handleBackContentApp);
-    window.addEventListener('tick'        , this.handleTickApp);
-    window.addEventListener('deleteTimer' , this.handleCancelTimerApp);
-    window.addEventListener('getJournal'  , this.handleGetJournalApp);
-    window.addEventListener('setJournal'  , this.handleSetJournalApp);
+    window.addEventListener('clickNavBtn' , this.handleNavBtn);
+    window.addEventListener('addNewTask'  , this.handleAddNewTask);
+    window.addEventListener('searchValue' , this.handleSearchReq);
+    window.addEventListener('deleteFolder', this.handleDeleteFolder);
+    window.addEventListener('deleteTask'  , this.handleDeleteTask);
+    window.addEventListener('complete'    , this.handleCompleteTask);
+    window.addEventListener('save'        , this.handleSaveEdit);
+    window.addEventListener('openNote'    , this.handleOpenNote);
+    window.addEventListener('saveNote'    , this.handleSaveNote)
+    window.addEventListener('back'        , this.handleBackContent);
+    window.addEventListener('tick'        , this.handleTick);
+    window.addEventListener('deleteTimer' , this.handleCancelTimer);
+    window.addEventListener('getJournal'  , this.handleGetJournal);
+    window.addEventListener('setInJournal', this.handleSetJournal);
   }
 
   searchTaskDb(id, DB) {
@@ -238,10 +237,7 @@ export default class App extends React.Component {
     return task;
   }
 
-  setStateDb(DB) {
-    const db = DB || this.state.db;
-    this.setState({db: db});
-  }
+  setStateDB(DB) { this.setState({db: DB}); }
 
   getFolderOfDb(project) {
     let index = null;
@@ -250,6 +246,10 @@ export default class App extends React.Component {
     });
 
     return index;
+  }
+
+  getJournal(e) {
+
   }
 
 };

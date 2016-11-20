@@ -63,7 +63,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(/*! ./css/main.css */ 188);
+	__webpack_require__(/*! ./css/main.css */ 189);
 	
 	
 	_reactDom2.default.render(_react2.default.createElement(_app2.default, null), document.getElementById('root'));
@@ -21971,21 +21971,21 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _content = __webpack_require__(/*! ../component/content.jsx */ 174);
+	var _content = __webpack_require__(/*! ../component/content.jsx */ 173);
 	
 	var _content2 = _interopRequireDefault(_content);
 	
-	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 185);
+	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 184);
 	
 	var _nav2 = _interopRequireDefault(_nav);
 	
-	var _help = __webpack_require__(/*! ../component/help.jsx */ 187);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 186);
 	
 	var _help2 = _interopRequireDefault(_help);
 	
-	var _index = __webpack_require__(/*! ../db/index.js */ 173);
+	var _index = __webpack_require__(/*! ../db/index.js */ 187);
 	
-	var _journal = __webpack_require__(/*! ../db/journal.js */ 205);
+	var _journal = __webpack_require__(/*! ../db/journal.js */ 188);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22010,45 +22010,44 @@
 	      journal: _journal.journal
 	    };
 	
-	    _this.tmpJournal = [].concat(_toConsumableArray(_journal.journal));
-	
-	    _this.handleNavBtnApp = _this.handleNavBtnApp.bind(_this);
-	    _this.handleAddNewTaskApp = _this.handleAddNewTaskApp.bind(_this);
-	    _this.handleSearchReqApp = _this.handleSearchReqApp.bind(_this);
-	    _this.handleDeleteFolderApp = _this.handleDeleteFolderApp.bind(_this);
-	    _this.handleDeleteTaskApp = _this.handleDeleteTaskApp.bind(_this);
-	    _this.handleCompleteTaskApp = _this.handleCompleteTaskApp.bind(_this);
-	    _this.handleSaveEditApp = _this.handleSaveEditApp.bind(_this);
-	    _this.handleOpenNoteApp = _this.handleOpenNoteApp.bind(_this);
-	    _this.handleSaveNoteApp = _this.handleSaveNoteApp.bind(_this);
-	    _this.handleBackContentApp = _this.handleBackContentApp.bind(_this);
-	    _this.handleTickApp = _this.handleTickApp.bind(_this);
-	    _this.handleCancelTimerApp = _this.handleCancelTimerApp.bind(_this);
-	    _this.handleSetJournalApp = _this.handleSetJournalApp.bind(_this);
-	    _this.handleGetJournalApp = _this.handleGetJournalApp.bind(_this);
+	    _this.handleNavBtn = _this.handleNavBtn.bind(_this);
+	    _this.handleAddNewTask = _this.handleAddNewTask.bind(_this);
+	    _this.handleSearchReq = _this.handleSearchReq.bind(_this);
+	    _this.handleDeleteFolder = _this.handleDeleteFolder.bind(_this);
+	    _this.handleDeleteTask = _this.handleDeleteTask.bind(_this);
+	    _this.handleCompleteTask = _this.handleCompleteTask.bind(_this);
+	    _this.handleSaveEdit = _this.handleSaveEdit.bind(_this);
+	    _this.handleOpenNote = _this.handleOpenNote.bind(_this);
+	    _this.handleSaveNote = _this.handleSaveNote.bind(_this);
+	    _this.handleBackContent = _this.handleBackContent.bind(_this);
+	    _this.handleTick = _this.handleTick.bind(_this);
+	    _this.handleCancelTimer = _this.handleCancelTimer.bind(_this);
+	    _this.handleSetJournal = _this.handleSetJournal.bind(_this);
+	    _this.getJournal = _this.getJournal.bind(_this);
 	
 	    _this.searchTaskDb = _this.searchTaskDb.bind(_this);
-	    _this.setStateDb = _this.setStateDb.bind(_this);
+	    _this.setStateDB = _this.setStateDB.bind(_this);
 	    _this.getFolderOfDb = _this.getFolderOfDb.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(App, [{
-	    key: 'handleDeleteFolderApp',
-	    value: function handleDeleteFolderApp(e) {
+	    key: 'handleDeleteFolder',
+	    value: function handleDeleteFolder(e) {
 	      e.preventDefault();
-	      this.state.db.splice(this.getFolderOfDb(e.detail.project), 1);
-	      this.setStateDb();
+	      var db = [].concat(_toConsumableArray(this.state.db));
+	      db.splice(this.getFolderOfDb(e.detail.project), 1);
+	      this.setStateDB(db);
 	    }
 	  }, {
-	    key: 'handleNavBtnApp',
-	    value: function handleNavBtnApp(e) {
+	    key: 'handleNavBtn',
+	    value: function handleNavBtn(e) {
 	      e.preventDefault();
 	      this.setState({ viewContent: e.detail.category });
 	    }
 	  }, {
-	    key: 'handleAddNewTaskApp',
-	    value: function handleAddNewTaskApp(e) {
+	    key: 'handleAddNewTask',
+	    value: function handleAddNewTask(e) {
 	      e.preventDefault();
 	      var db = this.state.db.slice();
 	
@@ -22067,8 +22066,8 @@
 	      this.setState({ db: db });
 	    }
 	  }, {
-	    key: 'handleSearchReqApp',
-	    value: function handleSearchReqApp(e) {
+	    key: 'handleSearchReq',
+	    value: function handleSearchReq(e) {
 	      e.preventDefault();
 	      this.setState({
 	        viewContent: 'search',
@@ -22076,27 +22075,29 @@
 	      });
 	    }
 	  }, {
-	    key: 'handleDeleteTaskApp',
-	    value: function handleDeleteTaskApp(e) {
+	    key: 'handleDeleteTask',
+	    value: function handleDeleteTask(e) {
 	      var task = this.searchTaskDb(e.detail.id);
 	      task.arr.splice(task.i, 1);
-	      this.setStateDb();
+	      this.setStateDB([].concat(_toConsumableArray(this.state.db)));
 	    }
 	  }, {
-	    key: 'handleCompleteTaskApp',
-	    value: function handleCompleteTaskApp(e) {
-	      var task = this.searchTaskDb(e.detail.id);
+	    key: 'handleCompleteTask',
+	    value: function handleCompleteTask(e) {
+	      var task = this.searchTaskDb(e.detail.id),
+	          db = [].concat(_toConsumableArray(this.state.db));
 	      task.arr[task.i].complete = true;
 	      task.arr[task.i].project = 'ARCHIV';
-	      this.state.db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
-	      this.setStateDb();
+	      db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
+	      this.setStateDB(db);
 	    }
 	  }, {
-	    key: 'handleSaveEditApp',
-	    value: function handleSaveEditApp(e) {
+	    key: 'handleSaveEdit',
+	    value: function handleSaveEdit(e) {
+	      var db = [].concat(_toConsumableArray(this.state.db));
 	
 	      if (e.detail.project) {
-	        var folder = this.state.db[this.getFolderOfDb(e.detail.project)];
+	        var folder = db[this.getFolderOfDb(e.detail.project)];
 	        folder.project = e.detail.value;
 	
 	        folder.tasks.forEach(function (item) {
@@ -22107,11 +22108,11 @@
 	        task.arr[task.i].description = e.detail.value;
 	      }
 	
-	      this.setStateDb();
+	      this.setStateDB(db);
 	    }
 	  }, {
-	    key: 'handleOpenNoteApp',
-	    value: function handleOpenNoteApp(e) {
+	    key: 'handleOpenNote',
+	    value: function handleOpenNote(e) {
 	      this.setState({
 	        viewContent: 'note',
 	        value: e.detail.value,
@@ -22120,8 +22121,8 @@
 	      });
 	    }
 	  }, {
-	    key: 'handleSaveNoteApp',
-	    value: function handleSaveNoteApp(e) {
+	    key: 'handleSaveNote',
+	    value: function handleSaveNote(e) {
 	
 	      if (typeof this.state.edit === 'number') {
 	        var task = this.searchTaskDb(this.state.edit);
@@ -22138,8 +22139,8 @@
 	      });
 	    }
 	  }, {
-	    key: 'handleBackContentApp',
-	    value: function handleBackContentApp(e) {
+	    key: 'handleBackContent',
+	    value: function handleBackContent(e) {
 	      if (!this.state.viewLast) return;
 	      this.setState({
 	        viewContent: this.state.viewLast,
@@ -22147,8 +22148,8 @@
 	      });
 	    }
 	  }, {
-	    key: 'handleTickApp',
-	    value: function handleTickApp(e) {
+	    key: 'handleTick',
+	    value: function handleTick(e) {
 	      var task = this.searchTaskDb(e.detail.id);
 	
 	      switch (e.detail.type) {
@@ -22161,11 +22162,11 @@
 	      }
 	
 	      task.arr[task.i].now = e.detail.now;
-	      this.setStateDb();
+	      this.setStateDB([].concat(_toConsumableArray(this.state.db)));
 	    }
 	  }, {
-	    key: 'handleCancelTimerApp',
-	    value: function handleCancelTimerApp(e) {
+	    key: 'handleCancelTimer',
+	    value: function handleCancelTimer(e) {
 	      var db = this.state.db.slice();
 	      db.forEach(function (item) {
 	        item.tasks.forEach(function (item, i, arr) {
@@ -22178,35 +22179,33 @@
 	      this.setState({ db: db });
 	    }
 	  }, {
-	    key: 'handleSetJournalApp',
-	    value: function handleSetJournalApp(e) {
-	      this.tmpJournal.push(e.detail);
-	      this.setState({ journal: this.tmpJournal });
+	    key: 'handleSetJournal',
+	    value: function handleSetJournal(e) {
+	
+	      _journal.journal.push(e.detail);
 	    }
-	  }, {
-	    key: 'handleGetJournalApp',
-	    value: function handleGetJournalApp(e) {}
 	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      window.removeEventListener('clickNavBtn', this.handleNavBtnApp);
-	      window.removeEventListener('addNewTask', this.handleAddNewTaskApp);
-	      window.removeEventListener('searchValue', this.handleSearchReqApp);
-	      window.removeEventListener('deleteFolder', this.handleDeleteFolderApp);
-	      window.removeEventListener('deleteTask', this.handleDeleteTaskApp);
-	      window.removeEventListener('complete', this.handleCompleteTaskApp);
-	      window.removeEventListener('save', this.handleSaveEditApp);
-	      window.removeEventListener('openNote', this.handleOpenNoteApp);
-	      window.removeEventListener('saveNote', this.handleSaveNoteApp);
-	      window.removeEventListener('back', this.handleBackContentApp);
-	      window.removeEventListener('tick', this.handleTickApp);
-	      window.removeEventListener('deleteTimer', this.handleCancelTimerApp);
-	      window.removeEventListener('getJournal', this.handleGetJournalApp);
-	      window.removeEventListener('setJournal', this.handleSetJournalApp);
+	      window.removeEventListener('clickNavBtn', this.handleNavBtn);
+	      window.removeEventListener('addNewTask', this.handleAddNewTask);
+	      window.removeEventListener('searchValue', this.handleSearchReq);
+	      window.removeEventListener('deleteFolder', this.handleDeleteFolder);
+	      window.removeEventListener('deleteTask', this.handleDeleteTask);
+	      window.removeEventListener('complete', this.handleCompleteTask);
+	      window.removeEventListener('save', this.handleSaveEdit);
+	      window.removeEventListener('openNote', this.handleOpenNote);
+	      window.removeEventListener('saveNote', this.handleSaveNote);
+	      window.removeEventListener('back', this.handleBackContent);
+	      window.removeEventListener('tick', this.handleTick);
+	      window.removeEventListener('deleteTimer', this.handleCancelTimer);
+	      window.removeEventListener('getJournal', this.handleGetJournal);
+	      window.removeEventListener('setJournal', this.handleSetJournal);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      console.log(_journal.journal);
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'app' },
@@ -22214,26 +22213,27 @@
 	        _react2.default.createElement(_content2.default, {
 	          view: this.state.viewContent ? this.state.viewContent : 'inbox',
 	          db: this.state.db,
+	          journal: _journal.journal,
 	          value: this.state.value ? this.state.value : '' })
 	      );
 	    }
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      window.addEventListener('clickNavBtn', this.handleNavBtnApp);
-	      window.addEventListener('addNewTask', this.handleAddNewTaskApp);
-	      window.addEventListener('searchValue', this.handleSearchReqApp);
-	      window.addEventListener('deleteFolder', this.handleDeleteFolderApp);
-	      window.addEventListener('deleteTask', this.handleDeleteTaskApp);
-	      window.addEventListener('complete', this.handleCompleteTaskApp);
-	      window.addEventListener('save', this.handleSaveEditApp);
-	      window.addEventListener('openNote', this.handleOpenNoteApp);
-	      window.addEventListener('saveNote', this.handleSaveNoteApp);
-	      window.addEventListener('back', this.handleBackContentApp);
-	      window.addEventListener('tick', this.handleTickApp);
-	      window.addEventListener('deleteTimer', this.handleCancelTimerApp);
-	      window.addEventListener('getJournal', this.handleGetJournalApp);
-	      window.addEventListener('setJournal', this.handleSetJournalApp);
+	      window.addEventListener('clickNavBtn', this.handleNavBtn);
+	      window.addEventListener('addNewTask', this.handleAddNewTask);
+	      window.addEventListener('searchValue', this.handleSearchReq);
+	      window.addEventListener('deleteFolder', this.handleDeleteFolder);
+	      window.addEventListener('deleteTask', this.handleDeleteTask);
+	      window.addEventListener('complete', this.handleCompleteTask);
+	      window.addEventListener('save', this.handleSaveEdit);
+	      window.addEventListener('openNote', this.handleOpenNote);
+	      window.addEventListener('saveNote', this.handleSaveNote);
+	      window.addEventListener('back', this.handleBackContent);
+	      window.addEventListener('tick', this.handleTick);
+	      window.addEventListener('deleteTimer', this.handleCancelTimer);
+	      window.addEventListener('getJournal', this.handleGetJournal);
+	      window.addEventListener('setInJournal', this.handleSetJournal);
 	    }
 	  }, {
 	    key: 'searchTaskDb',
@@ -22253,10 +22253,9 @@
 	      return task;
 	    }
 	  }, {
-	    key: 'setStateDb',
-	    value: function setStateDb(DB) {
-	      var db = DB || this.state.db;
-	      this.setState({ db: db });
+	    key: 'setStateDB',
+	    value: function setStateDB(DB) {
+	      this.setState({ db: DB });
 	    }
 	  }, {
 	    key: 'getFolderOfDb',
@@ -22268,6 +22267,9 @@
 	
 	      return index;
 	    }
+	  }, {
+	    key: 'getJournal',
+	    value: function getJournal(e) {}
 	  }]);
 	
 	  return App;
@@ -22278,92 +22280,6 @@
 
 /***/ },
 /* 173 */
-/*!****************************!*\
-  !*** ./src/js/db/index.js ***!
-  \****************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var db = [{
-	  project: 'ARCHIV',
-	  note: '',
-	  tasks: [{
-	    description: 'Me very old task. Mb completed?',
-	    id: 2,
-	    complete: false,
-	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
-	    project: 'ARCHIV',
-	    priority: 0,
-	    timeDeath: null,
-	    note: '',
-	    stopwatch: null
-	  }]
-	}, {
-	  project: 'SANS',
-	  note: '',
-	  tasks: [{
-	    description: 'Drink milk.',
-	    id: 232,
-	    complete: false,
-	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
-	    project: '',
-	    priority: 0,
-	    timeDeath: null,
-	    note: '',
-	    stopwatch: [0, 0, 0]
-	  }]
-	}, {
-	  project: '@shop',
-	  note: '',
-	  tasks: [{
-	    description: 'Buy milk.',
-	    id: 1,
-	    note: '',
-	    complete: false,
-	    tags: ['#horses', '#horse', '#horsesofinstagram', '#TagsForLikes', '#TagsForLikesApp', '#horseshow', '#horseshoe', '#horses_of_instagram', '#horsestagram', '#instahorses', '#wild', '#mane', '#instagood', '#grass', '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse', '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop', '#jockey', '#rider', '#riders', '#riding'],
-	    project: '@shop',
-	    priority: 0,
-	    timeDeath: null,
-	    stopwatch: [0, 0, 0]
-	  }]
-	}, {
-	  project: '@social',
-	  note: '',
-	  tasks: [{
-	    description: 'Will meet with girl.',
-	    id: 3,
-	    note: '',
-	    complete: false,
-	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
-	    project: '@social',
-	    priority: 0,
-	    timeDeath: [3, 0, 0],
-	    stopwatch: [0, 0, 0]
-	  }]
-	}, {
-	  project: '@sport',
-	  note: '',
-	  tasks: [{
-	    description: 'Scamper.',
-	    id: 1322131231231232,
-	    complete: false,
-	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
-	    project: '@sport',
-	    priority: 0,
-	    timeDeath: null,
-	    note: '',
-	    stopwatch: [0, 0, 0]
-	  }]
-	}];
-	
-	exports.db = db;
-
-/***/ },
-/* 174 */
 /*!**************************************!*\
   !*** ./src/js/component/content.jsx ***!
   \**************************************/
@@ -22385,19 +22301,19 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _list = __webpack_require__(/*! ./list.jsx */ 175);
+	var _list = __webpack_require__(/*! ./list.jsx */ 174);
 	
 	var _list2 = _interopRequireDefault(_list);
 	
-	var _collection = __webpack_require__(/*! ./collection.jsx */ 181);
+	var _collection = __webpack_require__(/*! ./collection.jsx */ 180);
 	
 	var _collection2 = _interopRequireDefault(_collection);
 	
-	var _stats = __webpack_require__(/*! ./stats.jsx */ 183);
+	var _stats = __webpack_require__(/*! ./stats.jsx */ 182);
 	
 	var _stats2 = _interopRequireDefault(_stats);
 	
-	var _note = __webpack_require__(/*! ./note.jsx */ 184);
+	var _note = __webpack_require__(/*! ./note.jsx */ 183);
 	
 	var _note2 = _interopRequireDefault(_note);
 	
@@ -22435,7 +22351,10 @@
 	        value: function getCompView() {
 	            switch (this.props.view) {
 	                case 'inbox':
-	                    return _react2.default.createElement(_list2.default, { type: 'inbox', db: this.props.db });
+	                    return _react2.default.createElement(_list2.default, {
+	                        journal: this.props.journal,
+	                        type: 'inbox', db: this.props.db
+	                    });
 	                case 'project':
 	                    return _react2.default.createElement(_collection2.default, { db: this.props.db });
 	                case 'archiv':
@@ -22443,12 +22362,21 @@
 	                case 'stats':
 	                    return _react2.default.createElement(_stats2.default, null);
 	                case 'search':
-	                    return _react2.default.createElement(_list2.default, { type: 'search', value: this.props.value, db: this.props.db });
+	                    return _react2.default.createElement(_list2.default, {
+	                        journal: this.props.journal,
+	                        type: 'search', value: this.props.value,
+	                        db: this.props.db
+	                    });
 	                case 'note':
 	                    return _react2.default.createElement(_note2.default, { value: this.props.value });
 	                default:
 	                    if (!~this.props.view.indexOf('@')) break;
-	                    return _react2.default.createElement(_list2.default, { type: 'project', projectName: this.props.view, db: this.props.db });
+	                    return _react2.default.createElement(_list2.default, {
+	                        type: 'project',
+	                        journal: this.props.journal,
+	                        projectName: this.props.view,
+	                        db: this.props.db
+	                    });
 	            }
 	        }
 	    }]);
@@ -22460,7 +22388,7 @@
 	;
 
 /***/ },
-/* 175 */
+/* 174 */
 /*!***********************************!*\
   !*** ./src/js/component/list.jsx ***!
   \***********************************/
@@ -22484,15 +22412,15 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _field = __webpack_require__(/*! ./field.jsx */ 176);
+	var _field = __webpack_require__(/*! ./field.jsx */ 175);
 	
 	var _field2 = _interopRequireDefault(_field);
 	
-	var _search = __webpack_require__(/*! ./search.jsx */ 177);
+	var _search = __webpack_require__(/*! ./search.jsx */ 176);
 	
 	var _search2 = _interopRequireDefault(_search);
 	
-	var _task = __webpack_require__(/*! ./task.jsx */ 178);
+	var _task = __webpack_require__(/*! ./task.jsx */ 177);
 	
 	var _task2 = _interopRequireDefault(_task);
 	
@@ -22585,7 +22513,7 @@
 	;
 
 /***/ },
-/* 176 */
+/* 175 */
 /*!************************************!*\
   !*** ./src/js/component/field.jsx ***!
   \************************************/
@@ -22681,7 +22609,7 @@
 	;
 
 /***/ },
-/* 177 */
+/* 176 */
 /*!*************************************!*\
   !*** ./src/js/component/search.jsx ***!
   \*************************************/
@@ -22748,7 +22676,7 @@
 	;
 
 /***/ },
-/* 178 */
+/* 177 */
 /*!***********************************!*\
   !*** ./src/js/component/task.jsx ***!
   \***********************************/
@@ -22770,11 +22698,11 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _stopwatch = __webpack_require__(/*! ./stopwatch.jsx */ 179);
+	var _stopwatch = __webpack_require__(/*! ./stopwatch.jsx */ 178);
 	
 	var _stopwatch2 = _interopRequireDefault(_stopwatch);
 	
-	var _timer = __webpack_require__(/*! ./timer.jsx */ 180);
+	var _timer = __webpack_require__(/*! ./timer.jsx */ 179);
 	
 	var _timer2 = _interopRequireDefault(_timer);
 	
@@ -22855,6 +22783,9 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      //this.props.info.stopwatch
+	      //this.props.info.timeDeath
+	
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'task' },
@@ -22869,14 +22800,26 @@
 	      if (this.state.edit) document.querySelector('.edit-field').focus();
 	    }
 	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      if (!(this.props.info.project === 'ARCHIV')) {
+	        window.dispatchEvent(new CustomEvent('setInJournal', {
+	          detail: {
+	            id: this.props.info.id,
+	            data: new Date()
+	          }
+	        }));
+	      }
+	    }
+	  }, {
 	    key: 'timer',
-	    value: function timer() {
+	    value: function timer(time) {
 	      if (!this.props.info.timeDeath) return;
 	      return _react2.default.createElement(_timer2.default, {
 	        className: 'wrap',
 	        old: this.props.info.now,
 	        id: this.props.info.id,
-	        time: this.props.info.timeDeath
+	        time: time
 	      });
 	    }
 	  }, {
@@ -22955,7 +22898,7 @@
 	;
 
 /***/ },
-/* 179 */
+/* 178 */
 /*!****************************************!*\
   !*** ./src/js/component/stopwatch.jsx ***!
   \****************************************/
@@ -23118,7 +23061,7 @@
 	;
 
 /***/ },
-/* 180 */
+/* 179 */
 /*!************************************!*\
   !*** ./src/js/component/timer.jsx ***!
   \************************************/
@@ -23143,8 +23086,6 @@
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -23197,11 +23138,9 @@
 	  }, {
 	    key: 'show',
 	    value: function show() {
-	      var _console;
-	
 	      if (this.state.spoiler) return;
 	      var t = this.props.time;
-	      (_console = console).log.apply(_console, _toConsumableArray(this.props.time));
+	
 	      return _react2.default.createElement(
 	        'span',
 	        { className: 'wrap' },
@@ -23287,7 +23226,7 @@
 	;
 
 /***/ },
-/* 181 */
+/* 180 */
 /*!*****************************************!*\
   !*** ./src/js/component/collection.jsx ***!
   \*****************************************/
@@ -23309,7 +23248,7 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _folder = __webpack_require__(/*! ./folder.jsx */ 182);
+	var _folder = __webpack_require__(/*! ./folder.jsx */ 181);
 	
 	var _folder2 = _interopRequireDefault(_folder);
 	
@@ -23357,7 +23296,7 @@
 	;
 
 /***/ },
-/* 182 */
+/* 181 */
 /*!*************************************!*\
   !*** ./src/js/component/folder.jsx ***!
   \*************************************/
@@ -23535,7 +23474,7 @@
 	;
 
 /***/ },
-/* 183 */
+/* 182 */
 /*!************************************!*\
   !*** ./src/js/component/stats.jsx ***!
   \************************************/
@@ -23588,7 +23527,7 @@
 	;
 
 /***/ },
-/* 184 */
+/* 183 */
 /*!***********************************!*\
   !*** ./src/js/component/note.jsx ***!
   \***********************************/
@@ -23674,7 +23613,7 @@
 	;
 
 /***/ },
-/* 185 */
+/* 184 */
 /*!**********************************!*\
   !*** ./src/js/component/nav.jsx ***!
   \**********************************/
@@ -23696,11 +23635,11 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 186);
+	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 185);
 	
 	var _bar2 = _interopRequireDefault(_bar);
 	
-	var _help = __webpack_require__(/*! ../component/help.jsx */ 187);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 186);
 	
 	var _help2 = _interopRequireDefault(_help);
 	
@@ -23771,7 +23710,7 @@
 	;
 
 /***/ },
-/* 186 */
+/* 185 */
 /*!**********************************!*\
   !*** ./src/js/component/bar.jsx ***!
   \**********************************/
@@ -23824,7 +23763,7 @@
 	;
 
 /***/ },
-/* 187 */
+/* 186 */
 /*!***********************************!*\
   !*** ./src/js/component/help.jsx ***!
   \***********************************/
@@ -23924,7 +23863,109 @@
 	exports.default = Help;
 
 /***/ },
+/* 187 */
+/*!****************************!*\
+  !*** ./src/js/db/index.js ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var db = [{
+	  project: 'ARCHIV',
+	  note: '',
+	  tasks: [{
+	    description: 'Me very old task. Mb completed?',
+	    id: 2,
+	    complete: false,
+	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
+	    project: 'ARCHIV',
+	    priority: 0,
+	    timeDeath: null,
+	    note: '',
+	    stopwatch: null
+	  }]
+	}, {
+	  project: 'SANS',
+	  note: '',
+	  tasks: [{
+	    description: 'Drink milk.',
+	    id: 232,
+	    complete: false,
+	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
+	    project: '',
+	    priority: 0,
+	    timeDeath: null,
+	    note: '',
+	    stopwatch: [0, 0, 0]
+	  }]
+	}, {
+	  project: '@shop',
+	  note: '',
+	  tasks: [{
+	    description: 'Buy milk.',
+	    id: 1,
+	    note: '',
+	    complete: false,
+	    tags: ['#horses', '#horse', '#horsesofinstagram', '#TagsForLikes', '#TagsForLikesApp', '#horseshow', '#horseshoe', '#horses_of_instagram', '#horsestagram', '#instahorses', '#wild', '#mane', '#instagood', '#grass', '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse', '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop', '#jockey', '#rider', '#riders', '#riding'],
+	    project: '@shop',
+	    priority: 0,
+	    timeDeath: null,
+	    stopwatch: [0, 0, 0]
+	  }]
+	}, {
+	  project: '@social',
+	  note: '',
+	  tasks: [{
+	    description: 'Will meet with girl.',
+	    id: 3,
+	    note: '',
+	    complete: false,
+	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
+	    project: '@social',
+	    priority: 0,
+	    timeDeath: [3, 0, 0],
+	    stopwatch: [0, 0, 0]
+	  }]
+	}, {
+	  project: '@sport',
+	  note: '',
+	  tasks: [{
+	    description: 'Scamper.',
+	    id: 1322131231231232,
+	    complete: false,
+	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
+	    project: '@sport',
+	    priority: 0,
+	    timeDeath: null,
+	    note: '',
+	    stopwatch: [0, 0, 0]
+	  }]
+	}];
+	
+	exports.db = db;
+
+/***/ },
 /* 188 */
+/*!******************************!*\
+  !*** ./src/js/db/journal.js ***!
+  \******************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var journal = [];
+	
+	exports.journal = journal;
+
+/***/ },
+/* 189 */
 /*!**************************!*\
   !*** ./src/css/main.css ***!
   \**************************/
@@ -23933,10 +23974,10 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 189);
+	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 190);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 203)(content, {});
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 204)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -23953,24 +23994,24 @@
 	}
 
 /***/ },
-/* 189 */
+/* 190 */
 /*!*****************************************!*\
   !*** ./~/css-loader!./src/css/main.css ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 190)();
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 191)();
 	// imports
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Droid+Sans);", ""]);
 	
 	// module
-	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 90px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  align-self: center;\n  flex-flow: column;\n  justify-content: center;\n  flex: 1;\n  width: 100%;\n}\n\n.help>p {\n  margin: 20px;\n  font-weight: 500;\n  text-transform: initial;\n}\n\n.help-title {\n  font-size: 20px;\n  font-weight: bold;\n  align-self: center;\n}\n\n.help-prop {\n  font-weight: bold;;\n  text-decoration: underline;\n  text-transform: uppercase;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 5px 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 5px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 0px 10px 0px 10px;\n}\n\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task>.wrap {\n  display: flex;\n  flex-flow: row wrap;\n  background: #03A9F4;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder>.wrap {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder>.wrap:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 192) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 193) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.complete {\n  cursor: pointer;\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 30px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 560px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer>.wrap {\n  display: flex;\n  flex-flow: row;\n  background: #03A9F4;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .wrap>.timer-btn, .note-btn, .note-save, .sand,\n.exit, .save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 194) + ");\n}\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 195) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 196) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 197) + ")\n}\n\n\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 198) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 199) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 200) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 201) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 202) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 191) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
+	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 90px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  align-self: center;\n  flex-flow: column;\n  justify-content: center;\n  flex: 1;\n  width: 100%;\n}\n\n.help>p {\n  margin: 20px;\n  font-weight: 500;\n  text-transform: initial;\n}\n\n.help-title {\n  font-size: 20px;\n  font-weight: bold;\n  align-self: center;\n}\n\n.help-prop {\n  font-weight: bold;;\n  text-decoration: underline;\n  text-transform: uppercase;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 5px 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 5px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 0px 10px 0px 10px;\n}\n\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task>.wrap {\n  display: flex;\n  flex-flow: row wrap;\n  background: #03A9F4;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 192) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder>.wrap {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder>.wrap:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 193) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 194) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.complete {\n  cursor: pointer;\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 30px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 560px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer>.wrap {\n  display: flex;\n  flex-flow: row;\n  background: #03A9F4;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .wrap>.timer-btn, .note-btn, .note-save, .sand,\n.exit, .save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 195) + ");\n}\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 196) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 197) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 198) + ")\n}\n\n\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 199) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 200) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 201) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 202) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 203) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 192) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 190 */
+/* 191 */
 /*!**************************************!*\
   !*** ./~/css-loader/lib/css-base.js ***!
   \**************************************/
@@ -24029,7 +24070,7 @@
 
 
 /***/ },
-/* 191 */
+/* 192 */
 /*!****************************!*\
   !*** ./src/img/search.png ***!
   \****************************/
@@ -24038,7 +24079,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVQ4Ec3BMU7CYAAG0BfkHH8jZ5C4mGDirSBwjw7sBORIVEdhBibI50g6FOvGezy4D1sHVwef3v1haCkiIiJqQ3csxdFUMVCZOYlapw9x9OJm7CQmOmzFVNtcbHQ4iKLtWfzocBUDbU/iosNBVNpGYq/Dp5hpW4i1Du/iZOzm1Vm86VSLk7lnT0YWzmLljqFaRERErMS3yh0TGz8u9tbe8C2+VHqrfIlG0VulEY2it0ojdoreisZO8Q9F8bh+AdReVMyZp3KbAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 192 */
+/* 193 */
 /*!****************************!*\
   !*** ./src/img/delete.png ***!
   \****************************/
@@ -24047,7 +24088,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAqklEQVR4Ae2VxRWDUBAA572UQWqJNkYxscr+jdue44br4jv/gs7g0BGG4XNLGX5beoXEreYojQXmQQuXp9WABSwg7LlEllzYI1oBYQ0sQonLYw7WiE5gz5tH4q9/sdcJPIT/RHROJxBNRPU6gUgiqlcLRBNRffuB9i9R+ze5/ce0/Ret/U9F/x87++FUxlXSOypzqhQ4UpklQWl9gAd1EkdciYtzxKNFDOMOajyuIqb0hAYAAAAASUVORK5CYII="
 
 /***/ },
-/* 193 */
+/* 194 */
 /*!**************************!*\
   !*** ./src/img/edit.png ***!
   \**************************/
@@ -24056,7 +24097,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAApUlEQVR4Ae3RuwkCYRBF4QNbh4+1FzGwGsEObEGswFZM7WB9FCEsJgpmAzuJ3IvCzv3z78D8/MVqtZYzTw40WLbgzuvzjjQ23pAIvC2xDbglsRtI7DXHWaWJh+b2PeskcRJ9bZLomEj4JNExlfCDCQHfEvmY2Dj4mNDyIbF08obbh1f87Xf8Zdz8vPjv+dmYedw8bj4PXDU8bh43j5vHzSPgDavV3qRrsQhO25JyAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 194 */
+/* 195 */
 /*!**************************!*\
   !*** ./src/img/note.png ***!
   \**************************/
@@ -24065,7 +24106,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACzoAAAs6AWR/Vw0AAAAHdElNRQfgCw4LEyL1RRiXAAAAl0lEQVRYw+3XTQ5AMBCG4dE4gvg5pSPUnWyIw9VGqCC+zmhi8b2zE5lnhRJhjMU1MklIHo+vD8oZMGBWAyChWdynEBpAZMAJHZBAaAGY0AMgYQEgwgYAhBV4JexATPg8QExkAmR/urdKw9v3iTjlDECB3ORyf2QIECBA4F/A8une+XqpM5xNr1Pfqa3pAHzMKBX/hRiLWwHAZPOEat0YGwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 195 */
+/* 196 */
 /*!**************************!*\
   !*** ./src/img/play.png ***!
   \**************************/
@@ -24074,7 +24115,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LFRv8GjcZAAAAm0lEQVRYw+2WwQ3CMBAEB36UAEVQB69UkT5cSAqhBN4UQQv5bhoAgRQPUaSbe1sj2eu7g6IoNufgKx6cXEEIoy0ITy6uIIRmC8KLqysIYbIFYebmCkK49wtvPtZoCzqFN1+q2YLV4c1PNdmCMDO8O37sGOf9XpH8yM39aOfdtgq12cntWh048shUh36XQG60eMmr4x+W36IoVrMAxYYe1+9lz2UAAAAASUVORK5CYII="
 
 /***/ },
-/* 196 */
+/* 197 */
 /*!***************************!*\
   !*** ./src/img/pause.png ***!
   \***************************/
@@ -24083,7 +24124,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LHySwk/KuAAAAFElEQVQY02NgoA7g/8D/YahT1AAAhhA3yVo4XisAAAAASUVORK5CYII="
 
 /***/ },
-/* 197 */
+/* 198 */
 /*!****************************!*\
   !*** ./src/img/cancel.png ***!
   \****************************/
@@ -24092,7 +24133,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABYElEQVR4Ae3Xt3HjQByF8R9GEQcxrgCpofO2C8a0vcirCLIGMqIa4MVEKLMXnvkPRktw9vz3IgDke+uNP4T/nBg6t3Sr1bq1dG7o2OFozK2lDq3NNXpTm9hJT2hnotaDlz5Lmdp6YS8qU49SvjyaqmQycC310LWBDCo3Uk9d59RiKh2gydNd+3hQwKMXulHbSgdqq9bJJPz83ieXUocufXIf3o518Mwu2L/DUUfEpSO8CxE7jQjmweITxIhv7OFT+DYTwbrTJEbEL99qJeJEkvIiwtuoY4GhlBkR30QNBc6lnIgs++RMYCnlRGTZJwuBWyknIss+2Qi0UmZEtI9qiwcUb6LinVx8mJafaOWXivKL3c9frpvCG075LbP8pl/+2FL+4IXKtdRTV6qSh98rA5lUJnsf3yf25KVtuQsIUBtnXaHGar1pzKykDq3MNA7HsaEzCxut1sbCWbjG/rb85wukqCp0O2MACwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 198 */
+/* 199 */
 /*!******************************!*\
   !*** ./src/img/timer-on.png ***!
   \******************************/
@@ -24101,7 +24142,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACL0lEQVR4Ae3Vz2pTQRTH8a+NyaUkuJI0y9ok7pWIi/6BLvyDrnShaKwbQdHqqoX2DcQHUGittVJsn0AoCFoaaA2kWJFWrvEJLBWXNnrvuBkOCJ17T651Ic3nbApzzvzKZDLhgDCO0usEdJS5zyIb7NAi4DsfWeQBRfbBYUaoYxy1RpUUFjd5xCHacpEvmJj6xDkARggwTOkjsrzAKGuaWwT274eoFNjASIW8YYx+8mTI0MMA4ywT7hHV4pJu+6aM/GKaPvZSYoYAgxQ/uYxClvcyssVJolTwkQCqqDyXgVdkiZNjSfqnULiAbE/a8WT8KY1EcCb+3jflcLKgCoAcvkyliHRDPtoToA6AU/JxXyNSXW42ugAxa9dWiVCSe9/XdkBZvhfHcBq1LW9BHyBW7OooTgu2ZSxRwIRdXcBFnof+RAGDdvUDTju2JZ8ooGBXv+HUsi2ZRAGeXPF/HLAbf0Q9f3VE27jIKzpAEkN2uhF/TcdJYtJOz+N0z7Ysk0TNTt/BqShPRYl2HSe0s71EWLMRM7Rrzk7WiFS1bQEV2nFanrqrRErJT4dPDq0j8jO1SRcxzmNsLZFGI8NrmRlG4RkSQU7x38v2PEGlm3UZ8anEnH1Teut4KOX5LGMBs5QdF3OOUPq2OAp6eRoYqZAVJhikgIdHgSEmqWGQ4p16e9HNU4yyHuORyFn82M03GYbkUlxn1bF1SI0rdLEPitzlJetss8sPvtJgntv00vFf+A28TwB4fl1vlgAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 199 */
+/* 200 */
 /*!*******************************!*\
   !*** ./src/img/timer-off.png ***!
   \*******************************/
@@ -24110,7 +24151,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACOklEQVR4Ae2WT0sUcRyHH3ZXJdhb0XrUdiW6b1Sgl8L+3QoiamEP3tbICqTFegFaC3VuMw9lhu9ACELWUKgkSynWtxCG12xnv12+DEPN99f+BvaSPZ+L+HvgYWbQGfYJYsyT/4F9wBTTxFPgFotssktAwC6bvOImeby4jyB/JDKUeYcYW6NEGpQSVUzOILpo4gLbCO595RwAJVoI9zCpxSTGaCMdrM4YLf15Kkki4A13OMUhUvSSY5hJlmPje1yCThIzkUSdI8ajnyVAIvvJZQDfhIsizUighE3iRJYlRPeEDriIWAnjX0RPJDGKGzJsI0bCCkA2vFFfSOOkjPy2B4QQGAE4Hp5dw8l71erUYhJlAiMAc2qv4qCgUsAgOBJxDNFWexCTCVVeAzgS8TTUvYHJoiq3wZmIp6rmAiZbqpyAmMRD3Iyo9wmTXVUOgn+CfrW+YxKokgL/BH3qtDDZU6UX/BNk/h7YUSUH/glyer6DyUdVhsGZqDkf8gYmC6pMAnhfxV09m8dkXJVl8E/wVk8qmORVaVPwThxDdAM4WFNpFgPjrxue6+8aOCmpFlD0TOgXCFdwkg5fHU2y/gk+k8IN5xHdEj3eidN0wDPCRIdXMYMXB1hHdE2K3Ugcjrz6A+YYIo6jvECSJz4g4do0qDJCP31k9NNxBX1FJr9RTxHPTePJWZqIe2wxyuPkiTTXWUWMrXCVFEDihJKnwkvW+cYPWuywwTwVBlCiCdqcpDtoYpwu8ogJ/jl+AQVVXWskAfRLAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 200 */
+/* 201 */
 /*!**************************!*\
   !*** ./src/img/save.png ***!
   \**************************/
@@ -24119,7 +24160,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4NLREP3R5OAAAA50lEQVRYw+2XTQ7CIBCFH8ZD2B/X1l7MY+gJFG9jw63svrhQo0F+BhjTNOHNjj7mS5lOJwBFRdxqoKCj40hPrxPjRAOoZAAR8bRO5KRTLOJtpSr6LXIBQUQ+IIDgABgfrTA22FZ9ALu+9q/+3bnLB6wdpaPWIFgtQSparEqRC2A2wAUdBAT2kKk49+y6ozam9+hxJwBqoyUFWk7A2eqWfICd1d1TALR/kVj8wOkcR8QGOESsJvZB81OHLW8fjGiN9MyNpqEhX6fe4xpwzjcyFUv6wf2oyrgffGLjo1cYspLf/OmLilL0AJq2t6TWqQyvAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 201 */
+/* 202 */
 /*!**************************!*\
   !*** ./src/img/exit.png ***!
   \**************************/
@@ -24128,7 +24169,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAvUlEQVR4Ae3XTQrCMBAF4Hea0itovJjgYvRC/TmYlKT7CELdNQ87M4vCvFnGzgedNo2IRMzTY0RGPVgrZvTt9guqspYWMaIa1ITdZBOgYDfbT3j49QH4AE+IJ/D6rokX8Pitig9wQSaEeoacUAKcUAOM4ICS4EP+u0QNcOLkgNgP+aoZMk/yfUwTiueLdiPtlZsdb68E7t7bNSCeH5yNkLOfKgJYvQ+/swkw+P4BeaMDWsSEorg5AzoYJxL5APsNcp+a7wfsAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 202 */
+/* 203 */
 /*!*************************!*\
   !*** ./src/img/add.png ***!
   \*************************/
@@ -24137,7 +24178,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAM0lEQVR4Ae3RoREAMBACwfTf9EekgMy8wLBHASs4dUmatwgAAAAAs9w/QPBkAAAAKEvSBTV8zzG4BEJAAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 203 */
+/* 204 */
 /*!*************************************!*\
   !*** ./~/style-loader/addStyles.js ***!
   \*************************************/
@@ -24390,23 +24431,6 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
-
-/***/ },
-/* 204 */,
-/* 205 */
-/*!******************************!*\
-  !*** ./src/js/db/journal.js ***!
-  \******************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var journal = [];
-	
-	exports.journal = journal;
 
 /***/ }
 /******/ ]);

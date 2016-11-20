@@ -60,6 +60,9 @@ export default class Task extends React.Component {
   }
 
   render() {
+    //this.props.info.stopwatch
+    //this.props.info.timeDeath
+
     return (
       <div className='task'>
         {this.edit()}
@@ -73,14 +76,25 @@ export default class Task extends React.Component {
     if (this.state.edit) document.querySelector('.edit-field').focus();
   }
 
-  timer() {
+  componentWillUnmount() {
+    if (!(this.props.info.project === 'ARCHIV')) {
+      window.dispatchEvent(new CustomEvent('setInJournal', {
+        detail: {
+          id: this.props.info.id,
+          data: new Date()
+        }
+      }));
+    }
+  }
+
+  timer(time) {
     if (!this.props.info.timeDeath) return;
     return (
       <Timer
         className='wrap'
         old={this.props.info.now}
         id={this.props.info.id}
-        time={this.props.info.timeDeath}
+        time={time}
       />
     );
   }
