@@ -48,6 +48,9 @@ export default class List extends React.Component {
   }
 
   getCompTasks(tasks) {
-    return tasks.map((task, i) => <Task info={task} key={task.id} />);
+    return tasks.map((task, i) => {
+      return <Task journal={this.props.journal} info={task} key={task.id} />
+    });
   }
+
 };

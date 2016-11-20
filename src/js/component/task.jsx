@@ -9,37 +9,40 @@ export default class Task extends React.Component {
 
     this.state = {edit: false};
 
-    this.handleDeleteTask      = this.handleDeleteTask.bind(this);
-    this.handleNoteTask        = this.handleNoteTask.bind(this);
-    this.handleCompleteTask    = this.handleCompleteTask.bind(this);
-    this.handleEditTask        = this.handleEditTask.bind(this);
-    this.handleSaveEditTask    = this.handleSaveEditTask.bind(this);
+    this.handleDelete   = this.handleDelete.bind(this);
+    this.handleNote     = this.handleNote.bind(this);
+    this.handleComplete = this.handleComplete.bind(this);
+    this.handleEdit     = this.handleEdit.bind(this);
+    this.handleSaveEdit = this.handleSaveEdit.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
     this.edit               = this.edit.bind(this);
     this.content            = this.content.bind(this);
     this.archiv             = this.archiv.bind(this);
     this.timer              = this.timer.bind(this);
+    this.getClearJournal    = this.getClearJournal.bind(this);
+    this.diffArrs           = this.diffArrs.bind(this);
+    this.diffDate           = this.diffDate.bind(this);
   }
 
-  handleDeleteTask() {
+  handleDelete() {
     window.dispatchEvent(new CustomEvent('deleteTask', {
       detail: {id: this.props.info.id}
     }));
   }
 
-  handleCompleteTask(e) {
+  handleComplete(e) {
     window.dispatchEvent(new CustomEvent('complete', {
       detail: {id: this.props.info.id}
     }));
     e.target.checked = false;
   }
 
-  handleEditTask() {
+  handleEdit() {
     this.setStateToggleEdit();
   }
 
-  handleSaveEditTask(e) {
+  handleSaveEdit(e) {
     this.setStateToggleEdit();
     window.dispatchEvent(new CustomEvent('save', {
       detail: {
@@ -49,7 +52,7 @@ export default class Task extends React.Component {
     }));
   }
 
-  handleNoteTask(e) {
+  handleNote(e) {
     if (!e.target.classList.contains('note-btn')) return;
     window.dispatchEvent(new CustomEvent('openNote', {
       detail: {
@@ -60,13 +63,12 @@ export default class Task extends React.Component {
   }
 
   render() {
-    //this.props.info.stopwatch
-    //this.props.info.timeDeath
+    const time = this.diffDate(this.getClearJournal(this.props.info.id));
 
     return (
       <div className='task'>
         {this.edit()}
-        {this.content()}
+        {this.content(time.stopwatch)}
         {this.archiv()}
       </div>
     );
@@ -81,7 +83,7 @@ export default class Task extends React.Component {
       window.dispatchEvent(new CustomEvent('setInJournal', {
         detail: {
           id: this.props.info.id,
-          data: new Date()
+          date: new Date()
         }
       }));
     }
@@ -109,30 +111,30 @@ export default class Task extends React.Component {
           ref='value'
           defaultValue={`${this.props.info.description}`}
         />
-        <span className='save' onClick={this.handleSaveEditTask}></span>
-        <span className='exit' onClick={this.handleEditTask}></span>
+        <span className='save' onClick={this.handleSaveEdit}></span>
+        <span className='exit' onClick={this.handleEdit}></span>
       </span>
     );
   }
 
-  content() {
+  content(stopwatch, timer) {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
     return (
       <span className='wrap'>
         <lable
-          onClick={this.handleCompleteTask}
+          onClick={this.handleComplete}
           className='complete'>
         <input type='checkbox'/></lable>
         <p className='descript'>{this.props.info.description}</p>
-        {this.timer()}
+        {this.timer(timer)}
         <Stopwatch
           old={this.props.info.now}
           id={this.props.info.id}
-          time={this.props.info.stopwatch}
+          time={stopwatch}
         />
-        <span className='edit-btn' onClick={this.handleEditTask}></span>
-        <span className='note-btn' onClick={this.handleNoteTask}></span>
-        <span className='delete-btn' onClick={this.handleDeleteTask}></span>
+        <span className='edit-btn' onClick={this.handleEdit}></span>
+        <span className='note-btn' onClick={this.handleNote}></span>
+        <span className='delete-btn' onClick={this.handleDelete}></span>
       </span>
     );
   }
@@ -142,12 +144,61 @@ export default class Task extends React.Component {
     return (
       <span className='wrap'>
         <p className='descript archiv'>{this.props.info.description}</p>
-        <span className='delete-btn' onClick={this.handleDeleteTask}></span>
+        <span className='delete-btn' onClick={this.handleDelete}></span>
       </span>
     );
   }
 
-  setStateToggleEdit() {
-    this.setState({edit: !this.state.edit});
+  setStateToggleEdit() { this.setState({edit: !this.state.edit}); }
+
+  getClearJournal(id) {
+    let index;
+    const tmp = this.props.journal.filter((item, i)=> {
+
+      if (item.id === id) {
+        index = i;
+        return true;
+      }
+
+      return false;
+
+    });
+
+    window.dispatchEvent(new CustomEvent('clearJournal', {
+      detail: {index: index}
+    }));
+
+    return tmp; // timer, stopwatch ...
   }
+
+  diffDate(journal) {
+    const result = {},
+          timer     = this.props.info.timeDeath,
+          stopwatch = this.props.info.stopwatch;
+
+    if (journal.length) {
+      const journalToFormat = [
+        journal.date.getHourses(),
+        journal.date.getMinutes(),
+        journal.date.getSeconds()
+      ];
+
+      if (timer) {
+        result.timer = this.diffArrs(journalToFormat, timer);
+      }
+
+      result.stopwatch = this.diffArrs(journalToFormat, stopwatch);
+    } else {
+      result.timer = timer;
+      result.stopwatch = stopwatch;
+    }
+
+    return result;
+  }
+
+  diffArrs(arrOne, arrTwo) {
+    for (let i = arrOne.length; --i >= 0;) arrOne[i] -= arrTwo[i];
+    return arrOne;
+  }
+
 };

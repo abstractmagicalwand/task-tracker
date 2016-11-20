@@ -27,7 +27,7 @@ export default class App extends React.Component {
     this.handleTick         = this.handleTick.bind(this);
     this.handleCancelTimer  = this.handleCancelTimer.bind(this);
     this.handleSetJournal   = this.handleSetJournal.bind(this);
-    this.getJournal         = this.getJournal.bind(this);
+    this.handleClearJournal = this.handleClearJournal.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDB    = this.setStateDB.bind(this);
@@ -168,9 +168,12 @@ export default class App extends React.Component {
     this.setState({db: db});
   }
 
-  handleSetJournal(e) {
+  handleSetJournal(e) { journal.push(e.detail); }
 
-    journal.push(e.detail);
+  handleClearJournal(e) {
+    console.log('clear befor', e.detail, journal);
+    journal.splice(e.detail.index, 1);
+    console.log('clear after', e.detail, journal);
   }
 
   componentWillMount() {
@@ -186,12 +189,11 @@ export default class App extends React.Component {
     window.removeEventListener('back'        , this.handleBackContent);
     window.removeEventListener('tick'        , this.handleTick);
     window.removeEventListener('deleteTimer' , this.handleCancelTimer);
-    window.removeEventListener('getJournal'  , this.handleGetJournal);
+    window.removeEventListener('clearJournal', this.handleClearJournal);
     window.removeEventListener('setJournal'  , this.handleSetJournal);
   }
 
   render() {
-    console.log(journal);
     return (
       <div className='app'>
         <Nav />
@@ -199,7 +201,8 @@ export default class App extends React.Component {
           view={this.state.viewContent ? this.state.viewContent : 'inbox'}
           db={this.state.db}
           journal={journal}
-          value={this.state.value ? this.state.value : ''}/>
+          value={this.state.value ? this.state.value : ''}
+        />
       </div>
     );
   }
@@ -217,7 +220,7 @@ export default class App extends React.Component {
     window.addEventListener('back'        , this.handleBackContent);
     window.addEventListener('tick'        , this.handleTick);
     window.addEventListener('deleteTimer' , this.handleCancelTimer);
-    window.addEventListener('getJournal'  , this.handleGetJournal);
+    window.addEventListener('clearJournal', this.handleClearJournal);
     window.addEventListener('setInJournal', this.handleSetJournal);
   }
 
@@ -246,10 +249,6 @@ export default class App extends React.Component {
     });
 
     return index;
-  }
-
-  getJournal(e) {
-
   }
 
 };

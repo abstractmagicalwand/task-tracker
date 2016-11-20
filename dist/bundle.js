@@ -22023,7 +22023,7 @@
 	    _this.handleTick = _this.handleTick.bind(_this);
 	    _this.handleCancelTimer = _this.handleCancelTimer.bind(_this);
 	    _this.handleSetJournal = _this.handleSetJournal.bind(_this);
-	    _this.getJournal = _this.getJournal.bind(_this);
+	    _this.handleClearJournal = _this.handleClearJournal.bind(_this);
 	
 	    _this.searchTaskDb = _this.searchTaskDb.bind(_this);
 	    _this.setStateDB = _this.setStateDB.bind(_this);
@@ -22181,8 +22181,14 @@
 	  }, {
 	    key: 'handleSetJournal',
 	    value: function handleSetJournal(e) {
-	
 	      _journal.journal.push(e.detail);
+	    }
+	  }, {
+	    key: 'handleClearJournal',
+	    value: function handleClearJournal(e) {
+	      console.log('clear befor', e.detail, _journal.journal);
+	      _journal.journal.splice(e.detail.index, 1);
+	      console.log('clear after', e.detail, _journal.journal);
 	    }
 	  }, {
 	    key: 'componentWillMount',
@@ -22199,13 +22205,12 @@
 	      window.removeEventListener('back', this.handleBackContent);
 	      window.removeEventListener('tick', this.handleTick);
 	      window.removeEventListener('deleteTimer', this.handleCancelTimer);
-	      window.removeEventListener('getJournal', this.handleGetJournal);
+	      window.removeEventListener('clearJournal', this.handleClearJournal);
 	      window.removeEventListener('setJournal', this.handleSetJournal);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log(_journal.journal);
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'app' },
@@ -22214,7 +22219,8 @@
 	          view: this.state.viewContent ? this.state.viewContent : 'inbox',
 	          db: this.state.db,
 	          journal: _journal.journal,
-	          value: this.state.value ? this.state.value : '' })
+	          value: this.state.value ? this.state.value : ''
+	        })
 	      );
 	    }
 	  }, {
@@ -22232,7 +22238,7 @@
 	      window.addEventListener('back', this.handleBackContent);
 	      window.addEventListener('tick', this.handleTick);
 	      window.addEventListener('deleteTimer', this.handleCancelTimer);
-	      window.addEventListener('getJournal', this.handleGetJournal);
+	      window.addEventListener('clearJournal', this.handleClearJournal);
 	      window.addEventListener('setInJournal', this.handleSetJournal);
 	    }
 	  }, {
@@ -22267,9 +22273,6 @@
 	
 	      return index;
 	    }
-	  }, {
-	    key: 'getJournal',
-	    value: function getJournal(e) {}
 	  }]);
 	
 	  return App;
@@ -22500,8 +22503,10 @@
 	  }, {
 	    key: 'getCompTasks',
 	    value: function getCompTasks(tasks) {
+	      var _this3 = this;
+	
 	      return tasks.map(function (task, i) {
-	        return _react2.default.createElement(_task2.default, { info: task, key: task.id });
+	        return _react2.default.createElement(_task2.default, { journal: _this3.props.journal, info: task, key: task.id });
 	      });
 	    }
 	  }]);
@@ -22724,43 +22729,46 @@
 	
 	    _this.state = { edit: false };
 	
-	    _this.handleDeleteTask = _this.handleDeleteTask.bind(_this);
-	    _this.handleNoteTask = _this.handleNoteTask.bind(_this);
-	    _this.handleCompleteTask = _this.handleCompleteTask.bind(_this);
-	    _this.handleEditTask = _this.handleEditTask.bind(_this);
-	    _this.handleSaveEditTask = _this.handleSaveEditTask.bind(_this);
+	    _this.handleDelete = _this.handleDelete.bind(_this);
+	    _this.handleNote = _this.handleNote.bind(_this);
+	    _this.handleComplete = _this.handleComplete.bind(_this);
+	    _this.handleEdit = _this.handleEdit.bind(_this);
+	    _this.handleSaveEdit = _this.handleSaveEdit.bind(_this);
 	
 	    _this.setStateToggleEdit = _this.setStateToggleEdit.bind(_this);
 	    _this.edit = _this.edit.bind(_this);
 	    _this.content = _this.content.bind(_this);
 	    _this.archiv = _this.archiv.bind(_this);
 	    _this.timer = _this.timer.bind(_this);
+	    _this.getClearJournal = _this.getClearJournal.bind(_this);
+	    _this.diffArrs = _this.diffArrs.bind(_this);
+	    _this.diffDate = _this.diffDate.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(Task, [{
-	    key: 'handleDeleteTask',
-	    value: function handleDeleteTask() {
+	    key: 'handleDelete',
+	    value: function handleDelete() {
 	      window.dispatchEvent(new CustomEvent('deleteTask', {
 	        detail: { id: this.props.info.id }
 	      }));
 	    }
 	  }, {
-	    key: 'handleCompleteTask',
-	    value: function handleCompleteTask(e) {
+	    key: 'handleComplete',
+	    value: function handleComplete(e) {
 	      window.dispatchEvent(new CustomEvent('complete', {
 	        detail: { id: this.props.info.id }
 	      }));
 	      e.target.checked = false;
 	    }
 	  }, {
-	    key: 'handleEditTask',
-	    value: function handleEditTask() {
+	    key: 'handleEdit',
+	    value: function handleEdit() {
 	      this.setStateToggleEdit();
 	    }
 	  }, {
-	    key: 'handleSaveEditTask',
-	    value: function handleSaveEditTask(e) {
+	    key: 'handleSaveEdit',
+	    value: function handleSaveEdit(e) {
 	      this.setStateToggleEdit();
 	      window.dispatchEvent(new CustomEvent('save', {
 	        detail: {
@@ -22770,8 +22778,8 @@
 	      }));
 	    }
 	  }, {
-	    key: 'handleNoteTask',
-	    value: function handleNoteTask(e) {
+	    key: 'handleNote',
+	    value: function handleNote(e) {
 	      if (!e.target.classList.contains('note-btn')) return;
 	      window.dispatchEvent(new CustomEvent('openNote', {
 	        detail: {
@@ -22783,14 +22791,13 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      //this.props.info.stopwatch
-	      //this.props.info.timeDeath
+	      var time = this.diffDate(this.getClearJournal(this.props.info.id));
 	
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'task' },
 	        this.edit(),
-	        this.content(),
+	        this.content(time.stopwatch),
 	        this.archiv()
 	      );
 	    }
@@ -22806,7 +22813,7 @@
 	        window.dispatchEvent(new CustomEvent('setInJournal', {
 	          detail: {
 	            id: this.props.info.id,
-	            data: new Date()
+	            date: new Date()
 	          }
 	        }));
 	      }
@@ -22835,13 +22842,13 @@
 	          ref: 'value',
 	          defaultValue: '' + this.props.info.description
 	        }),
-	        _react2.default.createElement('span', { className: 'save', onClick: this.handleSaveEditTask }),
-	        _react2.default.createElement('span', { className: 'exit', onClick: this.handleEditTask })
+	        _react2.default.createElement('span', { className: 'save', onClick: this.handleSaveEdit }),
+	        _react2.default.createElement('span', { className: 'exit', onClick: this.handleEdit })
 	      );
 	    }
 	  }, {
 	    key: 'content',
-	    value: function content() {
+	    value: function content(stopwatch, timer) {
 	      if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
 	      return _react2.default.createElement(
 	        'span',
@@ -22849,7 +22856,7 @@
 	        _react2.default.createElement(
 	          'lable',
 	          {
-	            onClick: this.handleCompleteTask,
+	            onClick: this.handleComplete,
 	            className: 'complete' },
 	          _react2.default.createElement('input', { type: 'checkbox' })
 	        ),
@@ -22858,15 +22865,15 @@
 	          { className: 'descript' },
 	          this.props.info.description
 	        ),
-	        this.timer(),
+	        this.timer(timer),
 	        _react2.default.createElement(_stopwatch2.default, {
 	          old: this.props.info.now,
 	          id: this.props.info.id,
-	          time: this.props.info.stopwatch
+	          time: stopwatch
 	        }),
-	        _react2.default.createElement('span', { className: 'edit-btn', onClick: this.handleEditTask }),
-	        _react2.default.createElement('span', { className: 'note-btn', onClick: this.handleNoteTask }),
-	        _react2.default.createElement('span', { className: 'delete-btn', onClick: this.handleDeleteTask })
+	        _react2.default.createElement('span', { className: 'edit-btn', onClick: this.handleEdit }),
+	        _react2.default.createElement('span', { className: 'note-btn', onClick: this.handleNote }),
+	        _react2.default.createElement('span', { className: 'delete-btn', onClick: this.handleDelete })
 	      );
 	    }
 	  }, {
@@ -22881,13 +22888,62 @@
 	          { className: 'descript archiv' },
 	          this.props.info.description
 	        ),
-	        _react2.default.createElement('span', { className: 'delete-btn', onClick: this.handleDeleteTask })
+	        _react2.default.createElement('span', { className: 'delete-btn', onClick: this.handleDelete })
 	      );
 	    }
 	  }, {
 	    key: 'setStateToggleEdit',
 	    value: function setStateToggleEdit() {
 	      this.setState({ edit: !this.state.edit });
+	    }
+	  }, {
+	    key: 'getClearJournal',
+	    value: function getClearJournal(id) {
+	      var index = void 0;
+	      var tmp = this.props.journal.filter(function (item, i) {
+	
+	        if (item.id === id) {
+	          index = i;
+	          return true;
+	        }
+	
+	        return false;
+	      });
+	
+	      window.dispatchEvent(new CustomEvent('clearJournal', {
+	        detail: { index: index }
+	      }));
+	
+	      return tmp; // timer, stopwatch ...
+	    }
+	  }, {
+	    key: 'diffDate',
+	    value: function diffDate(journal) {
+	      var result = {},
+	          timer = this.props.info.timeDeath,
+	          stopwatch = this.props.info.stopwatch;
+	
+	      if (journal.length) {
+	        var journalToFormat = [journal.date.getHourses(), journal.date.getMinutes(), journal.date.getSeconds()];
+	
+	        if (timer) {
+	          result.timer = this.diffArrs(journalToFormat, timer);
+	        }
+	
+	        result.stopwatch = this.diffArrs(journalToFormat, stopwatch);
+	      } else {
+	        result.timer = timer;
+	        result.stopwatch = stopwatch;
+	      }
+	
+	      return result;
+	    }
+	  }, {
+	    key: 'diffArrs',
+	    value: function diffArrs(arrOne, arrTwo) {
+	      for (var i = arrOne.length; --i >= 0;) {
+	        arrOne[i] -= arrTwo[i];
+	      }return arrOne;
 	    }
 	  }]);
 	

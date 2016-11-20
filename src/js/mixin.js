@@ -15,10 +15,7 @@ function getArrSMH(old) {
   return [h(old), m(old), s(old)];
 }
 
-function diffArrs(arrOne, arrTwo) {
-  for (let i = arrOne.length; --i >= 0;) arrOne[i] -= arrTwo[i];
-  return arrOne;
-}
+
 
 function load(db) {
 
