@@ -53,7 +53,7 @@ const db = [{
     project: '@shop',
     priority: 0,
     timeDeath: null,
-    stopwatch: [0, 0, 0],
+    stopwatch: [0, 0, 0]
   }]
 }, {
   project: '@social',
@@ -71,7 +71,7 @@ const db = [{
     project: '@social',
     priority: 0,
     timeDeath: [3, 0, 0],
-    stopwatch: [0, 0, 0],
+    stopwatch: [0, 0, 0]
   }]
 }, {
   project: '@sport',
@@ -90,7 +90,7 @@ const db = [{
       priority: 0,
       timeDeath: null,
       note: '',
-      stopwatch: [0, 0, 0],
+      stopwatch: [0, 0, 0]
   }]
 }];
 

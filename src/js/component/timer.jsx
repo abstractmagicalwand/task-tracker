@@ -1,8 +1,6 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
 
-let keyId = 10000;
-
 export default class Timer extends React.Component {
   constructor(props) {
     super(props);
@@ -13,7 +11,8 @@ export default class Timer extends React.Component {
     this.handleTickTimer = this.handleTickTimer.bind(this);
     this.cancel = this.cancel.bind(this);
     this.spoiler = this.spoiler.bind(this);
-    this.compile = this.compile.bind(this);
+    this.show = this.show.bind(this);
+    this.spoiler = this.spoiler.bind(this);
   }
 
   componentWillMount() {
@@ -22,28 +21,32 @@ export default class Timer extends React.Component {
   }
 
   render() {
-    return (<span className='timer' key={++keyId}>{this.compile()}</span>);
+    return (
+      <span className='timer'>
+        {this.show()}
+        {this.hidden()}
+      </span>
+    );
   }
 
-  compile() {
-    const result = [],
-          t = this.props.time;
+  hidden() {
+    if (!this.state.spoiler) return;
+    return <span className='timer-spoiler-btn' onClick={this.spoiler} />;
+  }
 
-    if (!this.state.spoiler) {
-      result.push(
-        <span key={++keyId} className='timer-btn' onClick={this.cancel}></span>,
-        <span key={++keyId}>{t[0] < 10 ? `0${t[0]}` : t[0]}:</span>,
-        <span key={++keyId}>{t[1] < 10 ? `0${t[1]}` : t[1]}:</span>,
-        <span key={++keyId}>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>,
-        <span key={++keyId} className='timer-spoiler-off-btn' onClick={this.spoiler} />
-      );
-    } else {
-      result.push(
-        <span className='timer-spoiler-btn' key={++keyId} onClick={this.spoiler} />
-      );
-    }
-
-    return result;
+  show() {
+    if (this.state.spoiler) return;
+    const t = this.props.time;
+    console.log(...this.props.time);
+    return (
+      <span className='wrap'>
+        <span className='timer-btn' onClick={this.cancel}></span>
+        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}:</span>
+        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}:</span>
+        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
+        <span className='timer-spoiler-off-btn' onClick={this.spoiler} />
+      </span>
+    );
   }
 
   spoiler() {
@@ -73,30 +76,21 @@ export default class Timer extends React.Component {
       --h;
     }
 
-    if (!Math.max(h, m, s)) {
-      clearInterval(this.timer);
-      this.timer = null;
-      window.dispatchEvent(new CustomEvent('deleteTask', {
-        detail: {id: this.props.id}
-      }));
-    } else {
-      window.dispatchEvent(new CustomEvent('tick', {
-        detail: {
-          type: 'timer',
-          time: [h, m, s],
-          id: this.props.id,
-          now: new Date().getTime()
-        }
-      }));
-    }
+    window.dispatchEvent(new CustomEvent('tick', {
+      detail: {
+        type: 'timer',
+        time: [h, m, s],
+        id: this.props.id,
+      }
+    }));
 
   }
 
   cancel() {
     clearInterval(this.timer);
     this.timer = null;
-    window.dispatchEvent(new CustomEvent('deleteTimer', {
+/*    window.dispatchEvent(new CustomEvent('deleteTimer', {
       detail: {id: this.props.id}
-    }));
+    }));*/
   }
 };

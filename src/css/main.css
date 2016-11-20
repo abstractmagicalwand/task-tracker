@@ -268,7 +268,7 @@ input[type=checkbox] {
   background: #c1ff9b;
 }
 
-.stopwatch, .timer {
+.stopwatch, .timer>.wrap {
   display: flex;
   flex-flow: row;
   background: #03A9F4;
@@ -285,8 +285,8 @@ input[type=checkbox] {
   flex-flow: row;
 }
 
-.stopwatch-btn, .back, .timer-btn, .note-btn, .note-save, .sand, .exit,
-.save, .timer-spoiler-btn, .timer-spoiler-off-btn {
+.stopwatch-btn, .back, .wrap>.timer-btn, .note-btn, .note-save, .sand,
+.exit, .save, .timer-spoiler-btn, .timer-spoiler-off-btn {
   width: 48px;
   height: 48px;
   align-self: center;
@@ -308,6 +308,8 @@ input[type=checkbox] {
 .timer-btn {
   background: url('../img/cancel.png')
 }
+
+
 
 .timer-spoiler-btn {
   background: url('../img/timer-on.png');

@@ -1,8 +1,6 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
 
-let keyId = 0;
-
 export default class Stopwatch extends React.Component {
   constructor(props) {
     super(props);
@@ -13,9 +11,7 @@ export default class Stopwatch extends React.Component {
     this.stop      = this.stop.bind(this);
     this.play      = this.play.bind(this);
     this.toggle    = this.toggle.bind(this);
-    this.stopwatch = null;
-    this.old       = null;
-    this.compile   = this.compile.bind(this);
+    this.show      = this.show.bind(this);
 
     this.handleTickStopwatch = this.handleTickStopwatch.bind(this);
   }
@@ -37,8 +33,7 @@ export default class Stopwatch extends React.Component {
       detail: {
         type: 'stopwatch',
         time: [h, m, s],
-        id: this.props.id,
-        now: new Date().getTime()
+        id: this.props.id
       }
     }));
   }
@@ -48,7 +43,13 @@ export default class Stopwatch extends React.Component {
   }
 
   render() {
-    return <span key={++keyId} className='stopwatch'>{this.compile()}</span>;
+    return <span className='stopwatch'>
+      {this.show()}
+      <span
+        className={'stopwatch-btn' + (this.state.interval ? '' : ' pause')}
+        onClick={this.toggle}
+      />
+    </span>;
   }
 
   componentDidMount() {
@@ -59,26 +60,16 @@ export default class Stopwatch extends React.Component {
     this.stop();
   }
 
-  compile() {
-    const result = [],
-          s = this.props.time;
-
-    if (this.state.interval) {
-      result.push(
-        <span key={++keyId}>{s[0] < 10 ? `0${s[0]}` : s[0]}:</span>,
-        <span key={++keyId}>{s[1] < 10 ? `0${s[1]}` : s[1]}:</span>,
-        <span key={++keyId}>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
-      );
-    }
-    result.push(
-      <span
-        key={++keyId}
-        className={'stopwatch-btn' + (this.state.interval ? '' : ' pause')}
-        onClick={this.toggle}
-      />
-    );
-
-    return result;
+  show() {
+    if (!this.state.interval) return;
+    const s = this.props.time;
+    return (
+      <span className='wrap'>
+        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}:</span>
+        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}:</span>
+        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
+      </span>
+    )
   }
 
   toggle() { this.state.interval ? this.stop() : this.play(); }

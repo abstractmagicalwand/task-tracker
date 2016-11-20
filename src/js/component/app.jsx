@@ -1,14 +1,20 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
-import {db}     from '../db/index.js';
 import Content  from '../component/content.jsx';
 import Nav      from '../component/nav.jsx';
 import Help     from '../component/help.jsx';
+import {db}     from '../db/index.js';
+import {journal} from '../db/journal.js';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {db: db}
+    this.state = {
+      db: db,
+      journal: journal
+    };
+
+    this.tmpJournal = [...journal];
 
     this.handleNavBtnApp       = this.handleNavBtnApp.bind(this);
     this.handleAddNewTaskApp   = this.handleAddNewTaskApp.bind(this);
@@ -22,6 +28,8 @@ export default class App extends React.Component {
     this.handleBackContentApp  = this.handleBackContentApp.bind(this);
     this.handleTickApp         = this.handleTickApp.bind(this);
     this.handleCancelTimerApp  = this.handleCancelTimerApp.bind(this);
+    this.handleSetJournalApp   = this.handleSetJournalApp.bind(this);
+    this.handleGetJournalApp   = this.handleGetJournalApp.bind(this);
 
     this.searchTaskDb  = this.searchTaskDb.bind(this);
     this.setStateDb    = this.setStateDb.bind(this);
@@ -76,7 +84,6 @@ export default class App extends React.Component {
     const task = this.searchTaskDb(e.detail.id);
     task.arr[task.i].complete = true;
     task.arr[task.i].project  = 'ARCHIV';
-    console.log(task.arr[task.i]);
     this.state.db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
     this.setStateDb();
   }
@@ -160,6 +167,15 @@ export default class App extends React.Component {
     this.setState({db: db});
   }
 
+  handleSetJournalApp(e) {
+    this.tmpJournal.push(e.detail);
+    this.setState({journal: this.tmpJournal});
+  }
+
+  handleGetJournalApp(e) {
+
+  }
+
   componentWillMount() {
     window.removeEventListener('clickNavBtn' , this.handleNavBtnApp);
     window.removeEventListener('addNewTask'  , this.handleAddNewTaskApp);
@@ -173,6 +189,8 @@ export default class App extends React.Component {
     window.removeEventListener('back'        , this.handleBackContentApp);
     window.removeEventListener('tick'        , this.handleTickApp);
     window.removeEventListener('deleteTimer' , this.handleCancelTimerApp);
+    window.removeEventListener('getJournal'  , this.handleGetJournalApp);
+    window.removeEventListener('setJournal'  , this.handleSetJournalApp);
   }
 
   render() {
@@ -200,11 +218,13 @@ export default class App extends React.Component {
     window.addEventListener('back'        , this.handleBackContentApp);
     window.addEventListener('tick'        , this.handleTickApp);
     window.addEventListener('deleteTimer' , this.handleCancelTimerApp);
+    window.addEventListener('getJournal'  , this.handleGetJournalApp);
+    window.addEventListener('setJournal'  , this.handleSetJournalApp);
   }
 
   searchTaskDb(id, DB) {
     const task = {};
-    const db = DB || this.state.db
+    const db = DB || this.state.db;
 
     db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {
