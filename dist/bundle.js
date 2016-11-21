@@ -22924,19 +22924,27 @@
 	          stopwatch = this.props.info.stopwatch;
 	
 	      if (journal.length) {
+	        console.log('result', journal);
 	        var journalToFormat = [journal[0].date.getHours(), journal[0].date.getMinutes(), journal[0].date.getSeconds()],
 	            now = new Date(),
 	            nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
 	
 	        if (timer) {
 	          result.timer = this.diffArrs(timer, this.diffArrs(journalToFormat, nowDate));
+	        } else {}
+	
+	        if (Math.min(result) > 0) {
+	          result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
+	        } else {
+	          result.stopwatch = stopwatch;
 	        }
 	
-	        result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
+	        console.log('result', result);
 	      } else {
 	        result.timer = timer;
 	        result.stopwatch = stopwatch;
 	      }
+	
 	      return result;
 	    }
 	  }, {
@@ -23416,8 +23424,7 @@
 	    key: 'handleClickFolder',
 	    value: function handleClickFolder(e) {
 	      var tag = e.target.tagName;
-	
-	      if (tag != 'DIV' && tag != 'P') return;
+	      if (e.target.className !== 'wrap' && tag !== 'DIV' && tag !== 'P') return;
 	
 	      window.dispatchEvent(new CustomEvent('clickNavBtn', {
 	        detail: { category: this.props.info.project }

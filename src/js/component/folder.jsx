@@ -20,8 +20,7 @@ export default class Folder extends React.Component {
 
   handleClickFolder(e) {
     const tag = e.target.tagName;
-
-    if (tag != 'DIV' && tag != 'P') return;
+    if (e.target.className !== 'wrap' && tag !== 'DIV' && tag !== 'P') return;
 
     window.dispatchEvent(new CustomEvent('clickNavBtn', {
       detail: {category: this.props.info.project}

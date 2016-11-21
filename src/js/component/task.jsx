@@ -178,7 +178,10 @@ export default class Task extends React.Component {
           timer     = this.props.info.timeDeath,
           stopwatch = this.props.info.stopwatch;
 
+
+
     if (journal.length) {
+      console.log('result', journal);
       const journalToFormat = [
         journal[0].date.getHours(),
         journal[0].date.getMinutes(),
@@ -193,13 +196,23 @@ export default class Task extends React.Component {
 
       if (timer) {
         result.timer = this.diffArrs(timer, this.diffArrs(journalToFormat, nowDate));
+      } else {
+
       }
 
-      result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
+      if (Math.min(result) > 0) {
+        result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
+      } else {
+        result.stopwatch = stopwatch;
+      }
+
+      console.log('result', result);
     } else {
       result.timer = timer;
       result.stopwatch = stopwatch;
     }
+
+
     return result;
   }
 
