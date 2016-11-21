@@ -178,10 +178,7 @@ export default class Task extends React.Component {
           timer     = this.props.info.timeDeath,
           stopwatch = this.props.info.stopwatch;
 
-
-
     if (journal.length) {
-      console.log('result', journal);
       const journalToFormat = [
         journal[0].date.getHours(),
         journal[0].date.getMinutes(),
@@ -195,23 +192,24 @@ export default class Task extends React.Component {
       ];
 
       if (timer) {
-        result.timer = this.diffArrs(timer, this.diffArrs(journalToFormat, nowDate));
-      } else {
-
+        result.timer = this.formatTimer(this.diffArrs(timer, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
+        console.log(result.timer);
       }
 
-      if (Math.min(result) > 0) {
-        result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
+      if (!timer || Math.min(...result.timer) < 0) {
+        result.timer = timer;
+      }
+
+      if (stopwatch.some(item => item > 0)) {
+        result.stopwatch = this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat)));
       } else {
         result.stopwatch = stopwatch;
       }
 
-      console.log('result', result);
     } else {
       result.timer = timer;
       result.stopwatch = stopwatch;
     }
-
 
     return result;
   }
@@ -226,4 +224,33 @@ export default class Task extends React.Component {
     return arrOne;
   }
 
+  formatTimer(timer) {
+    let [h, m, s] = timer;
+
+    if (s < 0) {
+      --m;
+      s += 60;
+    } else if (m < 0) {
+      --h;
+      m += 60;
+    }
+
+    return [h, m, s];
+  }
+
+  formatStopwatch(stopwatch) {
+    let [h, m, s] = timer;
+
+    if (s > 60) {
+      ++m;
+      s -= 60;
+    } else if (m < 0) {
+      ++h;
+      m -= 60;
+    }
+
+    return [h, m, s];
+  }
+
 };
+

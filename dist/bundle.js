@@ -22691,6 +22691,8 @@
 	  value: true
 	});
 	
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(/*! react */ 1);
@@ -22705,11 +22707,13 @@
 	
 	var _stopwatch2 = _interopRequireDefault(_stopwatch);
 	
-	var _timer = __webpack_require__(/*! ./timer.jsx */ 179);
+	var _timer4 = __webpack_require__(/*! ./timer.jsx */ 179);
 	
-	var _timer2 = _interopRequireDefault(_timer);
+	var _timer5 = _interopRequireDefault(_timer4);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -22821,7 +22825,7 @@
 	    key: 'timer',
 	    value: function timer(time) {
 	      if (!this.props.info.timeDeath) return;
-	      return _react2.default.createElement(_timer2.default, {
+	      return _react2.default.createElement(_timer5.default, {
 	        className: 'wrap',
 	        old: this.props.info.now,
 	        id: this.props.info.id,
@@ -22924,22 +22928,26 @@
 	          stopwatch = this.props.info.stopwatch;
 	
 	      if (journal.length) {
-	        console.log('result', journal);
 	        var journalToFormat = [journal[0].date.getHours(), journal[0].date.getMinutes(), journal[0].date.getSeconds()],
 	            now = new Date(),
 	            nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
 	
 	        if (timer) {
-	          result.timer = this.diffArrs(timer, this.diffArrs(journalToFormat, nowDate));
-	        } else {}
+	          result.timer = this.formatTimer(this.diffArrs(timer, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
+	          console.log(result.timer);
+	        }
 	
-	        if (Math.min(result) > 0) {
-	          result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
+	        if (!timer || Math.min.apply(Math, _toConsumableArray(result.timer)) < 0) {
+	          result.timer = timer;
+	        }
+	
+	        if (stopwatch.some(function (item) {
+	          return item > 0;
+	        })) {
+	          result.stopwatch = this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat)));
 	        } else {
 	          result.stopwatch = stopwatch;
 	        }
-	
-	        console.log('result', result);
 	      } else {
 	        result.timer = timer;
 	        result.stopwatch = stopwatch;
@@ -22960,6 +22968,43 @@
 	      for (var i = arrOne.length; --i >= 0;) {
 	        arrOne[i] += arrTwo[i];
 	      }return arrOne;
+	    }
+	  }, {
+	    key: 'formatTimer',
+	    value: function formatTimer(timer) {
+	      var _timer = _slicedToArray(timer, 3),
+	          h = _timer[0],
+	          m = _timer[1],
+	          s = _timer[2];
+	
+	      if (s < 0) {
+	        --m;
+	        s += 60;
+	      } else if (m < 0) {
+	        --h;
+	        m += 60;
+	      }
+	
+	      return [h, m, s];
+	    }
+	  }, {
+	    key: 'formatStopwatch',
+	    value: function formatStopwatch(stopwatch) {
+	      var _timer2 = timer,
+	          _timer3 = _slicedToArray(_timer2, 3),
+	          h = _timer3[0],
+	          m = _timer3[1],
+	          s = _timer3[2];
+	
+	      if (s > 60) {
+	        ++m;
+	        s -= 60;
+	      } else if (m < 0) {
+	        ++h;
+	        m -= 60;
+	      }
+	
+	      return [h, m, s];
 	    }
 	  }]);
 	
@@ -23285,9 +23330,9 @@
 	    value: function cancel() {
 	      clearInterval(this.timer);
 	      this.timer = null;
-	      /*  window.dispatchEvent(new CustomEvent('deleteTimer', {
-	            detail: {id: this.props.id}
-	          }));*/
+	      window.dispatchEvent(new CustomEvent('deleteTimer', {
+	        detail: { id: this.props.id }
+	      }));
 	    }
 	  }]);
 	
