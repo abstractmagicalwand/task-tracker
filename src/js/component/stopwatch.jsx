@@ -17,7 +17,7 @@ export default class Stopwatch extends React.Component {
   }
 
   handleTickStopwatch() {
-    let [h, m, s] = this.old || this.props.time;
+    let [h, m, s] = this.props.time;
 
     if (s < 59) {
       ++s;

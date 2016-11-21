@@ -74,9 +74,11 @@ export default class App extends React.Component {
   }
 
   handleDeleteTask(e) {
-    const task = this.searchTaskDb(e.detail.id);
+    console.log('!!!!!!!!!!!!!');
+    const db   = [...this.state.db];
+    const task = this.searchTaskDb(e.detail.id, db);
     task.arr.splice(task.i, 1);
-    this.setStateDB([...this.state.db]);
+    this.setStateDB(db);
   }
 
   handleCompleteTask(e) {
@@ -140,7 +142,8 @@ export default class App extends React.Component {
   }
 
   handleTick(e) {
-    const task = this.searchTaskDb(e.detail.id);
+    const db = [...this.state.db];
+    const task = this.searchTaskDb(e.detail.id, db);
 
     switch (e.detail.type) {
     case 'timer':
@@ -151,8 +154,7 @@ export default class App extends React.Component {
         break;
     }
 
-    task.arr[task.i].now = e.detail.now;
-    this.setStateDB([...this.state.db]);
+    this.setStateDB(db);
   }
 
   handleCancelTimer(e) {

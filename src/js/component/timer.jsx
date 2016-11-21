@@ -13,53 +13,8 @@ export default class Timer extends React.Component {
     this.spoiler = this.spoiler.bind(this);
     this.show = this.show.bind(this);
     this.spoiler = this.spoiler.bind(this);
-  }
-
-  componentWillMount() {
-    clearInterval(this.timer);
-    this.timer = null;
-  }
-
-  render() {
-    return (
-      <span className='timer'>
-        {this.show()}
-        {this.hidden()}
-      </span>
-    );
-  }
-
-  hidden() {
-    if (!this.state.spoiler) return;
-    return <span className='timer-spoiler-btn' onClick={this.spoiler} />;
-  }
-
-  show() {
-    if (this.state.spoiler) return;
-    const t = this.props.time;
-
-    return (
-      <span className='wrap'>
-        <span className='timer-btn' onClick={this.cancel}></span>
-        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}:</span>
-        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}:</span>
-        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
-        <span className='timer-spoiler-off-btn' onClick={this.spoiler} />
-      </span>
-    );
-  }
-
-  spoiler() {
-    this.setState({spoiler: !this.state.spoiler});
-  }
-
-  componentDidMount() {
-    const self = this;
-    this.timer = setInterval(self.handleTickTimer, 1000);
-  }
-
-  componentWillUnmount() {
-    this.cancel();
+    this.delete = this.delete.bind(this);
+    this.death  = this.death.bind(this);
   }
 
   handleTickTimer() {
@@ -86,11 +41,71 @@ export default class Timer extends React.Component {
 
   }
 
+  componentWillMount() {
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+
+  render() {
+    return (
+      <span className='timer'>
+        {this.show()}
+        {this.hidden()}
+      </span>
+    );
+  }
+
+  hidden() {
+    if (!this.state.spoiler) return;
+    return <span className='timer-spoiler-btn' onClick={this.spoiler} />;
+  }
+
+  show() {
+    if (this.state.spoiler) return;
+    const t = this.props.time;
+    if (!Math.max(...t)) this.death();
+    return (
+      <span className='wrap'>
+        <span className='timer-btn' onClick={this.cancel}></span>
+        <span>{t[0] < 10 ? `0${t[0]}` : t[0]}:</span>
+        <span>{t[1] < 10 ? `0${t[1]}` : t[1]}:</span>
+        <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
+        <span className='timer-spoiler-off-btn' onClick={this.spoiler} />
+      </span>
+    );
+  }
+
+  spoiler() {
+    this.setState({spoiler: !this.state.spoiler});
+  }
+
+  componentDidMount() {
+    const self = this;
+    this.timer = setInterval(self.handleTickTimer, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+
   cancel() {
     clearInterval(this.timer);
     this.timer = null;
+    this.delete();
+  }
+
+  delete() {
+    console.log('DELETE');
     window.dispatchEvent(new CustomEvent('deleteTimer', {
       detail: {id: this.props.id}
     }));
   }
+
+  death() {
+    window.dispatchEvent(new CustomEvent('deleteTask', {
+      detail: {id: this.props.id}
+    }))
+  }
+
 };

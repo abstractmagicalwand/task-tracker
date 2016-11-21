@@ -22077,9 +22077,11 @@
 	  }, {
 	    key: 'handleDeleteTask',
 	    value: function handleDeleteTask(e) {
-	      var task = this.searchTaskDb(e.detail.id);
+	      console.log('!!!!!!!!!!!!!');
+	      var db = [].concat(_toConsumableArray(this.state.db));
+	      var task = this.searchTaskDb(e.detail.id, db);
 	      task.arr.splice(task.i, 1);
-	      this.setStateDB([].concat(_toConsumableArray(this.state.db)));
+	      this.setStateDB(db);
 	    }
 	  }, {
 	    key: 'handleCompleteTask',
@@ -22150,7 +22152,8 @@
 	  }, {
 	    key: 'handleTick',
 	    value: function handleTick(e) {
-	      var task = this.searchTaskDb(e.detail.id);
+	      var db = [].concat(_toConsumableArray(this.state.db));
+	      var task = this.searchTaskDb(e.detail.id, db);
 	
 	      switch (e.detail.type) {
 	        case 'timer':
@@ -22161,8 +22164,7 @@
 	          break;
 	      }
 	
-	      task.arr[task.i].now = e.detail.now;
-	      this.setStateDB([].concat(_toConsumableArray(this.state.db)));
+	      this.setStateDB(db);
 	    }
 	  }, {
 	    key: 'handleCancelTimer',
@@ -22980,9 +22982,13 @@
 	      if (s < 0) {
 	        --m;
 	        s += 60;
-	      } else if (m < 0) {
+	      }
+	      if (m < 0) {
 	        --h;
 	        m += 60;
+	      }
+	      if (h < 0) {
+	        h = m = s = 0;
 	      }
 	
 	      return [h, m, s];
@@ -22999,7 +23005,8 @@
 	      if (s > 60) {
 	        ++m;
 	        s -= 60;
-	      } else if (m < 0) {
+	      }
+	      if (m < 0) {
 	        ++h;
 	        m -= 60;
 	      }
@@ -23071,11 +23078,10 @@
 	  _createClass(Stopwatch, [{
 	    key: 'handleTickStopwatch',
 	    value: function handleTickStopwatch() {
-	      var _ref = this.old || this.props.time,
-	          _ref2 = _slicedToArray(_ref, 3),
-	          h = _ref2[0],
-	          m = _ref2[1],
-	          s = _ref2[2];
+	      var _props$time = _slicedToArray(this.props.time, 3),
+	          h = _props$time[0],
+	          m = _props$time[1],
+	          s = _props$time[2];
 	
 	      if (s < 59) {
 	        ++s;
@@ -23204,6 +23210,8 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -23227,10 +23235,39 @@
 	    _this.spoiler = _this.spoiler.bind(_this);
 	    _this.show = _this.show.bind(_this);
 	    _this.spoiler = _this.spoiler.bind(_this);
+	    _this.delete = _this.delete.bind(_this);
+	    _this.death = _this.death.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(Timer, [{
+	    key: 'handleTickTimer',
+	    value: function handleTickTimer() {
+	      var _props$time = _slicedToArray(this.props.time, 3),
+	          h = _props$time[0],
+	          m = _props$time[1],
+	          s = _props$time[2];
+	
+	      if (s > 0) {
+	        --s;
+	      } else if (s === 0 && m > 0) {
+	        s = 59;
+	        --m;
+	      } else if (m === 0) {
+	        s = 59;
+	        m = 59;
+	        --h;
+	      }
+	
+	      window.dispatchEvent(new CustomEvent('tick', {
+	        detail: {
+	          type: 'timer',
+	          time: [h, m, s],
+	          id: this.props.id
+	        }
+	      }));
+	    }
+	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      clearInterval(this.timer);
@@ -23257,7 +23294,7 @@
 	    value: function show() {
 	      if (this.state.spoiler) return;
 	      var t = this.props.time;
-	
+	      if (!Math.max.apply(Math, _toConsumableArray(t))) this.death();
 	      return _react2.default.createElement(
 	        'span',
 	        { className: 'wrap' },
@@ -23296,41 +23333,28 @@
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
-	      this.cancel();
-	    }
-	  }, {
-	    key: 'handleTickTimer',
-	    value: function handleTickTimer() {
-	      var _props$time = _slicedToArray(this.props.time, 3),
-	          h = _props$time[0],
-	          m = _props$time[1],
-	          s = _props$time[2];
-	
-	      if (s > 0) {
-	        --s;
-	      } else if (s === 0 && m > 0) {
-	        s = 59;
-	        --m;
-	      } else if (m === 0) {
-	        s = 59;
-	        m = 59;
-	        --h;
-	      }
-	
-	      window.dispatchEvent(new CustomEvent('tick', {
-	        detail: {
-	          type: 'timer',
-	          time: [h, m, s],
-	          id: this.props.id
-	        }
-	      }));
+	      clearInterval(this.timer);
+	      this.timer = null;
 	    }
 	  }, {
 	    key: 'cancel',
 	    value: function cancel() {
 	      clearInterval(this.timer);
 	      this.timer = null;
+	      this.delete();
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete() {
+	      console.log('DELETE');
 	      window.dispatchEvent(new CustomEvent('deleteTimer', {
+	        detail: { id: this.props.id }
+	      }));
+	    }
+	  }, {
+	    key: 'death',
+	    value: function death() {
+	      window.dispatchEvent(new CustomEvent('deleteTask', {
 	        detail: { id: this.props.id }
 	      }));
 	    }
@@ -24043,7 +24067,7 @@
 	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
 	    project: '@social',
 	    priority: 0,
-	    timeDeath: [3, 0, 0],
+	    timeDeath: [0, 0, 10],
 	    stopwatch: [0, 0, 0]
 	  }]
 	}, {

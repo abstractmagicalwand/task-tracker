@@ -230,9 +230,13 @@ export default class Task extends React.Component {
     if (s < 0) {
       --m;
       s += 60;
-    } else if (m < 0) {
+    }
+    if (m < 0) {
       --h;
       m += 60;
+    }
+    if (h < 0) {
+      h = m = s = 0;
     }
 
     return [h, m, s];
@@ -244,7 +248,8 @@ export default class Task extends React.Component {
     if (s > 60) {
       ++m;
       s -= 60;
-    } else if (m < 0) {
+    }
+    if (m < 0) {
       ++h;
       m -= 60;
     }
@@ -253,4 +258,3 @@ export default class Task extends React.Component {
   }
 
 };
-
