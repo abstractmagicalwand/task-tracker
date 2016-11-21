@@ -23,6 +23,7 @@ export default class Task extends React.Component {
     this.getClearJournal    = this.getClearJournal.bind(this);
     this.diffArrs           = this.diffArrs.bind(this);
     this.diffDate           = this.diffDate.bind(this);
+    this.addArrs            = this.addArrs.bind(this);
   }
 
   handleDelete() {
@@ -68,7 +69,7 @@ export default class Task extends React.Component {
     return (
       <div className='task'>
         {this.edit()}
-        {this.content(time.stopwatch)}
+        {this.content(time.stopwatch, time.timer)}
         {this.archiv()}
       </div>
     );
@@ -119,6 +120,7 @@ export default class Task extends React.Component {
 
   content(stopwatch, timer) {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
+
     return (
       <span className='wrap'>
         <lable
@@ -178,26 +180,36 @@ export default class Task extends React.Component {
 
     if (journal.length) {
       const journalToFormat = [
-        journal.date.getHourses(),
-        journal.date.getMinutes(),
-        journal.date.getSeconds()
+        journal[0].date.getHours(),
+        journal[0].date.getMinutes(),
+        journal[0].date.getSeconds()
+      ],
+            now = new Date(),
+            nowDate = [
+        now.getHours(),
+        now.getMinutes(),
+        now.getSeconds()
       ];
 
       if (timer) {
-        result.timer = this.diffArrs(journalToFormat, timer);
+        result.timer = this.diffArrs(timer, this.diffArrs(journalToFormat, nowDate));
       }
 
-      result.stopwatch = this.diffArrs(journalToFormat, stopwatch);
+      result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
     } else {
       result.timer = timer;
       result.stopwatch = stopwatch;
     }
-
     return result;
   }
 
   diffArrs(arrOne, arrTwo) {
     for (let i = arrOne.length; --i >= 0;) arrOne[i] -= arrTwo[i];
+    return arrOne;
+  }
+
+  addArrs(arrOne, arrTwo) {
+    for (let i = arrOne.length; --i >= 0;) arrOne[i] += arrTwo[i];
     return arrOne;
   }
 

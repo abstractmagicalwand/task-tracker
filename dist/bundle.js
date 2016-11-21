@@ -22186,9 +22186,7 @@
 	  }, {
 	    key: 'handleClearJournal',
 	    value: function handleClearJournal(e) {
-	      console.log('clear befor', e.detail, _journal.journal);
 	      _journal.journal.splice(e.detail.index, 1);
-	      console.log('clear after', e.detail, _journal.journal);
 	    }
 	  }, {
 	    key: 'componentWillMount',
@@ -22743,6 +22741,7 @@
 	    _this.getClearJournal = _this.getClearJournal.bind(_this);
 	    _this.diffArrs = _this.diffArrs.bind(_this);
 	    _this.diffDate = _this.diffDate.bind(_this);
+	    _this.addArrs = _this.addArrs.bind(_this);
 	    return _this;
 	  }
 	
@@ -22797,7 +22796,7 @@
 	        'div',
 	        { className: 'task' },
 	        this.edit(),
-	        this.content(time.stopwatch),
+	        this.content(time.stopwatch, time.timer),
 	        this.archiv()
 	      );
 	    }
@@ -22850,6 +22849,7 @@
 	    key: 'content',
 	    value: function content(stopwatch, timer) {
 	      if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
+	
 	      return _react2.default.createElement(
 	        'span',
 	        { className: 'wrap' },
@@ -22924,18 +22924,19 @@
 	          stopwatch = this.props.info.stopwatch;
 	
 	      if (journal.length) {
-	        var journalToFormat = [journal.date.getHourses(), journal.date.getMinutes(), journal.date.getSeconds()];
+	        var journalToFormat = [journal[0].date.getHours(), journal[0].date.getMinutes(), journal[0].date.getSeconds()],
+	            now = new Date(),
+	            nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
 	
 	        if (timer) {
-	          result.timer = this.diffArrs(journalToFormat, timer);
+	          result.timer = this.diffArrs(timer, this.diffArrs(journalToFormat, nowDate));
 	        }
 	
-	        result.stopwatch = this.diffArrs(journalToFormat, stopwatch);
+	        result.stopwatch = this.addArrs(this.diffArrs(journalToFormat, nowDate), stopwatch);
 	      } else {
 	        result.timer = timer;
 	        result.stopwatch = stopwatch;
 	      }
-	
 	      return result;
 	    }
 	  }, {
@@ -22943,6 +22944,13 @@
 	    value: function diffArrs(arrOne, arrTwo) {
 	      for (var i = arrOne.length; --i >= 0;) {
 	        arrOne[i] -= arrTwo[i];
+	      }return arrOne;
+	    }
+	  }, {
+	    key: 'addArrs',
+	    value: function addArrs(arrOne, arrTwo) {
+	      for (var i = arrOne.length; --i >= 0;) {
+	        arrOne[i] += arrTwo[i];
 	      }return arrOne;
 	    }
 	  }]);
@@ -23269,7 +23277,7 @@
 	    value: function cancel() {
 	      clearInterval(this.timer);
 	      this.timer = null;
-	      /*    window.dispatchEvent(new CustomEvent('deleteTimer', {
+	      /*  window.dispatchEvent(new CustomEvent('deleteTimer', {
 	            detail: {id: this.props.id}
 	          }));*/
 	    }

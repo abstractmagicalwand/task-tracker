@@ -171,9 +171,7 @@ export default class App extends React.Component {
   handleSetJournal(e) { journal.push(e.detail); }
 
   handleClearJournal(e) {
-    console.log('clear befor', e.detail, journal);
     journal.splice(e.detail.index, 1);
-    console.log('clear after', e.detail, journal);
   }
 
   componentWillMount() {

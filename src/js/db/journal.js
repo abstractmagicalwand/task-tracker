@@ -1,0 +1,3 @@
+const journal = [];
+
+export {journal};

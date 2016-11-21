@@ -1,10 +1,5 @@
 import Lockr from 'lockr';
 
-function addArrs(arrOne, arrTwo) {
-  for (let i = arrOne.length; --i >= 0;) arrOne[i] += arrTwo[i];
-  return arrOne;
-}
-
 function getArrSMH(old) {
   const s = ms => Math.round(((new Date().getTime() - ms) / 1000) % 60);
   const m = ms => Math.round(((new Date().getTime() - ms) / (1000 * 60)) % 60);
@@ -14,8 +9,6 @@ function getArrSMH(old) {
 
   return [h(old), m(old), s(old)];
 }
-
-
 
 function load(db) {
 

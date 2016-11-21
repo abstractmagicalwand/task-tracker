@@ -89,7 +89,7 @@ export default class Timer extends React.Component {
   cancel() {
     clearInterval(this.timer);
     this.timer = null;
-/*    window.dispatchEvent(new CustomEvent('deleteTimer', {
+/*  window.dispatchEvent(new CustomEvent('deleteTimer', {
       detail: {id: this.props.id}
     }));*/
   }
