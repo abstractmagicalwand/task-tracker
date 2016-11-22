@@ -5,12 +5,13 @@ import Nav       from '../component/nav.jsx';
 import Help      from '../component/help.jsx';
 import {db}      from '../db/index.js';
 import {journal} from '../db/journal.js';
+import {load}    from '../db/local-storage.js';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      db: db,
+      db: load() || db,
       journal: journal
     };
 
@@ -48,7 +49,7 @@ export default class App extends React.Component {
 
   handleAddNewTask(e) {
     e.preventDefault();
-    const db = this.state.db.slice();
+    const db = [...this.state.db];
 
     const folder = this.getFolderOfDb(e.detail.project) || db.length;
 
@@ -62,7 +63,7 @@ export default class App extends React.Component {
       db[folder].tasks.unshift(e.detail);
     }
 
-    this.setState({db: db});
+    this.setStateDB(db);
   }
 
   handleSearchReq(e) {
@@ -130,9 +131,10 @@ export default class App extends React.Component {
     this.setState({
       viewContent: this.state.viewLast,
       edit: null,
-      db: this.state.db,
+      db: db,
       value: null
     });
+    load(db);
   }
 
   handleBackContent(e) {
@@ -169,7 +171,7 @@ export default class App extends React.Component {
       });
     });
 
-    this.setState({db: db});
+    this.setStateDB(db);
   }
 
   handleSetJournal(e) { journal.push(e.detail); }
@@ -242,7 +244,10 @@ export default class App extends React.Component {
     return task;
   }
 
-  setStateDB(DB) { this.setState({db: DB}); }
+  setStateDB(DB) {
+    this.setState({db: DB});
+    load(DB);
+  }
 
   getFolderOfDb(project) {
     let index = null;

@@ -1,6 +1,6 @@
 import Lockr from 'lockr';
 
-function getArrSMH(old) {
+/*function getFromMsToSMH(old) {
   const s = ms => Math.round(((new Date().getTime() - ms) / 1000) % 60);
   const m = ms => Math.round(((new Date().getTime() - ms) / (1000 * 60)) % 60);
   const h = ms => {
@@ -8,17 +8,18 @@ function getArrSMH(old) {
   };
 
   return [h(old), m(old), s(old)];
-}
+}*/
 
 function load(db) {
+  console.log(db)
+  if (!db && !Lockr.get('db')) return false;
 
   if (db) {
     Lockr.set('db', db);
   } else {
-    const oldDB = Lockr.get('db');
-    return oldDB;
+    return Lockr.get('db');
   }
 
 }
 
-export {load, diffArrs, getArrSMH, addArrs};
+export {load};
