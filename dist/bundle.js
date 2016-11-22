@@ -22462,9 +22462,8 @@
 	    value: function getTasks(type, db) {
 	      var _this2 = this;
 	
-	      console.log(db);
-	
 	      var _ret = function () {
+	
 	        switch (type) {
 	          case 'inbox':
 	            return {
@@ -23490,6 +23489,7 @@
 	    _this.handleNoteFolder = _this.handleNoteFolder.bind(_this);
 	    _this.handleClickFolder = _this.handleClickFolder.bind(_this);
 	    _this.handleSaveEditFolder = _this.handleSaveEditFolder.bind(_this);
+	    _this.handleBackEditFolder = _this.handleBackEditFolder.bind(_this);
 	
 	    _this.setStateToggleEdit = _this.setStateToggleEdit.bind(_this);
 	    _this.edit = _this.edit.bind(_this);
@@ -23534,6 +23534,11 @@
 	          project: this.props.info.project
 	        }
 	      }));
+	    }
+	  }, {
+	    key: 'handleBackEditFolder',
+	    value: function handleBackEditFolder(e) {
+	      this.setStateToggleEdit();
 	    }
 	  }, {
 	    key: 'handleNoteFolder',
@@ -23603,7 +23608,7 @@
 	            'span',
 	            { className: 'folder-edit-panel' },
 	            _react2.default.createElement('span', { className: 'save', onClick: this.handleSaveEditFolder }),
-	            _react2.default.createElement('span', { className: 'exit', onClick: this.handleEditFolder })
+	            _react2.default.createElement('span', { className: 'exit', onClick: this.handleBackEditFolder })
 	          )
 	        )
 	      );

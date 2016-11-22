@@ -12,6 +12,7 @@ export default class Folder extends React.Component {
     this.handleNoteFolder     = this.handleNoteFolder.bind(this);
     this.handleClickFolder    = this.handleClickFolder.bind(this);
     this.handleSaveEditFolder = this.handleSaveEditFolder.bind(this);
+    this.handleBackEditFolder = this.handleBackEditFolder.bind(this);
 
     this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
     this.edit               = this.edit.bind(this);
@@ -52,6 +53,10 @@ export default class Folder extends React.Component {
     }));
   }
 
+  handleBackEditFolder(e) {
+    this.setStateToggleEdit();
+  }
+
   handleNoteFolder(e) {
     if (!e.target.classList.contains('note-btn')) return;
     window.dispatchEvent(new CustomEvent('openNote', {
@@ -85,8 +90,8 @@ export default class Folder extends React.Component {
         </p>
         <span className='folder-panel'>
           <span className='delete-btn' onClick={this.handleDeleteFolder} />
-          <span className='edit-btn' onClick={this.handleEditFolder} />
-          <span className='note-btn' onClick={this.handleNoteFolder} />
+          <span className='edit-btn'   onClick={this.handleEditFolder} />
+          <span className='note-btn'   onClick={this.handleNoteFolder} />
         </span>
       </span>
     );
@@ -106,7 +111,7 @@ export default class Folder extends React.Component {
           />
           <span className='folder-edit-panel'>
             <span className='save' onClick={this.handleSaveEditFolder}></span>
-            <span className='exit' onClick={this.handleEditFolder}></span>
+            <span className='exit' onClick={this.handleBackEditFolder}></span>
           </span>
         </span>
       </span>

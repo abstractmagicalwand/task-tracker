@@ -20,7 +20,7 @@ export default class List extends React.Component {
   }
 
   getTasks(type, db) {
-    console.log(db);
+
     switch (type) {
     case 'inbox':
         return this.getInboxTasks(db);
