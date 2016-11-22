@@ -5,14 +5,13 @@ import Nav       from '../component/nav.jsx';
 import Help      from '../component/help.jsx';
 import {db}      from '../db/index.js';
 import {journal} from '../db/journal.js';
-import {load}    from '../db/local-storage.js';
+import {load, loadJournal}    from '../db/local-storage.js';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      db: load() || db,
-      journal: journal
+      db: load() || db
     };
 
     this.handleNavBtn       = this.handleNavBtn.bind(this);
@@ -174,10 +173,14 @@ export default class App extends React.Component {
     this.setStateDB(db);
   }
 
-  handleSetJournal(e) { journal.push(e.detail); }
+  handleSetJournal(e) {
+    journal.push(e.detail);
+    loadJournal(journal);
+  }
 
   handleClearJournal(e) {
     journal.splice(e.detail.index, 1);
+    loadJournal(journal);
   }
 
   componentWillMount() {
@@ -195,6 +198,7 @@ export default class App extends React.Component {
     window.removeEventListener('deleteTimer' , this.handleCancelTimer);
     window.removeEventListener('clearJournal', this.handleClearJournal);
     window.removeEventListener('setJournal'  , this.handleSetJournal);
+
   }
 
   render() {
