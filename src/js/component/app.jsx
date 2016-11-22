@@ -74,16 +74,17 @@ export default class App extends React.Component {
   }
 
   handleDeleteTask(e) {
-    console.log('!!!!!!!!!!!!!');
-    const db   = [...this.state.db];
-    const task = this.searchTaskDb(e.detail.id, db);
+    const db   = [...this.state.db],
+          task = this.searchTaskDb(e.detail.id, db);
+
     task.arr.splice(task.i, 1);
     this.setStateDB(db);
   }
 
   handleCompleteTask(e) {
-    const task = this.searchTaskDb(e.detail.id),
-          db   = [...this.state.db];
+    const db   = [...this.state.db],
+          task = this.searchTaskDb(e.detail.id, db);
+
     task.arr[task.i].complete = true;
     task.arr[task.i].project  = 'ARCHIV';
     db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
@@ -99,7 +100,7 @@ export default class App extends React.Component {
 
       folder.tasks.forEach(item => item.project = e.detail.value);
     } else if (e.detail.id) {
-      const task = this.searchTaskDb(e.detail.id);
+      const task = this.searchTaskDb(e.detail.id, db);
       task.arr[task.i].description = e.detail.value;
     }
 
@@ -117,9 +118,10 @@ export default class App extends React.Component {
   }
 
   handleSaveNote(e) {
+    const db = [...this.state.db];
 
     if (typeof this.state.edit === 'number') {
-      const task = this.searchTaskDb(this.state.edit);
+      const task = this.searchTaskDb(this.state.edit, db);
       task.arr[task.i].note = e.detail.value;
     } else if (typeof this.state.edit === 'string') {
       this.state.db[this.getFolderOfDb(this.state.edit)].note = e.detail.value;
@@ -142,8 +144,8 @@ export default class App extends React.Component {
   }
 
   handleTick(e) {
-    const db = [...this.state.db];
-    const task = this.searchTaskDb(e.detail.id, db);
+    const db = [...this.state.db],
+          task = this.searchTaskDb(e.detail.id, db);
 
     switch (e.detail.type) {
     case 'timer':
@@ -226,7 +228,7 @@ export default class App extends React.Component {
 
   searchTaskDb(id, DB) {
     const task = {};
-    const db = DB || this.state.db;
+    const db = DB;
 
     db.forEach(item => {
       item.tasks.forEach((item, i, arr) => {

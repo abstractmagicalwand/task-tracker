@@ -22077,17 +22077,18 @@
 	  }, {
 	    key: 'handleDeleteTask',
 	    value: function handleDeleteTask(e) {
-	      console.log('!!!!!!!!!!!!!');
-	      var db = [].concat(_toConsumableArray(this.state.db));
-	      var task = this.searchTaskDb(e.detail.id, db);
+	      var db = [].concat(_toConsumableArray(this.state.db)),
+	          task = this.searchTaskDb(e.detail.id, db);
+	
 	      task.arr.splice(task.i, 1);
 	      this.setStateDB(db);
 	    }
 	  }, {
 	    key: 'handleCompleteTask',
 	    value: function handleCompleteTask(e) {
-	      var task = this.searchTaskDb(e.detail.id),
-	          db = [].concat(_toConsumableArray(this.state.db));
+	      var db = [].concat(_toConsumableArray(this.state.db)),
+	          task = this.searchTaskDb(e.detail.id, db);
+	
 	      task.arr[task.i].complete = true;
 	      task.arr[task.i].project = 'ARCHIV';
 	      db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
@@ -22106,7 +22107,7 @@
 	          return item.project = e.detail.value;
 	        });
 	      } else if (e.detail.id) {
-	        var task = this.searchTaskDb(e.detail.id);
+	        var task = this.searchTaskDb(e.detail.id, db);
 	        task.arr[task.i].description = e.detail.value;
 	      }
 	
@@ -22125,9 +22126,10 @@
 	  }, {
 	    key: 'handleSaveNote',
 	    value: function handleSaveNote(e) {
+	      var db = [].concat(_toConsumableArray(this.state.db));
 	
 	      if (typeof this.state.edit === 'number') {
-	        var task = this.searchTaskDb(this.state.edit);
+	        var task = this.searchTaskDb(this.state.edit, db);
 	        task.arr[task.i].note = e.detail.value;
 	      } else if (typeof this.state.edit === 'string') {
 	        this.state.db[this.getFolderOfDb(this.state.edit)].note = e.detail.value;
@@ -22152,8 +22154,8 @@
 	  }, {
 	    key: 'handleTick',
 	    value: function handleTick(e) {
-	      var db = [].concat(_toConsumableArray(this.state.db));
-	      var task = this.searchTaskDb(e.detail.id, db);
+	      var db = [].concat(_toConsumableArray(this.state.db)),
+	          task = this.searchTaskDb(e.detail.id, db);
 	
 	      switch (e.detail.type) {
 	        case 'timer':
@@ -22245,7 +22247,7 @@
 	    key: 'searchTaskDb',
 	    value: function searchTaskDb(id, DB) {
 	      var task = {};
-	      var db = DB || this.state.db;
+	      var db = DB;
 	
 	      db.forEach(function (item) {
 	        item.tasks.forEach(function (item, i, arr) {
@@ -22460,8 +22462,9 @@
 	    value: function getTasks(type, db) {
 	      var _this2 = this;
 	
-	      var _ret = function () {
+	      console.log(db);
 	
+	      var _ret = function () {
 	        switch (type) {
 	          case 'inbox':
 	            return {
@@ -22796,7 +22799,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var time = this.diffDate(this.getClearJournal(this.props.info.id));
+	      var time = this.diffDate(this.props.info.project === 'ARCHIV' ? [] : this.getClearJournal(this.props.info.id));
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -22826,10 +22829,13 @@
 	  }, {
 	    key: 'timer',
 	    value: function timer(time) {
-	      if (!this.props.info.timeDeath) return;
+	      var t = this.props.info.timeDeath;
+	
+	      if (!t) return;
+	
 	      return _react2.default.createElement(_timer5.default, {
 	        className: 'wrap',
-	        old: this.props.info.now,
+	        'delete': this.handleDelete,
 	        id: this.props.info.id,
 	        time: time
 	      });
@@ -22936,7 +22942,6 @@
 	
 	        if (timer) {
 	          result.timer = this.formatTimer(this.diffArrs(timer, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
-	          console.log(result.timer);
 	        }
 	
 	        if (!timer || Math.min.apply(Math, _toConsumableArray(result.timer)) < 0) {
@@ -23236,7 +23241,7 @@
 	    _this.show = _this.show.bind(_this);
 	    _this.spoiler = _this.spoiler.bind(_this);
 	    _this.delete = _this.delete.bind(_this);
-	    _this.death = _this.death.bind(_this);
+	    _this.deleteTask = _this.deleteTask.bind(_this);
 	    return _this;
 	  }
 	
@@ -23272,6 +23277,12 @@
 	    value: function componentWillMount() {
 	      clearInterval(this.timer);
 	      this.timer = null;
+	      this.deleteTask();
+	    }
+	  }, {
+	    key: 'componentWillUpdate',
+	    value: function componentWillUpdate() {
+	      this.deleteTask();
 	    }
 	  }, {
 	    key: 'render',
@@ -23294,7 +23305,7 @@
 	    value: function show() {
 	      if (this.state.spoiler) return;
 	      var t = this.props.time;
-	      if (!Math.max.apply(Math, _toConsumableArray(t))) this.death();
+	
 	      return _react2.default.createElement(
 	        'span',
 	        { className: 'wrap' },
@@ -23346,17 +23357,14 @@
 	  }, {
 	    key: 'delete',
 	    value: function _delete() {
-	      console.log('DELETE');
 	      window.dispatchEvent(new CustomEvent('deleteTimer', {
 	        detail: { id: this.props.id }
 	      }));
 	    }
 	  }, {
-	    key: 'death',
-	    value: function death() {
-	      window.dispatchEvent(new CustomEvent('deleteTask', {
-	        detail: { id: this.props.id }
-	      }));
+	    key: 'deleteTask',
+	    value: function deleteTask() {
+	      if (!Math.max.apply(Math, _toConsumableArray(this.props.time)) || Math.min.apply(Math, _toConsumableArray(this.props.time)) < 0) this.props.delete();
 	    }
 	  }]);
 	

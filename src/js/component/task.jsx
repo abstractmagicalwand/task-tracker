@@ -64,7 +64,9 @@ export default class Task extends React.Component {
   }
 
   render() {
-    const time = this.diffDate(this.getClearJournal(this.props.info.id));
+    const time = this.diffDate(this.props.info.project === 'ARCHIV' ?
+                               [] :
+                               this.getClearJournal(this.props.info.id));
 
     return (
       <div className='task'>
@@ -91,11 +93,14 @@ export default class Task extends React.Component {
   }
 
   timer(time) {
-    if (!this.props.info.timeDeath) return;
+    const t = this.props.info.timeDeath;
+
+    if (!t) return;
+
     return (
       <Timer
         className='wrap'
-        old={this.props.info.now}
+        delete={this.handleDelete}
         id={this.props.info.id}
         time={time}
       />
@@ -134,8 +139,8 @@ export default class Task extends React.Component {
           id={this.props.info.id}
           time={stopwatch}
         />
-        <span className='edit-btn' onClick={this.handleEdit}></span>
-        <span className='note-btn' onClick={this.handleNote}></span>
+        <span className='edit-btn'   onClick={this.handleEdit}></span>
+        <span className='note-btn'   onClick={this.handleNote}></span>
         <span className='delete-btn' onClick={this.handleDelete}></span>
       </span>
     );
@@ -192,8 +197,10 @@ export default class Task extends React.Component {
       ];
 
       if (timer) {
-        result.timer = this.formatTimer(this.diffArrs(timer, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
-        console.log(result.timer);
+        result.timer = this.formatTimer(this.diffArrs
+                                       (timer, this.formatTimer
+                                       (this.diffArrs
+                                       (nowDate, journalToFormat))));
       }
 
       if (!timer || Math.min(...result.timer) < 0) {

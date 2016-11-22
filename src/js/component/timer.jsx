@@ -7,14 +7,14 @@ export default class Timer extends React.Component {
     this.state = {
       spoiler: true
     };
-    this.timer = null;
+    this.timer           = null;
     this.handleTickTimer = this.handleTickTimer.bind(this);
-    this.cancel = this.cancel.bind(this);
-    this.spoiler = this.spoiler.bind(this);
-    this.show = this.show.bind(this);
-    this.spoiler = this.spoiler.bind(this);
-    this.delete = this.delete.bind(this);
-    this.death  = this.death.bind(this);
+    this.cancel          = this.cancel.bind(this);
+    this.spoiler         = this.spoiler.bind(this);
+    this.show            = this.show.bind(this);
+    this.spoiler         = this.spoiler.bind(this);
+    this.delete          = this.delete.bind(this);
+    this.deleteTask      = this.deleteTask.bind(this);
   }
 
   handleTickTimer() {
@@ -44,7 +44,10 @@ export default class Timer extends React.Component {
   componentWillMount() {
     clearInterval(this.timer);
     this.timer = null;
+    this.deleteTask();
   }
+
+  componentWillUpdate() { this.deleteTask(); }
 
   render() {
     return (
@@ -63,7 +66,7 @@ export default class Timer extends React.Component {
   show() {
     if (this.state.spoiler) return;
     const t = this.props.time;
-    if (!Math.max(...t)) this.death();
+
     return (
       <span className='wrap'>
         <span className='timer-btn' onClick={this.cancel}></span>
@@ -96,16 +99,13 @@ export default class Timer extends React.Component {
   }
 
   delete() {
-    console.log('DELETE');
     window.dispatchEvent(new CustomEvent('deleteTimer', {
       detail: {id: this.props.id}
     }));
   }
 
-  death() {
-    window.dispatchEvent(new CustomEvent('deleteTask', {
-      detail: {id: this.props.id}
-    }))
+  deleteTask() {
+    if (!Math.max(...this.props.time) || Math.min(...this.props.time) < 0) this.props.delete();
   }
 
 };
