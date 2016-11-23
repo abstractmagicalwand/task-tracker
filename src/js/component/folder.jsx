@@ -82,7 +82,7 @@ export default class Folder extends React.Component {
     if (this.state.edit) return;
 
     return (
-      <span className='wrap'>
+      <span className='wrap level-one'>
         <p
           className='folder-name'
           onClick={this.handleClickFolder}>
@@ -101,7 +101,7 @@ export default class Folder extends React.Component {
     if (!this.state.edit) return;
 
     return (
-      <span className='wrap'>
+      <span className='wrap level-one'>
         <span className='folder-edit'>
           <input
             className='folder-field'

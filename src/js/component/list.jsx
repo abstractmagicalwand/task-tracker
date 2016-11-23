@@ -7,6 +7,10 @@ import Task     from './task.jsx';
 export default class List extends React.Component {
   constructor(props) {
     super(props);
+    this.tmpDate = null;
+
+    this.getDate      = this.getDate.bind(this);
+    this.getCompTasks = this.getCompTasks.bind(this);
   }
 
   render() {
@@ -49,8 +53,28 @@ export default class List extends React.Component {
 
   getCompTasks(tasks) {
     return tasks.map((task, i) => {
-      return <Task journal={this.props.journal} info={task} key={task.id} />
+
+      if (this.tmpDate === task.date) {
+        return <Task journal={this.props.journal} info={task} key={task.id} />
+      } else {
+        this.tmpDate = task.date;
+        return this.getDate(task, task.date);
+      }
+
     });
+  }
+
+  getDate(task, date) {
+    const d = new Date(date);
+
+    return (
+      <div className='wrapDate' key={task.id}>
+        <p className='date'>
+        {[d.getDay(), d.getMonth(), d.getYear()].join('\s')}
+        </p>
+        <Task journal={this.props.journal} info={task} />
+      </div>
+    );
   }
 
 };

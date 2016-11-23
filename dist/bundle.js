@@ -22448,7 +22448,13 @@
 	  function List(props) {
 	    _classCallCheck(this, List);
 	
-	    return _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, props));
+	
+	    _this.tmpDate = null;
+	
+	    _this.getDate = _this.getDate.bind(_this);
+	    _this.getCompTasks = _this.getCompTasks.bind(_this);
+	    return _this;
 	  }
 	
 	  _createClass(List, [{
@@ -22513,8 +22519,30 @@
 	      var _this3 = this;
 	
 	      return tasks.map(function (task, i) {
-	        return _react2.default.createElement(_task2.default, { journal: _this3.props.journal, info: task, key: task.id });
+	
+	        if (_this3.tmpDate === task.date) {
+	          return _react2.default.createElement(_task2.default, { journal: _this3.props.journal, info: task, key: task.id });
+	        } else {
+	          _this3.tmpDate = task.date;
+	          return _this3.getDate(task, task.date);
+	        }
 	      });
+	    }
+	  }, {
+	    key: 'getDate',
+	    value: function getDate(task, date) {
+	      var d = new Date(date);
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'wrapDate', key: task.id },
+	        _react2.default.createElement(
+	          'p',
+	          { className: 'date' },
+	          [d.getDay(), d.getMonth(), d.getYear()].join('\s')
+	        ),
+	        _react2.default.createElement(_task2.default, { journal: this.props.journal, info: task })
+	      );
 	    }
 	  }]);
 	
@@ -23597,7 +23625,7 @@
 	
 	      return _react2.default.createElement(
 	        'span',
-	        { className: 'wrap' },
+	        { className: 'wrap level-one' },
 	        _react2.default.createElement(
 	          'p',
 	          {
@@ -23621,7 +23649,7 @@
 	
 	      return _react2.default.createElement(
 	        'span',
-	        { className: 'wrap' },
+	        { className: 'wrap level-one' },
 	        _react2.default.createElement(
 	          'span',
 	          { className: 'folder-edit' },
@@ -24080,7 +24108,8 @@
 	    priority: 0,
 	    timeDeath: null,
 	    note: '',
-	    stopwatch: [0, 0, 0]
+	    stopwatch: [0, 0, 0],
+	    date: new Date()
 	  }]
 	}, {
 	  project: '@shop',
@@ -24094,7 +24123,8 @@
 	    project: '@shop',
 	    priority: 0,
 	    timeDeath: null,
-	    stopwatch: [0, 0, 0]
+	    stopwatch: [0, 0, 0],
+	    date: new Date()
 	  }]
 	}, {
 	  project: '@social',
@@ -24108,7 +24138,8 @@
 	    project: '@social',
 	    priority: 0,
 	    timeDeath: [0, 0, 10],
-	    stopwatch: [0, 0, 0]
+	    stopwatch: [0, 0, 0],
+	    date: new Date(2012, 10, 10)
 	  }]
 	}, {
 	  project: '@sport',
@@ -24122,7 +24153,8 @@
 	    priority: 0,
 	    timeDeath: null,
 	    note: '',
-	    stopwatch: [0, 0, 0]
+	    stopwatch: [0, 0, 0],
+	    date: new Date(2013, 3, 1)
 	  }]
 	}];
 	

@@ -34,7 +34,8 @@ const db = [{
     priority: 0,
     timeDeath: null,
     note: '',
-    stopwatch: [0, 0, 0]
+    stopwatch: [0, 0, 0],
+    date: new Date()
   }]
 }, {
   project: '@shop',
@@ -53,7 +54,8 @@ const db = [{
     project: '@shop',
     priority: 0,
     timeDeath: null,
-    stopwatch: [0, 0, 0]
+    stopwatch: [0, 0, 0],
+    date: new Date()
   }]
 }, {
   project: '@social',
@@ -71,7 +73,8 @@ const db = [{
     project: '@social',
     priority: 0,
     timeDeath: [0, 0, 10],
-    stopwatch: [0, 0, 0]
+    stopwatch: [0, 0, 0],
+    date: new Date(2012, 10, 10)
   }]
 }, {
   project: '@sport',
@@ -90,7 +93,8 @@ const db = [{
       priority: 0,
       timeDeath: null,
       note: '',
-      stopwatch: [0, 0, 0]
+      stopwatch: [0, 0, 0],
+      date: new Date(2013, 3, 1)
   }]
 }];
 
