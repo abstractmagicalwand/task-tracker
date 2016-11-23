@@ -24,6 +24,7 @@ export default class Task extends React.Component {
     this.diffArrs           = this.diffArrs.bind(this);
     this.diffDate           = this.diffDate.bind(this);
     this.addArrs            = this.addArrs.bind(this);
+    this.color              = this.color.bind(this);
   }
 
   handleDelete() {
@@ -110,7 +111,7 @@ export default class Task extends React.Component {
   edit() {
     if (!this.state.edit) return;
     return (
-      <span className='wrap'>
+      <span className={'wrap ' + this.color()}>
         <input
           className='edit-field'
           type='text'
@@ -127,7 +128,7 @@ export default class Task extends React.Component {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
 
     return (
-      <span className='wrap'>
+      <span className={'wrap ' + this.color()}>
         <lable
           onClick={this.handleComplete}
           className='complete'>
@@ -149,7 +150,7 @@ export default class Task extends React.Component {
   archiv() {
     if (this.props.info.project !== 'ARCHIV') return;
     return (
-      <span className='wrap'>
+      <span className='wrap level-one'>
         <p className='descript archiv'>{this.props.info.description}</p>
         <span className='delete-btn' onClick={this.handleDelete}></span>
       </span>
@@ -179,42 +180,40 @@ export default class Task extends React.Component {
   }
 
   diffDate(journal) {
-    const result = {},
+    const result    = {},
           timer     = this.props.info.timeDeath,
           stopwatch = this.props.info.stopwatch;
 
-    if (journal.length) {
-      const journalToFormat = [
-        journal[0].date.getHours(),
-        journal[0].date.getMinutes(),
-        journal[0].date.getSeconds()
-      ],
-            now = new Date(),
-            nowDate = [
-        now.getHours(),
-        now.getMinutes(),
-        now.getSeconds()
-      ];
-
-      if (timer) {
-        result.timer = this.formatTimer(this.diffArrs
-                                       (timer, this.formatTimer
-                                       (this.diffArrs
-                                       (nowDate, journalToFormat))));
-      }
-
-      if (!timer || Math.min(...result.timer) < 0) {
-        result.timer = timer;
-      }
-
-      if (stopwatch.some(item => item > 0)) {
-        result.stopwatch = this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat)));
-      } else {
-        result.stopwatch = stopwatch;
-      }
-
-    } else {
+    if (!journal.length) {
       result.timer = timer;
+      result.stopwatch = stopwatch;
+      return result;
+    }
+    console.log(typeof(journal[0].date) === 'string', journal[0].date);
+    // j - short name from journal
+    const j = (typeof(journal[0].date) === 'string') ? new Date(journal[0].date) :
+      journal[0].date;
+
+    const journalToFormat = [j.getHours(), j.getMinutes(), j.getSeconds()];
+
+    const now = new Date();
+
+    const nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
+
+    if (timer) {
+      result.timer = this.formatTimer(this.diffArrs
+                                     (timer, this.formatTimer
+                                     (this.diffArrs
+                                     (nowDate, journalToFormat))));
+    }
+
+    if (!timer || Math.min(...result.timer) < 0) result.timer = timer;
+
+    if (stopwatch.some(item => item > 0)) {
+      result.stopwatch = this.addArrs(stopwatch, this.formatTimer
+                                     (this.diffArrs
+                                     (nowDate, journalToFormat)));
+    } else {
       result.stopwatch = stopwatch;
     }
 
@@ -262,6 +261,23 @@ export default class Task extends React.Component {
     }
 
     return [h, m, s];
+  }
+
+  color() {
+
+    switch (this.props.info.priority) {
+    case 0:
+        return 'level-one';
+    case 1:
+        return 'level-two';
+    case 2:
+        return 'level-three';
+    case 3:
+        return 'level-four';
+    case 4:
+        return 'level-five';
+    }
+
   }
 
 };

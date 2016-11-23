@@ -41,7 +41,7 @@ export default class Field extends React.Component {
       complete: false,
       tags: text.match(tags),
       id: Math.floor(Math.random() * Math.pow(100, 10)),
-      priority: priority.test(text) ? priority.exec(text)[0].length : null,
+      priority: priority.test(text) ? priority.exec(text)[0].length : 0,
       project: project.test(text) ? project.exec(text)[0] : 'SANS',
       timeDeath: death.test(text) ? death.exec(text)[0].split(/\//) : null,
       description: text
