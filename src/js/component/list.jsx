@@ -65,16 +65,48 @@ export default class List extends React.Component {
   }
 
   getDate(task, date) {
-    const d = new Date(date);
-
     return (
       <div className='wrapDate' key={task.id}>
         <p className='date'>
-        {[d.getDay(), d.getMonth(), d.getYear()].join('\s')}
+        {this.getFormatDate(task.date)}
         </p>
         <Task journal={this.props.journal} info={task} />
       </div>
     );
+  }
+
+  getFormatDate(DATE) {
+    function getNameMonth(month) {
+      switch (month) {
+      case 0:
+          return 'January';
+      case 1:
+          return 'February';
+      case 2:
+          return 'March';
+      case 3:
+          return 'April';
+      case 4:
+          return 'May';
+      case 5:
+          return 'June';
+      case 6:
+          return 'July';
+      case 7:
+          return 'August';
+      case 8:
+          return 'September';
+      case 9:
+          return 'October';
+      case 10:
+          return 'November';
+      case 11:
+          return 'December';
+      }
+    }
+
+    const date = new Date(DATE);
+    return `${date.getDay()}, ${getNameMonth(date.getMonth())} ${date.getFullYear()}`;
   }
 
 };

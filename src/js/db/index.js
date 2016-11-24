@@ -52,7 +52,7 @@ const db = [{
       '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop',
       '#jockey', '#rider', '#riders', '#riding'],
     project: '@shop',
-    priority: 0,
+    priority: 2,
     timeDeath: null,
     stopwatch: [0, 0, 0],
     date: new Date()
@@ -71,7 +71,7 @@ const db = [{
       '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute',
       '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
     project: '@social',
-    priority: 0,
+    priority: 3,
     timeDeath: [0, 0, 10],
     stopwatch: [0, 0, 0],
     date: new Date(2012, 10, 10)
@@ -90,7 +90,7 @@ const db = [{
         '#happy', '#beautiful', '#boys', '#guys', '#instagood',
         '#photooftheday'],
       project: '@sport',
-      priority: 0,
+      priority: 4,
       timeDeath: null,
       note: '',
       stopwatch: [0, 0, 0],

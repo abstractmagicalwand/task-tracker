@@ -22531,18 +22531,51 @@
 	  }, {
 	    key: 'getDate',
 	    value: function getDate(task, date) {
-	      var d = new Date(date);
-	
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'wrapDate', key: task.id },
 	        _react2.default.createElement(
 	          'p',
 	          { className: 'date' },
-	          [d.getDay(), d.getMonth(), d.getYear()].join('\s')
+	          this.getFormatDate(task.date)
 	        ),
 	        _react2.default.createElement(_task2.default, { journal: this.props.journal, info: task })
 	      );
+	    }
+	  }, {
+	    key: 'getFormatDate',
+	    value: function getFormatDate(DATE) {
+	      function getNameMonth(month) {
+	        switch (month) {
+	          case 0:
+	            return 'January';
+	          case 1:
+	            return 'February';
+	          case 2:
+	            return 'March';
+	          case 3:
+	            return 'April';
+	          case 4:
+	            return 'May';
+	          case 5:
+	            return 'June';
+	          case 6:
+	            return 'July';
+	          case 7:
+	            return 'August';
+	          case 8:
+	            return 'September';
+	          case 9:
+	            return 'October';
+	          case 10:
+	            return 'November';
+	          case 11:
+	            return 'December';
+	        }
+	      }
+	
+	      var date = new Date(DATE);
+	      return date.getDay() + ', ' + getNameMonth(date.getMonth()) + ' ' + date.getFullYear();
 	    }
 	  }]);
 	
@@ -24121,7 +24154,7 @@
 	    complete: false,
 	    tags: ['#horses', '#horse', '#horsesofinstagram', '#TagsForLikes', '#TagsForLikesApp', '#horseshow', '#horseshoe', '#horses_of_instagram', '#horsestagram', '#instahorses', '#wild', '#mane', '#instagood', '#grass', '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse', '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop', '#jockey', '#rider', '#riders', '#riding'],
 	    project: '@shop',
-	    priority: 0,
+	    priority: 2,
 	    timeDeath: null,
 	    stopwatch: [0, 0, 0],
 	    date: new Date()
@@ -24136,7 +24169,7 @@
 	    complete: false,
 	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
 	    project: '@social',
-	    priority: 0,
+	    priority: 3,
 	    timeDeath: [0, 0, 10],
 	    stopwatch: [0, 0, 0],
 	    date: new Date(2012, 10, 10)
@@ -24150,7 +24183,7 @@
 	    complete: false,
 	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
 	    project: '@sport',
-	    priority: 0,
+	    priority: 4,
 	    timeDeath: null,
 	    note: '',
 	    stopwatch: [0, 0, 0],
