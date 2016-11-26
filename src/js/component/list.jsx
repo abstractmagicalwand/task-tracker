@@ -70,11 +70,11 @@ export default class List extends React.Component {
       return true;
     }
 
-
-
     return tasks.map((task, i) => {
 
-      if (compareDateYMD(tmp.date, task.date)) {
+      if (compareDateYMD(tmp.date, task.date) ||
+          this.props.type === 'project'       ||
+          this.props.type === 'archiv') {
         return <Task journal={this.props.journal} info={task} key={task.id} />
       } else {
         tmp.date = task.date;
@@ -95,7 +95,7 @@ export default class List extends React.Component {
     );
   }
 
-  getFormatDate(DATE) {
+  getFormatDate(date) {
     function getNameMonth(month) {
       switch (month) {
       case 0:
@@ -124,9 +124,9 @@ export default class List extends React.Component {
           return 'December';
       }
     }
-
-    const date = new Date(DATE);
-    return `${date.getDay()}, ${getNameMonth(date.getMonth())} ${date.getFullYear()}`;
+    // d - short name date
+    const d = new Date(date);
+    return `${d.getDay()}, ${getNameMonth(d.getMonth())} ${d.getFullYear()}`;
   }
 
 };

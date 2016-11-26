@@ -22537,7 +22537,7 @@
 	
 	      return tasks.map(function (task, i) {
 	
-	        if (compareDateYMD(_journal.tmp.date, task.date)) {
+	        if (compareDateYMD(_journal.tmp.date, task.date) || _this3.props.type === 'project' || _this3.props.type === 'archiv') {
 	          return _react2.default.createElement(_task2.default, { journal: _this3.props.journal, info: task, key: task.id });
 	        } else {
 	          _journal.tmp.date = task.date;
@@ -22561,7 +22561,7 @@
 	    }
 	  }, {
 	    key: 'getFormatDate',
-	    value: function getFormatDate(DATE) {
+	    value: function getFormatDate(date) {
 	      function getNameMonth(month) {
 	        switch (month) {
 	          case 0:
@@ -22590,9 +22590,9 @@
 	            return 'December';
 	        }
 	      }
-	
-	      var date = new Date(DATE);
-	      return date.getDay() + ', ' + getNameMonth(date.getMonth()) + ' ' + date.getFullYear();
+	      // d - short name date
+	      var d = new Date(date);
+	      return d.getDay() + ', ' + getNameMonth(d.getMonth()) + ' ' + d.getFullYear();
 	    }
 	  }]);
 	
