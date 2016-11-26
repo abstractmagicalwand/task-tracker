@@ -55,7 +55,7 @@ const db = [{
     priority: 2,
     timeDeath: null,
     stopwatch: [0, 0, 0],
-    date: new Date()
+    date: new Date(2012, 10, 10)
   }]
 }, {
   project: '@social',

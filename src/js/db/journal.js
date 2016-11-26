@@ -2,4 +2,9 @@ import {loadJournal} from './local-storage';
 
 const journal = loadJournal() || [];
 
-export {journal};
+const tmp = {
+  date: 0,
+  old: 0
+};
+
+export {journal, tmp};

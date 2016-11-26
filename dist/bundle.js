@@ -21975,19 +21975,19 @@
 	
 	var _content2 = _interopRequireDefault(_content);
 	
-	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 184);
+	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 187);
 	
 	var _nav2 = _interopRequireDefault(_nav);
 	
-	var _help = __webpack_require__(/*! ../component/help.jsx */ 186);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 189);
 	
 	var _help2 = _interopRequireDefault(_help);
 	
-	var _index = __webpack_require__(/*! ../db/index.js */ 187);
+	var _index = __webpack_require__(/*! ../db/index.js */ 190);
 	
-	var _journal = __webpack_require__(/*! ../db/journal.js */ 188);
+	var _journal = __webpack_require__(/*! ../db/journal.js */ 180);
 	
-	var _localStorage = __webpack_require__(/*! ../db/local-storage.js */ 189);
+	var _localStorage = __webpack_require__(/*! ../db/local-storage.js */ 181);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22315,15 +22315,15 @@
 	
 	var _list2 = _interopRequireDefault(_list);
 	
-	var _collection = __webpack_require__(/*! ./collection.jsx */ 180);
+	var _collection = __webpack_require__(/*! ./collection.jsx */ 183);
 	
 	var _collection2 = _interopRequireDefault(_collection);
 	
-	var _stats = __webpack_require__(/*! ./stats.jsx */ 182);
+	var _stats = __webpack_require__(/*! ./stats.jsx */ 185);
 	
 	var _stats2 = _interopRequireDefault(_stats);
 	
-	var _note = __webpack_require__(/*! ./note.jsx */ 183);
+	var _note = __webpack_require__(/*! ./note.jsx */ 186);
 	
 	var _note2 = _interopRequireDefault(_note);
 	
@@ -22434,6 +22434,8 @@
 	
 	var _task2 = _interopRequireDefault(_task);
 	
+	var _journal = __webpack_require__(/*! ../db/journal.js */ 180);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22449,8 +22451,6 @@
 	    _classCallCheck(this, List);
 	
 	    var _this = _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, props));
-	
-	    _this.tmpDate = null;
 	
 	    _this.getDate = _this.getDate.bind(_this);
 	    _this.getCompTasks = _this.getCompTasks.bind(_this);
@@ -22518,12 +22518,29 @@
 	    value: function getCompTasks(tasks) {
 	      var _this3 = this;
 	
+	      function compareDateYMD(date1, date2) {
+	        if (!date1 || !date2) return false;
+	
+	        // short name string to date, param string, return create date
+	        var std = function std(s) {
+	          return new Date(s);
+	        };
+	        date1 = std(date1);
+	        date2 = std(date2);
+	
+	        if (!(date1.getFullYear() === date2.getFullYear()) || !(date1.getMonth() === date2.getMonth()) || !(date1.getDay() === date2.getDay())) {
+	          return false;
+	        }
+	
+	        return true;
+	      }
+	
 	      return tasks.map(function (task, i) {
 	
-	        if (_this3.tmpDate === task.date) {
+	        if (compareDateYMD(_journal.tmp.date, task.date)) {
 	          return _react2.default.createElement(_task2.default, { journal: _this3.props.journal, info: task, key: task.id });
 	        } else {
-	          _this3.tmpDate = task.date;
+	          _journal.tmp.date = task.date;
 	          return _this3.getDate(task, task.date);
 	        }
 	      });
@@ -23006,7 +23023,7 @@
 	        result.stopwatch = stopwatch;
 	        return result;
 	      }
-	      console.log(typeof journal[0].date === 'string', journal[0].date);
+	
 	      // j - short name from journal
 	      var j = typeof journal[0].date === 'string' ? new Date(journal[0].date) : journal[0].date;
 	
@@ -23463,6 +23480,245 @@
 
 /***/ },
 /* 180 */
+/*!******************************!*\
+  !*** ./src/js/db/journal.js ***!
+  \******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.tmp = exports.journal = undefined;
+	
+	var _localStorage = __webpack_require__(/*! ./local-storage */ 181);
+	
+	var journal = (0, _localStorage.loadJournal)() || [];
+	
+	var tmp = {
+	  date: 0,
+	  old: 0
+	};
+	
+	exports.journal = journal;
+	exports.tmp = tmp;
+
+/***/ },
+/* 181 */
+/*!************************************!*\
+  !*** ./src/js/db/local-storage.js ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.loadJournal = exports.load = undefined;
+	
+	var _lockr = __webpack_require__(/*! lockr */ 182);
+	
+	var _lockr2 = _interopRequireDefault(_lockr);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function load(db) {
+	  if (!db && !_lockr2.default.get('db')) return false;
+	
+	  if (db) _lockr2.default.set('db', db);else return _lockr2.default.get('db');
+	}
+	
+	function loadJournal(journal) {
+	  if (!journal && !_lockr2.default.get('journal')) return false;
+	
+	  if (journal) _lockr2.default.set('journal', journal);else return _lockr2.default.get('journal');
+	}
+	
+	exports.load = load;
+	exports.loadJournal = loadJournal;
+
+/***/ },
+/* 182 */
+/*!**************************!*\
+  !*** ./~/lockr/lockr.js ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	(function(root, factory) {
+	
+	  if (true) {
+	    if (typeof module !== 'undefined' && module.exports) {
+	      exports = module.exports = factory(root, exports);
+	    }
+	  } else if (typeof define === 'function' && define.amd) {
+	    define(['exports'], function(exports) {
+	      root.Lockr = factory(root, exports);
+	    });
+	  } else {
+	    root.Lockr = factory(root, {});
+	  }
+	
+	}(this, function(root, Lockr) {
+	  'use strict';
+	
+	  if (!Array.prototype.indexOf) {
+	    Array.prototype.indexOf = function(elt /*, from*/)
+	    {
+	      var len = this.length >>> 0;
+	
+	      var from = Number(arguments[1]) || 0;
+	      from = (from < 0)
+	      ? Math.ceil(from)
+	      : Math.floor(from);
+	      if (from < 0)
+	        from += len;
+	
+	      for (; from < len; from++)
+	      {
+	        if (from in this &&
+	            this[from] === elt)
+	          return from;
+	      }
+	      return -1;
+	    };
+	  }
+	
+	  Lockr.prefix = "";
+	
+	  Lockr._getPrefixedKey = function(key, options) {
+	    options = options || {};
+	
+	    if (options.noPrefix) {
+	      return key;
+	    } else {
+	      return this.prefix + key;
+	    }
+	
+	  };
+	
+	  Lockr.set = function (key, value, options) {
+	    var query_key = this._getPrefixedKey(key, options);
+	
+	    try {
+	      localStorage.setItem(query_key, JSON.stringify({"data": value}));
+	    } catch (e) {
+	      if (console) console.warn("Lockr didn't successfully save the '{"+ key +": "+ value +"}' pair, because the localStorage is full.");
+	    }
+	  };
+	
+	  Lockr.get = function (key, missing, options) {
+	    var query_key = this._getPrefixedKey(key, options),
+	        value;
+	
+	    try {
+	      value = JSON.parse(localStorage.getItem(query_key));
+	    } catch (e) {
+	        try {
+	            if(localStorage[query_key]) {
+	                value = JSON.parse('{"data":"' + localStorage.getItem(query_key) + '"}');
+	            } else{
+	                value = null;
+	            }
+	        } catch (e) {
+	            if (console) console.warn("Lockr could not load the item with key " + key);
+	        }
+	    }
+	    if(value === null) {
+	      return missing;
+	    } else if (typeof value.data !== 'undefined') {
+	      return value.data;
+	    } else {
+	      return missing;
+	    }
+	  };
+	
+	  Lockr.sadd = function(key, value, options) {
+	    var query_key = this._getPrefixedKey(key, options),
+	        json;
+	
+	    var values = Lockr.smembers(key);
+	
+	    if (values.indexOf(value) > -1) {
+	      return null;
+	    }
+	
+	    try {
+	      values.push(value);
+	      json = JSON.stringify({"data": values});
+	      localStorage.setItem(query_key, json);
+	    } catch (e) {
+	      console.log(e);
+	      if (console) console.warn("Lockr didn't successfully add the "+ value +" to "+ key +" set, because the localStorage is full.");
+	    }
+	  };
+	
+	  Lockr.smembers = function(key, options) {
+	    var query_key = this._getPrefixedKey(key, options),
+	        value;
+	
+	    try {
+	      value = JSON.parse(localStorage.getItem(query_key));
+	    } catch (e) {
+	      value = null;
+	    }
+	
+	    if (value === null)
+	      return [];
+	    else
+	      return (value.data || []);
+	  };
+	
+	  Lockr.sismember = function(key, value, options) {
+	    var query_key = this._getPrefixedKey(key, options);
+	
+	    return Lockr.smembers(key).indexOf(value) > -1;
+	  };
+	
+	  Lockr.getAll = function () {
+	    var keys = Object.keys(localStorage);
+	
+	    return keys.map(function (key) {
+	      return Lockr.get(key);
+	    });
+	  };
+	
+	  Lockr.srem = function(key, value, options) {
+	    var query_key = this._getPrefixedKey(key, options),
+	        json,
+	        index;
+	
+	    var values = Lockr.smembers(key, value);
+	
+	    index = values.indexOf(value);
+	
+	    if (index > -1)
+	      values.splice(index, 1);
+	
+	    json = JSON.stringify({"data": values});
+	
+	    try {
+	      localStorage.setItem(query_key, json);
+	    } catch (e) {
+	      if (console) console.warn("Lockr couldn't remove the "+ value +" from the set "+ key);
+	    }
+	  };
+	
+	  Lockr.rm =  function (key) {
+	    localStorage.removeItem(key);
+	  };
+	
+	  Lockr.flush = function () {
+	    localStorage.clear();
+	  };
+	  return Lockr;
+	
+	}));
+
+
+/***/ },
+/* 183 */
 /*!*****************************************!*\
   !*** ./src/js/component/collection.jsx ***!
   \*****************************************/
@@ -23484,7 +23740,7 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _folder = __webpack_require__(/*! ./folder.jsx */ 181);
+	var _folder = __webpack_require__(/*! ./folder.jsx */ 184);
 	
 	var _folder2 = _interopRequireDefault(_folder);
 	
@@ -23532,7 +23788,7 @@
 	;
 
 /***/ },
-/* 181 */
+/* 184 */
 /*!*************************************!*\
   !*** ./src/js/component/folder.jsx ***!
   \*************************************/
@@ -23715,7 +23971,7 @@
 	;
 
 /***/ },
-/* 182 */
+/* 185 */
 /*!************************************!*\
   !*** ./src/js/component/stats.jsx ***!
   \************************************/
@@ -23768,7 +24024,7 @@
 	;
 
 /***/ },
-/* 183 */
+/* 186 */
 /*!***********************************!*\
   !*** ./src/js/component/note.jsx ***!
   \***********************************/
@@ -23854,7 +24110,7 @@
 	;
 
 /***/ },
-/* 184 */
+/* 187 */
 /*!**********************************!*\
   !*** ./src/js/component/nav.jsx ***!
   \**********************************/
@@ -23876,11 +24132,11 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 185);
+	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 188);
 	
 	var _bar2 = _interopRequireDefault(_bar);
 	
-	var _help = __webpack_require__(/*! ../component/help.jsx */ 186);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 189);
 	
 	var _help2 = _interopRequireDefault(_help);
 	
@@ -23951,7 +24207,7 @@
 	;
 
 /***/ },
-/* 185 */
+/* 188 */
 /*!**********************************!*\
   !*** ./src/js/component/bar.jsx ***!
   \**********************************/
@@ -24004,7 +24260,7 @@
 	;
 
 /***/ },
-/* 186 */
+/* 189 */
 /*!***********************************!*\
   !*** ./src/js/component/help.jsx ***!
   \***********************************/
@@ -24104,7 +24360,7 @@
 	exports.default = Help;
 
 /***/ },
-/* 187 */
+/* 190 */
 /*!****************************!*\
   !*** ./src/js/db/index.js ***!
   \****************************/
@@ -24157,7 +24413,7 @@
 	    priority: 2,
 	    timeDeath: null,
 	    stopwatch: [0, 0, 0],
-	    date: new Date()
+	    date: new Date(2012, 10, 10)
 	  }]
 	}, {
 	  project: '@social',
@@ -24192,239 +24448,6 @@
 	}];
 	
 	exports.db = db;
-
-/***/ },
-/* 188 */
-/*!******************************!*\
-  !*** ./src/js/db/journal.js ***!
-  \******************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.journal = undefined;
-	
-	var _localStorage = __webpack_require__(/*! ./local-storage */ 189);
-	
-	var journal = (0, _localStorage.loadJournal)() || [];
-	
-	exports.journal = journal;
-
-/***/ },
-/* 189 */
-/*!************************************!*\
-  !*** ./src/js/db/local-storage.js ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.loadJournal = exports.load = undefined;
-	
-	var _lockr = __webpack_require__(/*! lockr */ 190);
-	
-	var _lockr2 = _interopRequireDefault(_lockr);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function load(db) {
-	  if (!db && !_lockr2.default.get('db')) return false;
-	
-	  if (db) _lockr2.default.set('db', db);else return _lockr2.default.get('db');
-	}
-	
-	function loadJournal(journal) {
-	  if (!journal && !_lockr2.default.get('journal')) return false;
-	
-	  if (journal) _lockr2.default.set('journal', journal);else return _lockr2.default.get('journal');
-	}
-	
-	exports.load = load;
-	exports.loadJournal = loadJournal;
-
-/***/ },
-/* 190 */
-/*!**************************!*\
-  !*** ./~/lockr/lockr.js ***!
-  \**************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	(function(root, factory) {
-	
-	  if (true) {
-	    if (typeof module !== 'undefined' && module.exports) {
-	      exports = module.exports = factory(root, exports);
-	    }
-	  } else if (typeof define === 'function' && define.amd) {
-	    define(['exports'], function(exports) {
-	      root.Lockr = factory(root, exports);
-	    });
-	  } else {
-	    root.Lockr = factory(root, {});
-	  }
-	
-	}(this, function(root, Lockr) {
-	  'use strict';
-	
-	  if (!Array.prototype.indexOf) {
-	    Array.prototype.indexOf = function(elt /*, from*/)
-	    {
-	      var len = this.length >>> 0;
-	
-	      var from = Number(arguments[1]) || 0;
-	      from = (from < 0)
-	      ? Math.ceil(from)
-	      : Math.floor(from);
-	      if (from < 0)
-	        from += len;
-	
-	      for (; from < len; from++)
-	      {
-	        if (from in this &&
-	            this[from] === elt)
-	          return from;
-	      }
-	      return -1;
-	    };
-	  }
-	
-	  Lockr.prefix = "";
-	
-	  Lockr._getPrefixedKey = function(key, options) {
-	    options = options || {};
-	
-	    if (options.noPrefix) {
-	      return key;
-	    } else {
-	      return this.prefix + key;
-	    }
-	
-	  };
-	
-	  Lockr.set = function (key, value, options) {
-	    var query_key = this._getPrefixedKey(key, options);
-	
-	    try {
-	      localStorage.setItem(query_key, JSON.stringify({"data": value}));
-	    } catch (e) {
-	      if (console) console.warn("Lockr didn't successfully save the '{"+ key +": "+ value +"}' pair, because the localStorage is full.");
-	    }
-	  };
-	
-	  Lockr.get = function (key, missing, options) {
-	    var query_key = this._getPrefixedKey(key, options),
-	        value;
-	
-	    try {
-	      value = JSON.parse(localStorage.getItem(query_key));
-	    } catch (e) {
-	        try {
-	            if(localStorage[query_key]) {
-	                value = JSON.parse('{"data":"' + localStorage.getItem(query_key) + '"}');
-	            } else{
-	                value = null;
-	            }
-	        } catch (e) {
-	            if (console) console.warn("Lockr could not load the item with key " + key);
-	        }
-	    }
-	    if(value === null) {
-	      return missing;
-	    } else if (typeof value.data !== 'undefined') {
-	      return value.data;
-	    } else {
-	      return missing;
-	    }
-	  };
-	
-	  Lockr.sadd = function(key, value, options) {
-	    var query_key = this._getPrefixedKey(key, options),
-	        json;
-	
-	    var values = Lockr.smembers(key);
-	
-	    if (values.indexOf(value) > -1) {
-	      return null;
-	    }
-	
-	    try {
-	      values.push(value);
-	      json = JSON.stringify({"data": values});
-	      localStorage.setItem(query_key, json);
-	    } catch (e) {
-	      console.log(e);
-	      if (console) console.warn("Lockr didn't successfully add the "+ value +" to "+ key +" set, because the localStorage is full.");
-	    }
-	  };
-	
-	  Lockr.smembers = function(key, options) {
-	    var query_key = this._getPrefixedKey(key, options),
-	        value;
-	
-	    try {
-	      value = JSON.parse(localStorage.getItem(query_key));
-	    } catch (e) {
-	      value = null;
-	    }
-	
-	    if (value === null)
-	      return [];
-	    else
-	      return (value.data || []);
-	  };
-	
-	  Lockr.sismember = function(key, value, options) {
-	    var query_key = this._getPrefixedKey(key, options);
-	
-	    return Lockr.smembers(key).indexOf(value) > -1;
-	  };
-	
-	  Lockr.getAll = function () {
-	    var keys = Object.keys(localStorage);
-	
-	    return keys.map(function (key) {
-	      return Lockr.get(key);
-	    });
-	  };
-	
-	  Lockr.srem = function(key, value, options) {
-	    var query_key = this._getPrefixedKey(key, options),
-	        json,
-	        index;
-	
-	    var values = Lockr.smembers(key, value);
-	
-	    index = values.indexOf(value);
-	
-	    if (index > -1)
-	      values.splice(index, 1);
-	
-	    json = JSON.stringify({"data": values});
-	
-	    try {
-	      localStorage.setItem(query_key, json);
-	    } catch (e) {
-	      if (console) console.warn("Lockr couldn't remove the "+ value +" from the set "+ key);
-	    }
-	  };
-	
-	  Lockr.rm =  function (key) {
-	    localStorage.removeItem(key);
-	  };
-	
-	  Lockr.flush = function () {
-	    localStorage.clear();
-	  };
-	  return Lockr;
-	
-	}));
-
 
 /***/ },
 /* 191 */

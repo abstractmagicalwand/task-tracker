@@ -1,13 +1,13 @@
-import React    from 'react';
-import ReactDOM from 'react-dom';
-import Field    from './field.jsx';
-import Search   from './search.jsx';
-import Task     from './task.jsx';
+import React     from 'react';
+import ReactDOM  from 'react-dom';
+import Field     from './field.jsx';
+import Search    from './search.jsx';
+import Task      from './task.jsx';
+import {journal, tmp} from '../db/journal.js';
 
 export default class List extends React.Component {
   constructor(props) {
     super(props);
-    this.tmpDate = null;
 
     this.getDate      = this.getDate.bind(this);
     this.getCompTasks = this.getCompTasks.bind(this);
@@ -52,12 +52,32 @@ export default class List extends React.Component {
   }
 
   getCompTasks(tasks) {
+
+    function compareDateYMD(date1, date2) {
+      if (!date1 || !date2) return false;
+
+      // short name string to date, param string, return create date
+      const std = s => new Date(s);
+      date1 = std(date1);
+      date2 = std(date2);
+
+      if (!(date1.getFullYear() === date2.getFullYear()) ||
+          !(date1.getMonth()    === date2.getMonth())    ||
+          !(date1.getDay()      === date2.getDay())) {
+          return false;
+      }
+
+      return true;
+    }
+
+
+
     return tasks.map((task, i) => {
 
-      if (this.tmpDate === task.date) {
+      if (compareDateYMD(tmp.date, task.date)) {
         return <Task journal={this.props.journal} info={task} key={task.id} />
       } else {
-        this.tmpDate = task.date;
+        tmp.date = task.date;
         return this.getDate(task, task.date);
       }
 

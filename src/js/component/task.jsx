@@ -189,7 +189,7 @@ export default class Task extends React.Component {
       result.stopwatch = stopwatch;
       return result;
     }
-    console.log(typeof(journal[0].date) === 'string', journal[0].date);
+
     // j - short name from journal
     const j = (typeof(journal[0].date) === 'string') ? new Date(journal[0].date) :
       journal[0].date;
@@ -279,5 +279,7 @@ export default class Task extends React.Component {
     }
 
   }
+
+
 
 };
