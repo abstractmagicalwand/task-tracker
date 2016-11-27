@@ -1,8 +1,8 @@
-import React     from 'react';
-import ReactDOM  from 'react-dom';
-import Field     from './field.jsx';
-import Search    from './search.jsx';
-import Task      from './task.jsx';
+import React          from 'react';
+import ReactDOM       from 'react-dom';
+import Field          from './field.jsx';
+import Search         from './search.jsx';
+import Task           from './task.jsx';
 import {journal, tmp} from '../db/journal.js';
 
 export default class List extends React.Component {
@@ -86,7 +86,7 @@ export default class List extends React.Component {
 
   getDate(task, date) {
     return (
-      <div className='wrapDate' key={task.id}>
+      <div className='wrap-date' key={task.id}>
         <p className='date'>
         {this.getFormatDate(task.date)}
         </p>
@@ -126,7 +126,7 @@ export default class List extends React.Component {
     }
     // d - short name date
     const d = new Date(date);
-    return `${d.getDay()}, ${getNameMonth(d.getMonth())} ${d.getFullYear()}`;
+    return `${d.getDate()}, ${getNameMonth(d.getMonth())} ${d.getFullYear()}`;
   }
 
 };

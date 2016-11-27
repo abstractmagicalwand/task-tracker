@@ -242,7 +242,7 @@ input[type=checkbox] {
   display: flex;
   flex-flow: row;
   justify-content: center;
-  padding: 30px;
+  padding: 20px 5px;
 }
 
 .note-panel {
@@ -392,3 +392,14 @@ input[type=checkbox] {
 .level-three { background-color: #4caf50; }
 .level-four  { background-color: #ffeb3b; }
 .level-five  { background-color: #ff9800; }
+
+.date {
+  font-weight: bold;
+  align-self: center;
+  margin-bottom: 0px;
+}
+
+.wrap-date {
+  display: flex;
+  flex-flow: column;
+}
