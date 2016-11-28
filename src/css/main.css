@@ -403,3 +403,21 @@ input[type=checkbox] {
   display: flex;
   flex-flow: column;
 }
+
+.list-exit {
+  align-self: flex-start;
+  text-transform: uppercase;
+  font-weight: 800;
+  margin: 5px 5px 0 5px;
+  color: black;
+  padding: 0 5px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.list-exit:hover {
+  background: #9E9E9E;
+  cursor: pointer;
+  user-select: none;
+}

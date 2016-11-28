@@ -43,7 +43,13 @@ export default class App extends React.Component {
 
   handleNavBtn(e) {
     e.preventDefault();
-    this.setState({viewContent: e.detail.category});
+
+    const newState = Object.assign({}, this.state);
+
+    newState.viewLast    = this.state.viewContent;
+    newState.viewContent = e.detail.category;
+
+    this.setState(newState);
   }
 
   handleAddNewTask(e) {
@@ -198,7 +204,6 @@ export default class App extends React.Component {
     window.removeEventListener('deleteTimer' , this.handleCancelTimer);
     window.removeEventListener('clearJournal', this.handleClearJournal);
     window.removeEventListener('setJournal'  , this.handleSetJournal);
-
   }
 
   render() {

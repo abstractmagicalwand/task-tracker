@@ -9,15 +9,27 @@ export default class List extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleClickBackList = this.handleClickBackList.bind(this);
+
     this.getDate      = this.getDate.bind(this);
     this.getCompTasks = this.getCompTasks.bind(this);
+    this.handleBlockSelect = this.handleBlockSelect.bind(this);
+  }
+
+  handleClickBackList(e) {
+    window.dispatchEvent(new CustomEvent('back'));
+  }
+
+  handleBlockSelect(e) {
+    console.log(1);
   }
 
   render() {
     return (
       <div className='list'>
-        {this.props.type !== 'archiv' ? <Search /> : null}
-        {this.props.type !== 'archiv' ? <Field />  : null}
+        {this.props.type === 'project' ? <span onTouchStart={this.handleBlockSelect} className='list-exit' onClick={this.handleClickBackList}>{'\u25C0' + ' back'}</span> : null}
+        {this.props.type !== 'archiv'  ? <Search /> : null}
+        {this.props.type !== 'archiv'  ? <Field />  : null}
         {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
       </div>
     );
@@ -53,6 +65,8 @@ export default class List extends React.Component {
 
   getCompTasks(tasks) {
 
+    const exceptions = ['project', 'archiv', 'search'];
+
     function compareDateYMD(date1, date2) {
       if (!date1 || !date2) return false;
 
@@ -73,8 +87,7 @@ export default class List extends React.Component {
     return tasks.map((task, i) => {
 
       if (compareDateYMD(tmp.date, task.date) ||
-          this.props.type === 'project'       ||
-          this.props.type === 'archiv') {
+        ~exceptions.indexOf(this.props.type)) {
         return <Task journal={this.props.journal} info={task} key={task.id} />
       } else {
         tmp.date = task.date;

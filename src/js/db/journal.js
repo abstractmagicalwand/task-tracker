@@ -6,5 +6,5 @@ const tmp = {
   date: null,
   old: null
 };
-
+console.log(journal)
 export {journal, tmp};

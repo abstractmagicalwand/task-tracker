@@ -140,9 +140,9 @@ export default class Task extends React.Component {
           id={this.props.info.id}
           time={stopwatch}
         />
-        <span className='edit-btn'   onClick={this.handleEdit}></span>
-        <span className='note-btn'   onClick={this.handleNote}></span>
-        <span className='delete-btn' onClick={this.handleDelete}></span>
+        <span title='edit task' className='edit-btn'   onClick={this.handleEdit}></span>
+        <span title='open note' className='note-btn'   onClick={this.handleNote}></span>
+        <span title='delete task' className='delete-btn' onClick={this.handleDelete}></span>
       </span>
     );
   }
@@ -180,15 +180,14 @@ export default class Task extends React.Component {
   }
 
   diffDate(journal) {
-    const result    = {},
-          timer     = this.props.info.timeDeath,
-          stopwatch = this.props.info.stopwatch;
+    const timer     = this.props.info.timeDeath,
+          stopwatch = this.props.info.stopwatch,
+          result    = {
+            timer: timer,
+            stopwatch: stopwatch
+          };
 
-    if (!journal.length) {
-      result.timer = timer;
-      result.stopwatch = stopwatch;
-      return result;
-    }
+    if (!journal.length) return result;
 
     // j - short name from journal
     const j = (typeof(journal[0].date) === 'string') ? new Date(journal[0].date) :
@@ -199,7 +198,7 @@ export default class Task extends React.Component {
     const now = new Date();
 
     const nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
-
+    console.log(journal);
     if (timer) {
       result.timer = this.formatTimer(this.diffArrs
                                      (timer, this.formatTimer
@@ -210,9 +209,8 @@ export default class Task extends React.Component {
     if (!timer || Math.min(...result.timer) < 0) result.timer = timer;
 
     if (stopwatch.some(item => item > 0)) {
-      result.stopwatch = this.addArrs(stopwatch, this.formatTimer
-                                     (this.diffArrs
-                                     (nowDate, journalToFormat)));
+      console.log('journal', journalToFormat, 'now', nowDate, 'stopwatch', stopwatch);
+      result.stopwatch = this.formatStopwatch(this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
     } else {
       result.stopwatch = stopwatch;
     }
@@ -220,16 +218,74 @@ export default class Task extends React.Component {
     return result;
   }
 
-  diffArrs(arrOne, arrTwo) {
-    for (let i = arrOne.length; --i >= 0;) arrOne[i] -= arrTwo[i];
-    return arrOne;
+  diffArrs(arr1, arr2) {
+    for (let i = arr1.length; --i >= 0;) arr1[i] -= arr2[i];
+    console.log('diff', arr1);
+    return arr1;
   }
 
-  addArrs(arrOne, arrTwo) {
-    for (let i = arrOne.length; --i >= 0;) arrOne[i] += arrTwo[i];
-    return arrOne;
+  addArrs(arr1, arr2) {
+    for (let i = arr1.length; --i >= 0;) arr1[i] += arr2[i];
+    console.log('add', arr1);
+    return arr1;
   }
 
+  formatTimer(arr) {
+
+    for (let i = arr.length; --i >= 0;) {
+
+      while (arr[i] < 0) {
+
+        if (arr[i] < 0) {
+          arr[i] += 60;
+
+          if (0 <= (i - 1)) {
+            arr[i - 1] -= 1;
+          } else {
+            arr[i] = arr[i + 1] = arr[i + 2] = 0;
+          }
+
+        }
+
+      }
+
+    }
+
+    return arr;
+  }
+
+  formatStopwatch(arr) {
+
+    for (let i = arr.length; --i >= 0;) {
+
+      while (arr[i] > 59) {
+
+        if (arr[i] > 59) {
+          arr[i] -= 60;
+          if (0 <= (i - 1)) arr[i - 1] += 1;
+        }
+
+      }
+
+    }
+    console.log('format', arr);
+    return arr;
+  }
+
+/*  formatStopwatch(stopwatch) {
+    let [h, m, s] = stopwatch;
+
+    if (s > 59) {
+      ++m;
+      s -= 60;
+    }
+    if (m > 59) {
+      ++h;
+      m -= 60;
+    }
+
+    return [h, m, s];
+  }
   formatTimer(timer) {
     let [h, m, s] = timer;
 
@@ -246,22 +302,7 @@ export default class Task extends React.Component {
     }
 
     return [h, m, s];
-  }
-
-  formatStopwatch(stopwatch) {
-    let [h, m, s] = timer;
-
-    if (s > 60) {
-      ++m;
-      s -= 60;
-    }
-    if (m < 0) {
-      ++h;
-      m -= 60;
-    }
-
-    return [h, m, s];
-  }
+  }*/
 
   color() {
 
@@ -279,7 +320,5 @@ export default class Task extends React.Component {
     }
 
   }
-
-
 
 };

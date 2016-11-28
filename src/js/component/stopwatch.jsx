@@ -47,6 +47,7 @@ export default class Stopwatch extends React.Component {
       {this.show()}
       <span
         className={'stopwatch-btn' + (this.state.interval ? '' : ' pause')}
+        title={this.state.interval ? 'play' : 'pause'}
         onClick={this.toggle}
       />
     </span>;

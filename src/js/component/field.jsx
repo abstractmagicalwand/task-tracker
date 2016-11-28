@@ -24,7 +24,7 @@ export default class Field extends React.Component {
       <div className='field'>
         <textarea className='area' ref='text' placeholder='Write you task...'>
         </textarea>
-        <span className='sand' onClick={this.handleGetText}/>
+        <span title='add task' className='sand' onClick={this.handleGetText}/>
       </div>
     );
   }

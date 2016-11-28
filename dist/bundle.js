@@ -63,7 +63,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(/*! ./css/main.css */ 191);
+	__webpack_require__(/*! ./css/main.css */ 189);
 	
 	
 	_reactDom2.default.render(_react2.default.createElement(_app2.default, null), document.getElementById('root'));
@@ -21975,19 +21975,19 @@
 	
 	var _content2 = _interopRequireDefault(_content);
 	
-	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 187);
+	var _nav = __webpack_require__(/*! ../component/nav.jsx */ 185);
 	
 	var _nav2 = _interopRequireDefault(_nav);
 	
-	var _help = __webpack_require__(/*! ../component/help.jsx */ 189);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 187);
 	
 	var _help2 = _interopRequireDefault(_help);
 	
-	var _index = __webpack_require__(/*! ../db/index.js */ 190);
+	var _index = __webpack_require__(/*! ../db/index.js */ 188);
 	
-	var _journal = __webpack_require__(/*! ../db/journal.js */ 180);
+	var _journal = __webpack_require__(/*! ../db/journal.js */ 178);
 	
-	var _localStorage = __webpack_require__(/*! ../db/local-storage.js */ 181);
+	var _localStorage = __webpack_require__(/*! ../db/local-storage.js */ 179);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22044,7 +22044,13 @@
 	    key: 'handleNavBtn',
 	    value: function handleNavBtn(e) {
 	      e.preventDefault();
-	      this.setState({ viewContent: e.detail.category });
+	
+	      var newState = Object.assign({}, this.state);
+	
+	      newState.viewLast = this.state.viewContent;
+	      newState.viewContent = e.detail.category;
+	
+	      this.setState(newState);
 	    }
 	  }, {
 	    key: 'handleAddNewTask',
@@ -22315,15 +22321,15 @@
 	
 	var _list2 = _interopRequireDefault(_list);
 	
-	var _collection = __webpack_require__(/*! ./collection.jsx */ 183);
+	var _collection = __webpack_require__(/*! ./collection.jsx */ 181);
 	
 	var _collection2 = _interopRequireDefault(_collection);
 	
-	var _stats = __webpack_require__(/*! ./stats.jsx */ 185);
+	var _stats = __webpack_require__(/*! ./stats.jsx */ 183);
 	
 	var _stats2 = _interopRequireDefault(_stats);
 	
-	var _note = __webpack_require__(/*! ./note.jsx */ 186);
+	var _note = __webpack_require__(/*! ./note.jsx */ 184);
 	
 	var _note2 = _interopRequireDefault(_note);
 	
@@ -22434,7 +22440,7 @@
 	
 	var _task2 = _interopRequireDefault(_task);
 	
-	var _journal = __webpack_require__(/*! ../db/journal.js */ 180);
+	var _journal = __webpack_require__(/*! ../db/journal.js */ 178);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22452,17 +22458,35 @@
 	
 	    var _this = _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, props));
 	
+	    _this.handleClickBackList = _this.handleClickBackList.bind(_this);
+	
 	    _this.getDate = _this.getDate.bind(_this);
 	    _this.getCompTasks = _this.getCompTasks.bind(_this);
+	    _this.handleBlockSelect = _this.handleBlockSelect.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(List, [{
+	    key: 'handleClickBackList',
+	    value: function handleClickBackList(e) {
+	      window.dispatchEvent(new CustomEvent('back'));
+	    }
+	  }, {
+	    key: 'handleBlockSelect',
+	    value: function handleBlockSelect(e) {
+	      console.log(1);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'list' },
+	        this.props.type === 'project' ? _react2.default.createElement(
+	          'span',
+	          { onTouchStart: this.handleBlockSelect, className: 'list-exit', onClick: this.handleClickBackList },
+	          '\u25C0' + ' back'
+	        ) : null,
 	        this.props.type !== 'archiv' ? _react2.default.createElement(_search2.default, null) : null,
 	        this.props.type !== 'archiv' ? _react2.default.createElement(_field2.default, null) : null,
 	        this.getCompTasks(this.getTasks(this.props.type, this.props.db))
@@ -22518,6 +22542,8 @@
 	    value: function getCompTasks(tasks) {
 	      var _this3 = this;
 	
+	      var exceptions = ['project', 'archiv', 'search'];
+	
 	      function compareDateYMD(date1, date2) {
 	        if (!date1 || !date2) return false;
 	
@@ -22537,7 +22563,7 @@
 	
 	      return tasks.map(function (task, i) {
 	
-	        if (compareDateYMD(_journal.tmp.date, task.date) || _this3.props.type === 'project' || _this3.props.type === 'archiv') {
+	        if (compareDateYMD(_journal.tmp.date, task.date) || ~exceptions.indexOf(_this3.props.type)) {
 	          return _react2.default.createElement(_task2.default, { journal: _this3.props.journal, info: task, key: task.id });
 	        } else {
 	          _journal.tmp.date = task.date;
@@ -22665,7 +22691,7 @@
 	        'div',
 	        { className: 'field' },
 	        _react2.default.createElement('textarea', { className: 'area', ref: 'text', placeholder: 'Write you task...' }),
-	        _react2.default.createElement('span', { className: 'sand', onClick: this.handleGetText })
+	        _react2.default.createElement('span', { title: 'add task', className: 'sand', onClick: this.handleGetText })
 	      );
 	    }
 	  }, {
@@ -22778,8 +22804,6 @@
 	  value: true
 	});
 	
-	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(/*! react */ 1);
@@ -22790,13 +22814,13 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _stopwatch = __webpack_require__(/*! ./stopwatch.jsx */ 178);
+	var _stopwatch = __webpack_require__(/*! ./stopwatch.jsx */ 205);
 	
 	var _stopwatch2 = _interopRequireDefault(_stopwatch);
 	
-	var _timer4 = __webpack_require__(/*! ./timer.jsx */ 179);
+	var _timer = __webpack_require__(/*! ./timer.jsx */ 206);
 	
-	var _timer5 = _interopRequireDefault(_timer4);
+	var _timer2 = _interopRequireDefault(_timer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22916,7 +22940,7 @@
 	
 	      if (!t) return;
 	
-	      return _react2.default.createElement(_timer5.default, {
+	      return _react2.default.createElement(_timer2.default, {
 	        className: 'wrap',
 	        'delete': this.handleDelete,
 	        id: this.props.info.id,
@@ -22966,9 +22990,9 @@
 	          id: this.props.info.id,
 	          time: stopwatch
 	        }),
-	        _react2.default.createElement('span', { className: 'edit-btn', onClick: this.handleEdit }),
-	        _react2.default.createElement('span', { className: 'note-btn', onClick: this.handleNote }),
-	        _react2.default.createElement('span', { className: 'delete-btn', onClick: this.handleDelete })
+	        _react2.default.createElement('span', { title: 'edit task', className: 'edit-btn', onClick: this.handleEdit }),
+	        _react2.default.createElement('span', { title: 'open note', className: 'note-btn', onClick: this.handleNote }),
+	        _react2.default.createElement('span', { title: 'delete task', className: 'delete-btn', onClick: this.handleDelete })
 	      );
 	    }
 	  }, {
@@ -23014,15 +23038,14 @@
 	  }, {
 	    key: 'diffDate',
 	    value: function diffDate(journal) {
-	      var result = {},
-	          timer = this.props.info.timeDeath,
-	          stopwatch = this.props.info.stopwatch;
+	      var timer = this.props.info.timeDeath,
+	          stopwatch = this.props.info.stopwatch,
+	          result = {
+	        timer: timer,
+	        stopwatch: stopwatch
+	      };
 	
-	      if (!journal.length) {
-	        result.timer = timer;
-	        result.stopwatch = stopwatch;
-	        return result;
-	      }
+	      if (!journal.length) return result;
 	
 	      // j - short name from journal
 	      var j = typeof journal[0].date === 'string' ? new Date(journal[0].date) : journal[0].date;
@@ -23032,7 +23055,7 @@
 	      var now = new Date();
 	
 	      var nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
-	
+	      console.log(journal);
 	      if (timer) {
 	        result.timer = this.formatTimer(this.diffArrs(timer, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
 	      }
@@ -23042,7 +23065,8 @@
 	      if (stopwatch.some(function (item) {
 	        return item > 0;
 	      })) {
-	        result.stopwatch = this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat)));
+	        console.log('journal', journalToFormat, 'now', nowDate, 'stopwatch', stopwatch);
+	        result.stopwatch = this.formatStopwatch(this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
 	      } else {
 	        result.stopwatch = stopwatch;
 	      }
@@ -23051,60 +23075,92 @@
 	    }
 	  }, {
 	    key: 'diffArrs',
-	    value: function diffArrs(arrOne, arrTwo) {
-	      for (var i = arrOne.length; --i >= 0;) {
-	        arrOne[i] -= arrTwo[i];
-	      }return arrOne;
+	    value: function diffArrs(arr1, arr2) {
+	      for (var i = arr1.length; --i >= 0;) {
+	        arr1[i] -= arr2[i];
+	      }console.log('diff', arr1);
+	      return arr1;
 	    }
 	  }, {
 	    key: 'addArrs',
-	    value: function addArrs(arrOne, arrTwo) {
-	      for (var i = arrOne.length; --i >= 0;) {
-	        arrOne[i] += arrTwo[i];
-	      }return arrOne;
+	    value: function addArrs(arr1, arr2) {
+	      for (var i = arr1.length; --i >= 0;) {
+	        arr1[i] += arr2[i];
+	      }console.log('add', arr1);
+	      return arr1;
 	    }
 	  }, {
 	    key: 'formatTimer',
-	    value: function formatTimer(timer) {
-	      var _timer = _slicedToArray(timer, 3),
-	          h = _timer[0],
-	          m = _timer[1],
-	          s = _timer[2];
+	    value: function formatTimer(arr) {
 	
-	      if (s < 0) {
-	        --m;
-	        s += 60;
-	      }
-	      if (m < 0) {
-	        --h;
-	        m += 60;
-	      }
-	      if (h < 0) {
-	        h = m = s = 0;
+	      for (var i = arr.length; --i >= 0;) {
+	
+	        while (arr[i] < 0) {
+	
+	          if (arr[i] < 0) {
+	            arr[i] += 60;
+	
+	            if (0 <= i - 1) {
+	              arr[i - 1] -= 1;
+	            } else {
+	              arr[i] = arr[i + 1] = arr[i + 2] = 0;
+	            }
+	          }
+	        }
 	      }
 	
-	      return [h, m, s];
+	      return arr;
 	    }
 	  }, {
 	    key: 'formatStopwatch',
-	    value: function formatStopwatch(stopwatch) {
-	      var _timer2 = timer,
-	          _timer3 = _slicedToArray(_timer2, 3),
-	          h = _timer3[0],
-	          m = _timer3[1],
-	          s = _timer3[2];
+	    value: function formatStopwatch(arr) {
 	
-	      if (s > 60) {
-	        ++m;
-	        s -= 60;
-	      }
-	      if (m < 0) {
-	        ++h;
-	        m -= 60;
-	      }
+	      for (var i = arr.length; --i >= 0;) {
 	
-	      return [h, m, s];
+	        while (arr[i] > 59) {
+	
+	          if (arr[i] > 59) {
+	            arr[i] -= 60;
+	            if (0 <= i - 1) arr[i - 1] += 1;
+	          }
+	        }
+	      }
+	      console.log('format', arr);
+	      return arr;
 	    }
+	
+	    /*  formatStopwatch(stopwatch) {
+	        let [h, m, s] = stopwatch;
+	    
+	        if (s > 59) {
+	          ++m;
+	          s -= 60;
+	        }
+	        if (m > 59) {
+	          ++h;
+	          m -= 60;
+	        }
+	    
+	        return [h, m, s];
+	      }
+	      formatTimer(timer) {
+	        let [h, m, s] = timer;
+	    
+	        if (s < 0) {
+	          --m;
+	          s += 60;
+	        }
+	        if (m < 0) {
+	          --h;
+	          m += 60;
+	        }
+	        if (h < 0) {
+	          h = m = s = 0;
+	        }
+	    
+	        return [h, m, s];
+	      }*/
+	
 	  }, {
 	    key: 'color',
 	    value: function color() {
@@ -23132,354 +23188,6 @@
 
 /***/ },
 /* 178 */
-/*!****************************************!*\
-  !*** ./src/js/component/stopwatch.jsx ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Stopwatch = function (_React$Component) {
-	  _inherits(Stopwatch, _React$Component);
-	
-	  function Stopwatch(props) {
-	    _classCallCheck(this, Stopwatch);
-	
-	    var _this = _possibleConstructorReturn(this, (Stopwatch.__proto__ || Object.getPrototypeOf(Stopwatch)).call(this, props));
-	
-	    _this.state = {
-	      iterval: false
-	    };
-	
-	    _this.stop = _this.stop.bind(_this);
-	    _this.play = _this.play.bind(_this);
-	    _this.toggle = _this.toggle.bind(_this);
-	    _this.show = _this.show.bind(_this);
-	
-	    _this.handleTickStopwatch = _this.handleTickStopwatch.bind(_this);
-	    return _this;
-	  }
-	
-	  _createClass(Stopwatch, [{
-	    key: 'handleTickStopwatch',
-	    value: function handleTickStopwatch() {
-	      var _props$time = _slicedToArray(this.props.time, 3),
-	          h = _props$time[0],
-	          m = _props$time[1],
-	          s = _props$time[2];
-	
-	      if (s < 59) {
-	        ++s;
-	      } else if (s === 59 && m < 59) {
-	        s = 0;
-	        ++m;
-	      } else if (m === 59) {
-	        m = 0;
-	        ++h;
-	      }
-	
-	      window.dispatchEvent(new CustomEvent('tick', {
-	        detail: {
-	          type: 'stopwatch',
-	          time: [h, m, s],
-	          id: this.props.id
-	        }
-	      }));
-	    }
-	  }, {
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      if (!this.state.interval) this.play();
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'span',
-	        { className: 'stopwatch' },
-	        this.show(),
-	        _react2.default.createElement('span', {
-	          className: 'stopwatch-btn' + (this.state.interval ? '' : ' pause'),
-	          onClick: this.toggle
-	        })
-	      );
-	    }
-	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      if (this.state.interval) this.stop();
-	    }
-	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      this.stop();
-	    }
-	  }, {
-	    key: 'show',
-	    value: function show() {
-	      if (!this.state.interval) return;
-	      var s = this.props.time;
-	      return _react2.default.createElement(
-	        'span',
-	        { className: 'wrap' },
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          s[0] < 10 ? '0' + s[0] : s[0],
-	          ':'
-	        ),
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          s[1] < 10 ? '0' + s[1] : s[1],
-	          ':'
-	        ),
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          s[2] < 10 ? '0' + s[2] : s[2]
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'toggle',
-	    value: function toggle() {
-	      this.state.interval ? this.stop() : this.play();
-	    }
-	  }, {
-	    key: 'play',
-	    value: function play() {
-	      var self = this;
-	      this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
-	      this.setState({ interval: !this.state.interval });
-	    }
-	  }, {
-	    key: 'stop',
-	    value: function stop() {
-	      clearInterval(this.stopwatch);
-	      this.stopwatch = null;
-	      this.setState({ interval: !this.state.interval });
-	    }
-	  }]);
-	
-	  return Stopwatch;
-	}(_react2.default.Component);
-	
-	exports.default = Stopwatch;
-	;
-
-/***/ },
-/* 179 */
-/*!************************************!*\
-  !*** ./src/js/component/timer.jsx ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Timer = function (_React$Component) {
-	  _inherits(Timer, _React$Component);
-	
-	  function Timer(props) {
-	    _classCallCheck(this, Timer);
-	
-	    var _this = _possibleConstructorReturn(this, (Timer.__proto__ || Object.getPrototypeOf(Timer)).call(this, props));
-	
-	    _this.state = {
-	      spoiler: true
-	    };
-	    _this.timer = null;
-	    _this.handleTickTimer = _this.handleTickTimer.bind(_this);
-	    _this.cancel = _this.cancel.bind(_this);
-	    _this.spoiler = _this.spoiler.bind(_this);
-	    _this.show = _this.show.bind(_this);
-	    _this.spoiler = _this.spoiler.bind(_this);
-	    _this.delete = _this.delete.bind(_this);
-	    _this.deleteTask = _this.deleteTask.bind(_this);
-	    return _this;
-	  }
-	
-	  _createClass(Timer, [{
-	    key: 'handleTickTimer',
-	    value: function handleTickTimer() {
-	      var _props$time = _slicedToArray(this.props.time, 3),
-	          h = _props$time[0],
-	          m = _props$time[1],
-	          s = _props$time[2];
-	
-	      if (s > 0) {
-	        --s;
-	      } else if (s === 0 && m > 0) {
-	        s = 59;
-	        --m;
-	      } else if (m === 0) {
-	        s = 59;
-	        m = 59;
-	        --h;
-	      }
-	
-	      window.dispatchEvent(new CustomEvent('tick', {
-	        detail: {
-	          type: 'timer',
-	          time: [h, m, s],
-	          id: this.props.id
-	        }
-	      }));
-	    }
-	  }, {
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      clearInterval(this.timer);
-	      this.timer = null;
-	      this.deleteTask();
-	    }
-	  }, {
-	    key: 'componentWillUpdate',
-	    value: function componentWillUpdate() {
-	      this.deleteTask();
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'span',
-	        { className: 'timer' },
-	        this.show(),
-	        this.hidden()
-	      );
-	    }
-	  }, {
-	    key: 'hidden',
-	    value: function hidden() {
-	      if (!this.state.spoiler) return;
-	      return _react2.default.createElement('span', { className: 'timer-spoiler-btn', onClick: this.spoiler });
-	    }
-	  }, {
-	    key: 'show',
-	    value: function show() {
-	      if (this.state.spoiler) return;
-	      var t = this.props.time;
-	
-	      return _react2.default.createElement(
-	        'span',
-	        { className: 'wrap' },
-	        _react2.default.createElement('span', { className: 'timer-btn', onClick: this.cancel }),
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          t[0] < 10 ? '0' + t[0] : t[0],
-	          ':'
-	        ),
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          t[1] < 10 ? '0' + t[1] : t[1],
-	          ':'
-	        ),
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          t[2] < 10 ? '0' + t[2] : t[2]
-	        ),
-	        _react2.default.createElement('span', { className: 'timer-spoiler-off-btn', onClick: this.spoiler })
-	      );
-	    }
-	  }, {
-	    key: 'spoiler',
-	    value: function spoiler() {
-	      this.setState({ spoiler: !this.state.spoiler });
-	    }
-	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var self = this;
-	      this.timer = setInterval(self.handleTickTimer, 1000);
-	    }
-	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      clearInterval(this.timer);
-	      this.timer = null;
-	    }
-	  }, {
-	    key: 'cancel',
-	    value: function cancel() {
-	      clearInterval(this.timer);
-	      this.timer = null;
-	      this.delete();
-	    }
-	  }, {
-	    key: 'delete',
-	    value: function _delete() {
-	      window.dispatchEvent(new CustomEvent('deleteTimer', {
-	        detail: { id: this.props.id }
-	      }));
-	    }
-	  }, {
-	    key: 'deleteTask',
-	    value: function deleteTask() {
-	      if (!Math.max.apply(Math, _toConsumableArray(this.props.time)) || Math.min.apply(Math, _toConsumableArray(this.props.time)) < 0) this.props.delete();
-	    }
-	  }]);
-	
-	  return Timer;
-	}(_react2.default.Component);
-	
-	exports.default = Timer;
-	;
-
-/***/ },
-/* 180 */
 /*!******************************!*\
   !*** ./src/js/db/journal.js ***!
   \******************************/
@@ -23492,7 +23200,7 @@
 	});
 	exports.tmp = exports.journal = undefined;
 	
-	var _localStorage = __webpack_require__(/*! ./local-storage */ 181);
+	var _localStorage = __webpack_require__(/*! ./local-storage */ 179);
 	
 	var journal = (0, _localStorage.loadJournal)() || [];
 	
@@ -23500,12 +23208,12 @@
 	  date: null,
 	  old: null
 	};
-	
+	console.log(journal);
 	exports.journal = journal;
 	exports.tmp = tmp;
 
 /***/ },
-/* 181 */
+/* 179 */
 /*!************************************!*\
   !*** ./src/js/db/local-storage.js ***!
   \************************************/
@@ -23518,7 +23226,7 @@
 	});
 	exports.loadJournal = exports.load = undefined;
 	
-	var _lockr = __webpack_require__(/*! lockr */ 182);
+	var _lockr = __webpack_require__(/*! lockr */ 180);
 	
 	var _lockr2 = _interopRequireDefault(_lockr);
 	
@@ -23540,7 +23248,7 @@
 	exports.loadJournal = loadJournal;
 
 /***/ },
-/* 182 */
+/* 180 */
 /*!**************************!*\
   !*** ./~/lockr/lockr.js ***!
   \**************************/
@@ -23718,7 +23426,7 @@
 
 
 /***/ },
-/* 183 */
+/* 181 */
 /*!*****************************************!*\
   !*** ./src/js/component/collection.jsx ***!
   \*****************************************/
@@ -23740,7 +23448,7 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _folder = __webpack_require__(/*! ./folder.jsx */ 184);
+	var _folder = __webpack_require__(/*! ./folder.jsx */ 182);
 	
 	var _folder2 = _interopRequireDefault(_folder);
 	
@@ -23788,7 +23496,7 @@
 	;
 
 /***/ },
-/* 184 */
+/* 182 */
 /*!*************************************!*\
   !*** ./src/js/component/folder.jsx ***!
   \*************************************/
@@ -23971,7 +23679,7 @@
 	;
 
 /***/ },
-/* 185 */
+/* 183 */
 /*!************************************!*\
   !*** ./src/js/component/stats.jsx ***!
   \************************************/
@@ -24024,7 +23732,7 @@
 	;
 
 /***/ },
-/* 186 */
+/* 184 */
 /*!***********************************!*\
   !*** ./src/js/component/note.jsx ***!
   \***********************************/
@@ -24070,7 +23778,6 @@
 	  _createClass(Note, [{
 	    key: 'handleClickBackNote',
 	    value: function handleClickBackNote(e) {
-	
 	      window.dispatchEvent(new CustomEvent('back'));
 	    }
 	  }, {
@@ -24110,7 +23817,7 @@
 	;
 
 /***/ },
-/* 187 */
+/* 185 */
 /*!**********************************!*\
   !*** ./src/js/component/nav.jsx ***!
   \**********************************/
@@ -24132,11 +23839,11 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 188);
+	var _bar = __webpack_require__(/*! ../component/bar.jsx */ 186);
 	
 	var _bar2 = _interopRequireDefault(_bar);
 	
-	var _help = __webpack_require__(/*! ../component/help.jsx */ 189);
+	var _help = __webpack_require__(/*! ../component/help.jsx */ 187);
 	
 	var _help2 = _interopRequireDefault(_help);
 	
@@ -24207,7 +23914,7 @@
 	;
 
 /***/ },
-/* 188 */
+/* 186 */
 /*!**********************************!*\
   !*** ./src/js/component/bar.jsx ***!
   \**********************************/
@@ -24260,7 +23967,7 @@
 	;
 
 /***/ },
-/* 189 */
+/* 187 */
 /*!***********************************!*\
   !*** ./src/js/component/help.jsx ***!
   \***********************************/
@@ -24360,7 +24067,7 @@
 	exports.default = Help;
 
 /***/ },
-/* 190 */
+/* 188 */
 /*!****************************!*\
   !*** ./src/js/db/index.js ***!
   \****************************/
@@ -24450,7 +24157,7 @@
 	exports.db = db;
 
 /***/ },
-/* 191 */
+/* 189 */
 /*!**************************!*\
   !*** ./src/css/main.css ***!
   \**************************/
@@ -24459,10 +24166,10 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 192);
+	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 190);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 206)(content, {});
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 204)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -24479,24 +24186,24 @@
 	}
 
 /***/ },
-/* 192 */
+/* 190 */
 /*!*****************************************!*\
   !*** ./~/css-loader!./src/css/main.css ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 193)();
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 191)();
 	// imports
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Droid+Sans);", ""]);
 	
 	// module
-	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 90px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  align-self: center;\n  flex-flow: column;\n  justify-content: center;\n  flex: 1;\n  width: 100%;\n}\n\n.help>p {\n  margin: 20px;\n  font-weight: 500;\n  text-transform: initial;\n}\n\n.help-title {\n  font-size: 20px;\n  font-weight: bold;\n  align-self: center;\n}\n\n.help-prop {\n  font-weight: bold;;\n  text-decoration: underline;\n  text-transform: uppercase;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 5px 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 5px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 0px 10px 0px 10px;\n}\n\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task>.wrap {\n  display: flex;\n  flex-flow: row wrap;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 194) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder>.wrap {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder>.wrap:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 195) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 196) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.complete {\n  cursor: pointer;\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 20px 5px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 560px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer>.wrap {\n  display: flex;\n  flex-flow: row;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .wrap>.timer-btn, .note-btn, .note-save, .sand,\n.exit, .save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 197) + ");\n}\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 198) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 199) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + ")\n}\n\n\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 203) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 204) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 205) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 194) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}\n\n.level-one   { background-color: #03A9F4; }\n.level-two   { background-color: #009688; }\n.level-three { background-color: #4caf50; }\n.level-four  { background-color: #ffeb3b; }\n.level-five  { background-color: #ff9800; }\n\n.date {\n  font-weight: bold;\n  align-self: center;\n  margin-bottom: 0px;\n}\n\n.wrap-date {\n  display: flex;\n  flex-flow: column;\n}", ""]);
+	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 90px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  align-self: center;\n  flex-flow: column;\n  justify-content: center;\n  flex: 1;\n  width: 100%;\n}\n\n.help>p {\n  margin: 20px;\n  font-weight: 500;\n  text-transform: initial;\n}\n\n.help-title {\n  font-size: 20px;\n  font-weight: bold;\n  align-self: center;\n}\n\n.help-prop {\n  font-weight: bold;;\n  text-decoration: underline;\n  text-transform: uppercase;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 5px 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 5px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 0px 10px 0px 10px;\n}\n\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task>.wrap {\n  display: flex;\n  flex-flow: row wrap;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 192) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder>.wrap {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder>.wrap:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 193) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 194) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.complete {\n  cursor: pointer;\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 20px 5px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 560px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer>.wrap {\n  display: flex;\n  flex-flow: row;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .wrap>.timer-btn, .note-btn, .note-save, .sand,\n.exit, .save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 195) + ");\n}\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 196) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 197) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 198) + ")\n}\n\n\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 199) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 200) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 201) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 202) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 203) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 192) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}\n\n.level-one   { background-color: #03A9F4; }\n.level-two   { background-color: #009688; }\n.level-three { background-color: #4caf50; }\n.level-four  { background-color: #ffeb3b; }\n.level-five  { background-color: #ff9800; }\n\n.date {\n  font-weight: bold;\n  align-self: center;\n  margin-bottom: 0px;\n}\n\n.wrap-date {\n  display: flex;\n  flex-flow: column;\n}\n\n.list-exit {\n  align-self: flex-start;\n  text-transform: uppercase;\n  font-weight: 800;\n  margin: 5px 5px 0 5px;\n  color: black;\n  padding: 0 5px;\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n}\n\n.list-exit:hover {\n  background: #9E9E9E;\n  cursor: pointer;\n  user-select: none;\n}", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 193 */
+/* 191 */
 /*!**************************************!*\
   !*** ./~/css-loader/lib/css-base.js ***!
   \**************************************/
@@ -24555,7 +24262,7 @@
 
 
 /***/ },
-/* 194 */
+/* 192 */
 /*!****************************!*\
   !*** ./src/img/search.png ***!
   \****************************/
@@ -24564,7 +24271,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVQ4Ec3BMU7CYAAG0BfkHH8jZ5C4mGDirSBwjw7sBORIVEdhBibI50g6FOvGezy4D1sHVwef3v1haCkiIiJqQ3csxdFUMVCZOYlapw9x9OJm7CQmOmzFVNtcbHQ4iKLtWfzocBUDbU/iosNBVNpGYq/Dp5hpW4i1Du/iZOzm1Vm86VSLk7lnT0YWzmLljqFaRERErMS3yh0TGz8u9tbe8C2+VHqrfIlG0VulEY2it0ojdoreisZO8Q9F8bh+AdReVMyZp3KbAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 195 */
+/* 193 */
 /*!****************************!*\
   !*** ./src/img/delete.png ***!
   \****************************/
@@ -24573,7 +24280,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAqklEQVR4Ae2VxRWDUBAA572UQWqJNkYxscr+jdue44br4jv/gs7g0BGG4XNLGX5beoXEreYojQXmQQuXp9WABSwg7LlEllzYI1oBYQ0sQonLYw7WiE5gz5tH4q9/sdcJPIT/RHROJxBNRPU6gUgiqlcLRBNRffuB9i9R+ze5/ce0/Ret/U9F/x87++FUxlXSOypzqhQ4UpklQWl9gAd1EkdciYtzxKNFDOMOajyuIqb0hAYAAAAASUVORK5CYII="
 
 /***/ },
-/* 196 */
+/* 194 */
 /*!**************************!*\
   !*** ./src/img/edit.png ***!
   \**************************/
@@ -24582,7 +24289,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAApUlEQVR4Ae3RuwkCYRBF4QNbh4+1FzGwGsEObEGswFZM7WB9FCEsJgpmAzuJ3IvCzv3z78D8/MVqtZYzTw40WLbgzuvzjjQ23pAIvC2xDbglsRtI7DXHWaWJh+b2PeskcRJ9bZLomEj4JNExlfCDCQHfEvmY2Dj4mNDyIbF08obbh1f87Xf8Zdz8vPjv+dmYedw8bj4PXDU8bh43j5vHzSPgDavV3qRrsQhO25JyAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 197 */
+/* 195 */
 /*!**************************!*\
   !*** ./src/img/note.png ***!
   \**************************/
@@ -24591,7 +24298,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACzoAAAs6AWR/Vw0AAAAHdElNRQfgCw4LEyL1RRiXAAAAl0lEQVRYw+3XTQ5AMBCG4dE4gvg5pSPUnWyIw9VGqCC+zmhi8b2zE5lnhRJhjMU1MklIHo+vD8oZMGBWAyChWdynEBpAZMAJHZBAaAGY0AMgYQEgwgYAhBV4JexATPg8QExkAmR/urdKw9v3iTjlDECB3ORyf2QIECBA4F/A8une+XqpM5xNr1Pfqa3pAHzMKBX/hRiLWwHAZPOEat0YGwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 198 */
+/* 196 */
 /*!**************************!*\
   !*** ./src/img/play.png ***!
   \**************************/
@@ -24600,7 +24307,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LFRv8GjcZAAAAm0lEQVRYw+2WwQ3CMBAEB36UAEVQB69UkT5cSAqhBN4UQQv5bhoAgRQPUaSbe1sj2eu7g6IoNufgKx6cXEEIoy0ITy6uIIRmC8KLqysIYbIFYebmCkK49wtvPtZoCzqFN1+q2YLV4c1PNdmCMDO8O37sGOf9XpH8yM39aOfdtgq12cntWh048shUh36XQG60eMmr4x+W36IoVrMAxYYe1+9lz2UAAAAASUVORK5CYII="
 
 /***/ },
-/* 199 */
+/* 197 */
 /*!***************************!*\
   !*** ./src/img/pause.png ***!
   \***************************/
@@ -24609,7 +24316,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LHySwk/KuAAAAFElEQVQY02NgoA7g/8D/YahT1AAAhhA3yVo4XisAAAAASUVORK5CYII="
 
 /***/ },
-/* 200 */
+/* 198 */
 /*!****************************!*\
   !*** ./src/img/cancel.png ***!
   \****************************/
@@ -24618,7 +24325,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABYElEQVR4Ae3Xt3HjQByF8R9GEQcxrgCpofO2C8a0vcirCLIGMqIa4MVEKLMXnvkPRktw9vz3IgDke+uNP4T/nBg6t3Sr1bq1dG7o2OFozK2lDq3NNXpTm9hJT2hnotaDlz5Lmdp6YS8qU49SvjyaqmQycC310LWBDCo3Uk9d59RiKh2gydNd+3hQwKMXulHbSgdqq9bJJPz83ieXUocufXIf3o518Mwu2L/DUUfEpSO8CxE7jQjmweITxIhv7OFT+DYTwbrTJEbEL99qJeJEkvIiwtuoY4GhlBkR30QNBc6lnIgs++RMYCnlRGTZJwuBWyknIss+2Qi0UmZEtI9qiwcUb6LinVx8mJafaOWXivKL3c9frpvCG075LbP8pl/+2FL+4IXKtdRTV6qSh98rA5lUJnsf3yf25KVtuQsIUBtnXaHGar1pzKykDq3MNA7HsaEzCxut1sbCWbjG/rb85wukqCp0O2MACwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 201 */
+/* 199 */
 /*!******************************!*\
   !*** ./src/img/timer-on.png ***!
   \******************************/
@@ -24627,7 +24334,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACL0lEQVR4Ae3Vz2pTQRTH8a+NyaUkuJI0y9ok7pWIi/6BLvyDrnShaKwbQdHqqoX2DcQHUGittVJsn0AoCFoaaA2kWJFWrvEJLBWXNnrvuBkOCJ17T651Ic3nbApzzvzKZDLhgDCO0usEdJS5zyIb7NAi4DsfWeQBRfbBYUaoYxy1RpUUFjd5xCHacpEvmJj6xDkARggwTOkjsrzAKGuaWwT274eoFNjASIW8YYx+8mTI0MMA4ywT7hHV4pJu+6aM/GKaPvZSYoYAgxQ/uYxClvcyssVJolTwkQCqqDyXgVdkiZNjSfqnULiAbE/a8WT8KY1EcCb+3jflcLKgCoAcvkyliHRDPtoToA6AU/JxXyNSXW42ugAxa9dWiVCSe9/XdkBZvhfHcBq1LW9BHyBW7OooTgu2ZSxRwIRdXcBFnof+RAGDdvUDTju2JZ8ooGBXv+HUsi2ZRAGeXPF/HLAbf0Q9f3VE27jIKzpAEkN2uhF/TcdJYtJOz+N0z7Ysk0TNTt/BqShPRYl2HSe0s71EWLMRM7Rrzk7WiFS1bQEV2nFanrqrRErJT4dPDq0j8jO1SRcxzmNsLZFGI8NrmRlG4RkSQU7x38v2PEGlm3UZ8anEnH1Teut4KOX5LGMBs5QdF3OOUPq2OAp6eRoYqZAVJhikgIdHgSEmqWGQ4p16e9HNU4yyHuORyFn82M03GYbkUlxn1bF1SI0rdLEPitzlJetss8sPvtJgntv00vFf+A28TwB4fl1vlgAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 202 */
+/* 200 */
 /*!*******************************!*\
   !*** ./src/img/timer-off.png ***!
   \*******************************/
@@ -24636,7 +24343,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACOklEQVR4Ae2WT0sUcRyHH3ZXJdhb0XrUdiW6b1Sgl8L+3QoiamEP3tbICqTFegFaC3VuMw9lhu9ACELWUKgkSynWtxCG12xnv12+DEPN99f+BvaSPZ+L+HvgYWbQGfYJYsyT/4F9wBTTxFPgFotssktAwC6bvOImeby4jyB/JDKUeYcYW6NEGpQSVUzOILpo4gLbCO595RwAJVoI9zCpxSTGaCMdrM4YLf15Kkki4A13OMUhUvSSY5hJlmPje1yCThIzkUSdI8ajnyVAIvvJZQDfhIsizUighE3iRJYlRPeEDriIWAnjX0RPJDGKGzJsI0bCCkA2vFFfSOOkjPy2B4QQGAE4Hp5dw8l71erUYhJlAiMAc2qv4qCgUsAgOBJxDNFWexCTCVVeAzgS8TTUvYHJoiq3wZmIp6rmAiZbqpyAmMRD3Iyo9wmTXVUOgn+CfrW+YxKokgL/BH3qtDDZU6UX/BNk/h7YUSUH/glyer6DyUdVhsGZqDkf8gYmC6pMAnhfxV09m8dkXJVl8E/wVk8qmORVaVPwThxDdAM4WFNpFgPjrxue6+8aOCmpFlD0TOgXCFdwkg5fHU2y/gk+k8IN5xHdEj3eidN0wDPCRIdXMYMXB1hHdE2K3Ugcjrz6A+YYIo6jvECSJz4g4do0qDJCP31k9NNxBX1FJr9RTxHPTePJWZqIe2wxyuPkiTTXWUWMrXCVFEDihJKnwkvW+cYPWuywwTwVBlCiCdqcpDtoYpwu8ogJ/jl+AQVVXWskAfRLAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 203 */
+/* 201 */
 /*!**************************!*\
   !*** ./src/img/save.png ***!
   \**************************/
@@ -24645,7 +24352,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4NLREP3R5OAAAA50lEQVRYw+2XTQ7CIBCFH8ZD2B/X1l7MY+gJFG9jw63svrhQo0F+BhjTNOHNjj7mS5lOJwBFRdxqoKCj40hPrxPjRAOoZAAR8bRO5KRTLOJtpSr6LXIBQUQ+IIDgABgfrTA22FZ9ALu+9q/+3bnLB6wdpaPWIFgtQSparEqRC2A2wAUdBAT2kKk49+y6ozam9+hxJwBqoyUFWk7A2eqWfICd1d1TALR/kVj8wOkcR8QGOESsJvZB81OHLW8fjGiN9MyNpqEhX6fe4xpwzjcyFUv6wf2oyrgffGLjo1cYspLf/OmLilL0AJq2t6TWqQyvAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 204 */
+/* 202 */
 /*!**************************!*\
   !*** ./src/img/exit.png ***!
   \**************************/
@@ -24654,7 +24361,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAvUlEQVR4Ae3XTQrCMBAF4Hea0itovJjgYvRC/TmYlKT7CELdNQ87M4vCvFnGzgedNo2IRMzTY0RGPVgrZvTt9guqspYWMaIa1ITdZBOgYDfbT3j49QH4AE+IJ/D6rokX8Pitig9wQSaEeoacUAKcUAOM4ICS4EP+u0QNcOLkgNgP+aoZMk/yfUwTiueLdiPtlZsdb68E7t7bNSCeH5yNkLOfKgJYvQ+/swkw+P4BeaMDWsSEorg5AzoYJxL5APsNcp+a7wfsAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 205 */
+/* 203 */
 /*!*************************!*\
   !*** ./src/img/add.png ***!
   \*************************/
@@ -24663,7 +24370,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAM0lEQVR4Ae3RoREAMBACwfTf9EekgMy8wLBHASs4dUmatwgAAAAAs9w/QPBkAAAAKEvSBTV8zzG4BEJAAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 206 */
+/* 204 */
 /*!*************************************!*\
   !*** ./~/style-loader/addStyles.js ***!
   \*************************************/
@@ -24916,6 +24623,359 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
+
+/***/ },
+/* 205 */
+/*!****************************************!*\
+  !*** ./src/js/component/stopwatch.jsx ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Stopwatch = function (_React$Component) {
+	  _inherits(Stopwatch, _React$Component);
+	
+	  function Stopwatch(props) {
+	    _classCallCheck(this, Stopwatch);
+	
+	    var _this = _possibleConstructorReturn(this, (Stopwatch.__proto__ || Object.getPrototypeOf(Stopwatch)).call(this, props));
+	
+	    _this.state = {
+	      iterval: false
+	    };
+	
+	    _this.stop = _this.stop.bind(_this);
+	    _this.play = _this.play.bind(_this);
+	    _this.toggle = _this.toggle.bind(_this);
+	    _this.show = _this.show.bind(_this);
+	
+	    _this.handleTickStopwatch = _this.handleTickStopwatch.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(Stopwatch, [{
+	    key: 'handleTickStopwatch',
+	    value: function handleTickStopwatch() {
+	      var _props$time = _slicedToArray(this.props.time, 3),
+	          h = _props$time[0],
+	          m = _props$time[1],
+	          s = _props$time[2];
+	
+	      if (s < 59) {
+	        ++s;
+	      } else if (s === 59 && m < 59) {
+	        s = 0;
+	        ++m;
+	      } else if (m === 59) {
+	        m = 0;
+	        ++h;
+	      }
+	
+	      window.dispatchEvent(new CustomEvent('tick', {
+	        detail: {
+	          type: 'stopwatch',
+	          time: [h, m, s],
+	          id: this.props.id
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      if (!this.state.interval) this.play();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'span',
+	        { className: 'stopwatch' },
+	        this.show(),
+	        _react2.default.createElement('span', {
+	          className: 'stopwatch-btn' + (this.state.interval ? '' : ' pause'),
+	          title: this.state.interval ? 'play' : 'pause',
+	          onClick: this.toggle
+	        })
+	      );
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.state.interval) this.stop();
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.stop();
+	    }
+	  }, {
+	    key: 'show',
+	    value: function show() {
+	      if (!this.state.interval) return;
+	      var s = this.props.time;
+	      return _react2.default.createElement(
+	        'span',
+	        { className: 'wrap' },
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          s[0] < 10 ? '0' + s[0] : s[0],
+	          ':'
+	        ),
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          s[1] < 10 ? '0' + s[1] : s[1],
+	          ':'
+	        ),
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          s[2] < 10 ? '0' + s[2] : s[2]
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'toggle',
+	    value: function toggle() {
+	      this.state.interval ? this.stop() : this.play();
+	    }
+	  }, {
+	    key: 'play',
+	    value: function play() {
+	      var self = this;
+	      this.stopwatch = setInterval(self.handleTickStopwatch, 1000);
+	      this.setState({ interval: !this.state.interval });
+	    }
+	  }, {
+	    key: 'stop',
+	    value: function stop() {
+	      clearInterval(this.stopwatch);
+	      this.stopwatch = null;
+	      this.setState({ interval: !this.state.interval });
+	    }
+	  }]);
+	
+	  return Stopwatch;
+	}(_react2.default.Component);
+	
+	exports.default = Stopwatch;
+	;
+
+/***/ },
+/* 206 */
+/*!************************************!*\
+  !*** ./src/js/component/timer.jsx ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Timer = function (_React$Component) {
+	  _inherits(Timer, _React$Component);
+	
+	  function Timer(props) {
+	    _classCallCheck(this, Timer);
+	
+	    var _this = _possibleConstructorReturn(this, (Timer.__proto__ || Object.getPrototypeOf(Timer)).call(this, props));
+	
+	    _this.state = {
+	      spoiler: true
+	    };
+	    _this.timer = null;
+	    _this.handleTickTimer = _this.handleTickTimer.bind(_this);
+	    _this.cancel = _this.cancel.bind(_this);
+	    _this.spoiler = _this.spoiler.bind(_this);
+	    _this.show = _this.show.bind(_this);
+	    _this.spoiler = _this.spoiler.bind(_this);
+	    _this.delete = _this.delete.bind(_this);
+	    _this.deleteTask = _this.deleteTask.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(Timer, [{
+	    key: 'handleTickTimer',
+	    value: function handleTickTimer() {
+	      var _props$time = _slicedToArray(this.props.time, 3),
+	          h = _props$time[0],
+	          m = _props$time[1],
+	          s = _props$time[2];
+	
+	      if (s > 0) {
+	        --s;
+	      } else if (s === 0 && m > 0) {
+	        s = 59;
+	        --m;
+	      } else if (m === 0) {
+	        s = 59;
+	        m = 59;
+	        --h;
+	      }
+	
+	      window.dispatchEvent(new CustomEvent('tick', {
+	        detail: {
+	          type: 'timer',
+	          time: [h, m, s],
+	          id: this.props.id
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      clearInterval(this.timer);
+	      this.timer = null;
+	      this.deleteTask();
+	    }
+	  }, {
+	    key: 'componentWillUpdate',
+	    value: function componentWillUpdate() {
+	      this.deleteTask();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'span',
+	        { className: 'timer' },
+	        this.show(),
+	        this.hidden()
+	      );
+	    }
+	  }, {
+	    key: 'hidden',
+	    value: function hidden() {
+	      if (!this.state.spoiler) return;
+	      return _react2.default.createElement('span', { className: 'timer-spoiler-btn', onClick: this.spoiler, title: 'show' });
+	    }
+	  }, {
+	    key: 'show',
+	    value: function show() {
+	      if (this.state.spoiler) return;
+	      var t = this.props.time;
+	
+	      return _react2.default.createElement(
+	        'span',
+	        { className: 'wrap' },
+	        _react2.default.createElement('span', { className: 'timer-btn', title: 'cancel', onClick: this.cancel }),
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          t[0] < 10 ? '0' + t[0] : t[0],
+	          ':'
+	        ),
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          t[1] < 10 ? '0' + t[1] : t[1],
+	          ':'
+	        ),
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          t[2] < 10 ? '0' + t[2] : t[2]
+	        ),
+	        _react2.default.createElement('span', {
+	          className: 'timer-spoiler-off-btn',
+	          title: 'spoil',
+	          onClick: this.spoiler
+	        })
+	      );
+	    }
+	  }, {
+	    key: 'spoiler',
+	    value: function spoiler() {
+	      this.setState({ spoiler: !this.state.spoiler });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var self = this;
+	      this.timer = setInterval(self.handleTickTimer, 1000);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      clearInterval(this.timer);
+	      this.timer = null;
+	    }
+	  }, {
+	    key: 'cancel',
+	    value: function cancel() {
+	      clearInterval(this.timer);
+	      this.timer = null;
+	      this.delete();
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete() {
+	      window.dispatchEvent(new CustomEvent('deleteTimer', {
+	        detail: { id: this.props.id }
+	      }));
+	    }
+	  }, {
+	    key: 'deleteTask',
+	    value: function deleteTask() {
+	      if (!Math.max.apply(Math, _toConsumableArray(this.props.time)) || Math.min.apply(Math, _toConsumableArray(this.props.time)) < 0) this.props.delete();
+	    }
+	  }]);
+	
+	  return Timer;
+	}(_react2.default.Component);
+	
+	exports.default = Timer;
+	;
 
 /***/ }
 /******/ ]);

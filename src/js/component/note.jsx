@@ -10,7 +10,6 @@ export default class Note extends React.Component {
   }
 
   handleClickBackNote(e) {
-
     window.dispatchEvent(new CustomEvent('back'));
   }
 
