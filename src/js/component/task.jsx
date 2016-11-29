@@ -110,6 +110,7 @@ export default class Task extends React.Component {
 
   edit() {
     if (!this.state.edit) return;
+
     return (
       <span className={'wrap ' + this.color()}>
         <input
@@ -132,7 +133,8 @@ export default class Task extends React.Component {
         <lable
           onClick={this.handleComplete}
           className='complete'>
-        <input type='checkbox'/></lable>
+        <input type='checkbox'/>
+        </lable>
         <p className='descript'>{this.props.info.description}</p>
         {this.timer(timer)}
         <Stopwatch
@@ -140,9 +142,21 @@ export default class Task extends React.Component {
           id={this.props.info.id}
           time={stopwatch}
         />
-        <span title='edit task' className='edit-btn'   onClick={this.handleEdit}></span>
-        <span title='open note' className='note-btn'   onClick={this.handleNote}></span>
-        <span title='delete task' className='delete-btn' onClick={this.handleDelete}></span>
+        <span
+          title='edit task'
+          className='edit-btn'
+          onClick={this.handleEdit}>
+        </span>
+        <span
+          title='open note'
+          className='note-btn'
+          onClick={this.handleNote}>
+        </span>
+        <span
+          title='delete task'
+          className='delete-btn'
+          onClick={this.handleDelete}>
+        </span>
       </span>
     );
   }
@@ -198,7 +212,7 @@ export default class Task extends React.Component {
     const now = new Date();
 
     const nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
-    console.log(journal);
+
     if (timer) {
       result.timer = this.formatTimer(this.diffArrs
                                      (timer, this.formatTimer
@@ -209,7 +223,6 @@ export default class Task extends React.Component {
     if (!timer || Math.min(...result.timer) < 0) result.timer = timer;
 
     if (stopwatch.some(item => item > 0)) {
-      console.log('journal', journalToFormat, 'now', nowDate, 'stopwatch', stopwatch);
       result.stopwatch = this.formatStopwatch(this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
     } else {
       result.stopwatch = stopwatch;
@@ -220,13 +233,11 @@ export default class Task extends React.Component {
 
   diffArrs(arr1, arr2) {
     for (let i = arr1.length; --i >= 0;) arr1[i] -= arr2[i];
-    console.log('diff', arr1);
     return arr1;
   }
 
   addArrs(arr1, arr2) {
     for (let i = arr1.length; --i >= 0;) arr1[i] += arr2[i];
-    console.log('add', arr1);
     return arr1;
   }
 
@@ -268,7 +279,7 @@ export default class Task extends React.Component {
       }
 
     }
-    console.log('format', arr);
+
     return arr;
   }
 

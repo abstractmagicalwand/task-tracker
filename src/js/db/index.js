@@ -15,7 +15,9 @@ const db = [{
     priority: 0,
     timeDeath: null,
     note: '',
-    stopwatch: null
+    stopwatch: null,
+    price: 300,
+    timePrice: 60
   }]
 }, {
   project: 'SANS',
@@ -35,7 +37,9 @@ const db = [{
     timeDeath: null,
     note: '',
     stopwatch: [0, 0, 0],
-    date: new Date()
+    date: new Date(),
+    price: 300,
+    timePrice: 60
   }]
 }, {
   project: '@shop',
@@ -55,7 +59,9 @@ const db = [{
     priority: 2,
     timeDeath: null,
     stopwatch: [0, 0, 0],
-    date: new Date(2012, 10, 10)
+    date: new Date(2012, 10, 10),
+    price: 300,
+    timePrice: 60
   }]
 }, {
   project: '@social',
@@ -74,27 +80,31 @@ const db = [{
     priority: 3,
     timeDeath: [0, 0, 10],
     stopwatch: [0, 0, 0],
-    date: new Date(2012, 10, 10)
+    date: new Date(2012, 10, 10),
+    price: 300,
+    timePrice: 60
   }]
 }, {
   project: '@sport',
   note: '',
   tasks: [{
-      description: 'Scamper.',
-      id: 1322131231231232,
-      complete: false,
-      tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran',
-        '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d',
-        '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam',
-        '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute',
-        '#happy', '#beautiful', '#boys', '#guys', '#instagood',
-        '#photooftheday'],
-      project: '@sport',
-      priority: 4,
-      timeDeath: null,
-      note: '',
-      stopwatch: [0, 0, 0],
-      date: new Date(2013, 3, 1)
+    description: 'Scamper.',
+    id: 1322131231231232,
+    complete: false,
+    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran',
+      '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d',
+      '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam',
+      '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute',
+      '#happy', '#beautiful', '#boys', '#guys', '#instagood',
+      '#photooftheday'],
+    project: '@sport',
+    priority: 4,
+    timeDeath: null,
+    note: '',
+    stopwatch: [0, 0, 0],
+    date: new Date(2013, 3, 1),
+    price: 300,
+    timePrice: 60
   }]
 }];
 

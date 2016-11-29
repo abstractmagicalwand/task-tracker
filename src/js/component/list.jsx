@@ -1,9 +1,9 @@
-import React          from 'react';
-import ReactDOM       from 'react-dom';
-import Field          from './field.jsx';
-import Search         from './search.jsx';
-import Task           from './task.jsx';
-import {journal, tmp} from '../db/journal.js';
+import React           from 'react';
+import ReactDOM        from 'react-dom';
+import Field           from './field.jsx';
+import Search          from './search.jsx';
+import Task            from './task.jsx';
+import {journal, temp} from '../db/journal.js';
 
 export default class List extends React.Component {
   constructor(props) {
@@ -86,11 +86,11 @@ export default class List extends React.Component {
 
     return tasks.map((task, i) => {
 
-      if (compareDateYMD(tmp.date, task.date) ||
+      if (compareDateYMD(temp.date, task.date) ||
         ~exceptions.indexOf(this.props.type)) {
         return <Task journal={this.props.journal} info={task} key={task.id} />
       } else {
-        tmp.date = task.date;
+        temp.date = task.date;
         return this.getDate(task, task.date);
       }
 

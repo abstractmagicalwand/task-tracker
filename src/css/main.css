@@ -290,6 +290,13 @@ input[type=checkbox] {
   cursor: pointer;
 }
 
+.account {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: space-around;
+}
+
 .note-btn {
   background: url('../img/note.png');
 }
@@ -306,7 +313,12 @@ input[type=checkbox] {
   background: url('../img/cancel.png')
 }
 
-
+.account-container {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+}
 
 .timer-spoiler-btn {
   background: url('../img/timer-on.png');

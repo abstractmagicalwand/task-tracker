@@ -2,7 +2,7 @@ import React      from 'react';
 import ReactDOM   from 'react-dom';
 import List       from './list.jsx';
 import Collection from './collection.jsx';
-import Stats      from './stats.jsx';
+import Account    from './account.jsx';
 import Note       from './note.jsx';
 
 export default class Content extends React.Component {
@@ -12,7 +12,7 @@ export default class Content extends React.Component {
   }
 
   render() {
-    return <div className='content'>{this.getCompView()}</div>;
+    return <div className={`content ${this.props.view === 'account' ? 'account-container' : ''}`}>{this.getCompView()}</div>;
   }
 
   getCompView() {
@@ -26,8 +26,8 @@ export default class Content extends React.Component {
         return <Collection db={this.props.db} />;
     case 'archiv':
         return <List type='archiv' db={this.props.db} />;
-    case 'stats':
-        return <Stats />;
+    case 'account':
+        return <Account data={this.props.account}/>;
     case 'search':
         return <List
             journal={this.props.journal}

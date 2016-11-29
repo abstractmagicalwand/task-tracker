@@ -1,18 +1,17 @@
-import React     from 'react';
-import ReactDOM  from 'react-dom';
-import Content   from '../component/content.jsx';
-import Nav       from '../component/nav.jsx';
-import Help      from '../component/help.jsx';
-import {db}      from '../db/index.js';
-import {journal} from '../db/journal.js';
-import {load, loadJournal}    from '../db/local-storage.js';
+import React               from 'react';
+import ReactDOM            from 'react-dom';
+import Content             from '../component/content.jsx';
+import Nav                 from '../component/nav.jsx';
+import Help                from '../component/help.jsx';
+import {db}                from '../db/index.js';
+import {journal, account}  from '../db/journal.js';
+import {load, loadJournal} from '../db/storage.js';
+
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      db: load() || db
-    };
+    this.state = {db: load() || db};
 
     this.handleNavBtn       = this.handleNavBtn.bind(this);
     this.handleAddNewTask   = this.handleAddNewTask.bind(this);
@@ -29,15 +28,15 @@ export default class App extends React.Component {
     this.handleSetJournal   = this.handleSetJournal.bind(this);
     this.handleClearJournal = this.handleClearJournal.bind(this);
 
-    this.searchTaskDb  = this.searchTaskDb.bind(this);
-    this.setStateDB    = this.setStateDB.bind(this);
-    this.getFolderOfDb = this.getFolderOfDb.bind(this);
+    this.searchTaskDB = this.searchTaskDB.bind(this);
+    this.setStateDB   = this.setStateDB.bind(this);
+    this.getFolderDB  = this.getFolderDB.bind(this);
   }
 
   handleDeleteFolder(e) {
     e.preventDefault();
     const db = [...this.state.db]
-    db.splice(this.getFolderOfDb(e.detail.project), 1);
+    db.splice(this.getFolderDB(e.detail.project), 1);
     this.setStateDB(db);
   }
 
@@ -56,7 +55,7 @@ export default class App extends React.Component {
     e.preventDefault();
     const db = [...this.state.db];
 
-    const folder = this.getFolderOfDb(e.detail.project) || db.length;
+    const folder = this.getFolderDB(e.detail.project) || db.length;
 
     if (folder === db.length) {
       db.unshift({
@@ -81,7 +80,7 @@ export default class App extends React.Component {
 
   handleDeleteTask(e) {
     const db   = [...this.state.db],
-          task = this.searchTaskDb(e.detail.id, db);
+          task = this.searchTaskDB(e.detail.id, db);
 
     task.arr.splice(task.i, 1);
     this.setStateDB(db);
@@ -89,11 +88,11 @@ export default class App extends React.Component {
 
   handleCompleteTask(e) {
     const db   = [...this.state.db],
-          task = this.searchTaskDb(e.detail.id, db);
+          task = this.searchTaskDB(e.detail.id, db);
 
     task.arr[task.i].complete = true;
     task.arr[task.i].project  = 'ARCHIV';
-    db[this.getFolderOfDb('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
+    db[this.getFolderDB('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
     this.setStateDB(db);
   }
 
@@ -101,12 +100,12 @@ export default class App extends React.Component {
     const db = [...this.state.db];
 
     if (e.detail.project) {
-      const folder = db[this.getFolderOfDb(e.detail.project)];
+      const folder = db[this.getFolderDB(e.detail.project)];
       folder.project = e.detail.value;
 
       folder.tasks.forEach(item => item.project = e.detail.value);
     } else if (e.detail.id) {
-      const task = this.searchTaskDb(e.detail.id, db);
+      const task = this.searchTaskDB(e.detail.id, db);
       task.arr[task.i].description = e.detail.value;
     }
 
@@ -127,10 +126,10 @@ export default class App extends React.Component {
     const db = [...this.state.db];
 
     if (typeof this.state.edit === 'number') {
-      const task = this.searchTaskDb(this.state.edit, db);
+      const task = this.searchTaskDB(this.state.edit, db);
       task.arr[task.i].note = e.detail.value;
     } else if (typeof this.state.edit === 'string') {
-      this.state.db[this.getFolderOfDb(this.state.edit)].note = e.detail.value;
+      this.state.db[this.getFolderDB(this.state.edit)].note = e.detail.value;
     }
 
     this.setState({
@@ -152,7 +151,7 @@ export default class App extends React.Component {
 
   handleTick(e) {
     const db = [...this.state.db],
-          task = this.searchTaskDb(e.detail.id, db);
+          task = this.searchTaskDB(e.detail.id, db);
 
     switch (e.detail.type) {
     case 'timer':
@@ -214,6 +213,7 @@ export default class App extends React.Component {
           view={this.state.viewContent ? this.state.viewContent : 'inbox'}
           db={this.state.db}
           journal={journal}
+          account={account}
           value={this.state.value ? this.state.value : ''}
         />
       </div>
@@ -237,7 +237,7 @@ export default class App extends React.Component {
     window.addEventListener('setInJournal', this.handleSetJournal);
   }
 
-  searchTaskDb(id, DB) {
+  searchTaskDB(id, DB) {
     const task = {};
     const db = DB;
 
@@ -258,7 +258,7 @@ export default class App extends React.Component {
     load(DB);
   }
 
-  getFolderOfDb(project) {
+  getFolderDB(project) {
     let index = null;
     this.state.db.forEach((folder, i) => {
       if (folder.project === project) index = i;

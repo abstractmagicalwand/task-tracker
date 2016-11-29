@@ -8,13 +8,17 @@ export default class Help extends React.Component {
 
   render() {
     return (
-      <div className='help'>
-        <h3 className='help-title'>Spells</h3>
-        <p><span className='help-prop'>timer death:</span> hh/mm/ss</p>
-        <p><span className='help-prop'>priority:</span> * </p>
-        <p><span className='help-prop'>project:</span> @name-project</p>
-        <p><span className='help-prop'>tags:</span> #nameTag</p>
-      </div>
+      <table>
+        <caption>spells</caption>
+        <tbody>
+          <tr><td>timer death</td><td>hh/mm/ss</td></tr>
+          <tr><td>priority</td><td>*</td></tr>
+          <tr><td>project</td><td>@name-project</td></tr>
+          <tr><td>tags</td><td>#nameTag</td></tr>
+          <tr><td>price</td><td>$money</td></tr>
+          <tr><td>time price</td><td>[hh/mm/ss]</td></tr>
+        </tbody>
+      </table>
     );
   }
 }
