@@ -10,7 +10,7 @@ const temp = {
 const account = {
   'completed': 0,
   'late': 0,
-  'spent time': [0, 0, 0],
+  'minutes': 0,
   'wallet': 0
 };
 

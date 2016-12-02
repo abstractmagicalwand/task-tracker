@@ -290,13 +290,6 @@ input[type=checkbox] {
   cursor: pointer;
 }
 
-.account {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: space-around;
-}
-
 .note-btn {
   background: url('../img/note.png');
 }
@@ -311,13 +304,6 @@ input[type=checkbox] {
 
 .timer-btn {
   background: url('../img/cancel.png')
-}
-
-.account-container {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
 }
 
 .timer-spoiler-btn {
@@ -432,4 +418,28 @@ input[type=checkbox] {
   background: #9E9E9E;
   cursor: pointer;
   user-select: none;
+}
+
+.account {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.account-container {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-prop {
+  font-weight: bold;
+  margin-right: 10px;
+  text-transform: uppercase;
+}
+
+.account-data {
+  font-size: 20px;
 }

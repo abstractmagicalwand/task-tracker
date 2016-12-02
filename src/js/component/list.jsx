@@ -88,7 +88,14 @@ export default class List extends React.Component {
 
       if (compareDateYMD(temp.date, task.date) ||
         ~exceptions.indexOf(this.props.type)) {
-        return <Task journal={this.props.journal} info={task} key={task.id} />
+        return (
+          <Task
+            journal={this.props.journal}
+            info={task}
+            key={task.id}
+            stopwatch={this.props.stopwatch}
+          />
+        );
       } else {
         temp.date = task.date;
         return this.getDate(task, task.date);
@@ -103,7 +110,11 @@ export default class List extends React.Component {
         <p className='date'>
         {this.getFormatDate(task.date)}
         </p>
-        <Task journal={this.props.journal} info={task} />
+        <Task
+          journal={this.props.journal}
+          info={task}
+          stopwatch={this.props.stopwatch}
+        />
       </div>
     );
   }

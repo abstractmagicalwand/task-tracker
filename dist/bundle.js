@@ -66,7 +66,7 @@
 	__webpack_require__(/*! ./css/main.css */ 191);
 	
 	
-	/*window.localStorage.clear();*/
+	window.localStorage.clear();
 	_reactDom2.default.render(_react2.default.createElement(_app2.default, null), document.getElementById('root'));
 
 /***/ },
@@ -22008,7 +22008,9 @@
 	
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 	
-	    _this.state = { db: (0, _storage.load)() || _index.db };
+	    _this.state = {
+	      'db': (0, _storage.load)() || _index.db
+	    };
 	
 	    _this.handleNavBtn = _this.handleNavBtn.bind(_this);
 	    _this.handleAddNewTask = _this.handleAddNewTask.bind(_this);
@@ -22028,6 +22030,8 @@
 	    _this.searchTaskDB = _this.searchTaskDB.bind(_this);
 	    _this.setStateDB = _this.setStateDB.bind(_this);
 	    _this.getFolderDB = _this.getFolderDB.bind(_this);
+	
+	    _this.setWrapper = _this.setWrapper.bind(_this);
 	    return _this;
 	  }
 	
@@ -22086,6 +22090,7 @@
 	      var db = [].concat(_toConsumableArray(this.state.db)),
 	          task = this.searchTaskDB(e.detail.id, db);
 	
+	      ++_journal.account['late'];
 	      task.arr.splice(task.i, 1);
 	      this.setStateDB(db);
 	    }
@@ -22093,11 +22098,19 @@
 	    key: 'handleCompleteTask',
 	    value: function handleCompleteTask(e) {
 	      var db = [].concat(_toConsumableArray(this.state.db)),
-	          task = this.searchTaskDB(e.detail.id, db);
+	          _task = this.searchTaskDB(e.detail.id, db),
+	          task = _task.arr[_task.i],
+	          min = new Date(0, 0, 0, task.stopwatch[0], task.stopwatch[1], task.stopwatch[2]).getMinutes();
 	
-	      task.arr[task.i].complete = true;
-	      task.arr[task.i].project = 'ARCHIV';
-	      db[this.getFolderDB('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
+	      ++_journal.account['completed'];
+	      _journal.account['minutes'] += min;
+	
+	      var money = Math.floor(task.price / min * task.timePrice);
+	      _journal.account['wallet'] += isFinite(money) ? money : 0;
+	
+	      task.complete = true;
+	      task.project = 'ARCHIV';
+	      db[this.getFolderDB('ARCHIV')].tasks.unshift(_task.arr.splice(_task.i, 1)[0]);
 	      this.setStateDB(db);
 	    }
 	  }, {
@@ -22120,8 +22133,20 @@
 	      this.setStateDB(db);
 	    }
 	  }, {
+	    key: 'setWrapper',
+	    value: function setWrapper(func) {
+	      var _this2 = this;
+	
+	      return function (a) {
+	        var db = [].concat(_toConsumableArray(_this2.state.db));
+	        func(a, db);
+	        _this2.setStateDB(db);
+	      };
+	    }
+	  }, {
 	    key: 'handleOpenNote',
 	    value: function handleOpenNote(e) {
+	
 	      this.setState({
 	        viewContent: 'note',
 	        value: e.detail.value,
@@ -22325,7 +22350,7 @@
 	
 	var _collection2 = _interopRequireDefault(_collection);
 	
-	var _account = __webpack_require__(/*! ./account.jsx */ 207);
+	var _account = __webpack_require__(/*! ./account.jsx */ 185);
 	
 	var _account2 = _interopRequireDefault(_account);
 	
@@ -22564,7 +22589,12 @@
 	      return tasks.map(function (task, i) {
 	
 	        if (compareDateYMD(_journal.temp.date, task.date) || ~exceptions.indexOf(_this3.props.type)) {
-	          return _react2.default.createElement(_task2.default, { journal: _this3.props.journal, info: task, key: task.id });
+	          return _react2.default.createElement(_task2.default, {
+	            journal: _this3.props.journal,
+	            info: task,
+	            key: task.id,
+	            stopwatch: _this3.props.stopwatch
+	          });
 	        } else {
 	          _journal.temp.date = task.date;
 	          return _this3.getDate(task, task.date);
@@ -22582,7 +22612,11 @@
 	          { className: 'date' },
 	          this.getFormatDate(task.date)
 	        ),
-	        _react2.default.createElement(_task2.default, { journal: this.props.journal, info: task })
+	        _react2.default.createElement(_task2.default, {
+	          journal: this.props.journal,
+	          info: task,
+	          stopwatch: this.props.stopwatch
+	        })
 	      );
 	    }
 	  }, {
@@ -22987,7 +23021,6 @@
 	        ),
 	        this.timer(timer),
 	        _react2.default.createElement(_stopwatch2.default, {
-	          old: this.props.info.now,
 	          id: this.props.info.id,
 	          time: stopwatch
 	        }),
@@ -23135,39 +23168,6 @@
 	
 	      return arr;
 	    }
-	
-	    /*  formatStopwatch(stopwatch) {
-	        let [h, m, s] = stopwatch;
-	    
-	        if (s > 59) {
-	          ++m;
-	          s -= 60;
-	        }
-	        if (m > 59) {
-	          ++h;
-	          m -= 60;
-	        }
-	    
-	        return [h, m, s];
-	      }
-	      formatTimer(timer) {
-	        let [h, m, s] = timer;
-	    
-	        if (s < 0) {
-	          --m;
-	          s += 60;
-	        }
-	        if (m < 0) {
-	          --h;
-	          m += 60;
-	        }
-	        if (h < 0) {
-	          h = m = s = 0;
-	        }
-	    
-	        return [h, m, s];
-	      }*/
-	
 	  }, {
 	    key: 'color',
 	    value: function color() {
@@ -23581,7 +23581,7 @@
 	var account = {
 	  'completed': 0,
 	  'late': 0,
-	  'spent time': [0, 0, 0],
+	  'minutes': 0,
 	  'wallet': 0
 	};
 	
@@ -24059,7 +24059,82 @@
 	;
 
 /***/ },
-/* 185 */,
+/* 185 */
+/*!**************************************!*\
+  !*** ./src/js/component/account.jsx ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Account = function (_React$Component) {
+	  _inherits(Account, _React$Component);
+	
+	  function Account(props) {
+	    _classCallCheck(this, Account);
+	
+	    return _possibleConstructorReturn(this, (Account.__proto__ || Object.getPrototypeOf(Account)).call(this, props));
+	  }
+	
+	  _createClass(Account, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'account' },
+	        Object.keys(this.props.data).map(function (item, i) {
+	          return _react2.default.createElement(
+	            'p',
+	            { className: 'account-data', key: i },
+	            _react2.default.createElement(
+	              'span',
+	              {
+	                className: 'account-prop' },
+	              '' + item
+	            ),
+	            _react2.default.createElement(
+	              'span',
+	              {
+	                className: 'account-value' },
+	              '' + _this2.props.data[item]
+	            )
+	          );
+	        })
+	      );
+	    }
+	  }]);
+	
+	  return Account;
+	}(_react2.default.Component);
+	
+	exports.default = Account;
+	;
+
+/***/ },
 /* 186 */
 /*!***********************************!*\
   !*** ./src/js/component/note.jsx ***!
@@ -24595,7 +24670,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Droid+Sans);", ""]);
 	
 	// module
-	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 90px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  align-self: center;\n  flex-flow: column;\n  justify-content: center;\n  flex: 1;\n  width: 100%;\n}\n\n.help>p {\n  margin: 20px;\n  font-weight: 500;\n  text-transform: initial;\n}\n\n.help-title {\n  font-size: 20px;\n  font-weight: bold;\n  align-self: center;\n}\n\n.help-prop {\n  font-weight: bold;;\n  text-decoration: underline;\n  text-transform: uppercase;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 5px 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 5px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 0px 10px 0px 10px;\n}\n\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task>.wrap {\n  display: flex;\n  flex-flow: row wrap;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 194) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder>.wrap {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder>.wrap:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 195) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 196) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.complete {\n  cursor: pointer;\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 20px 5px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 560px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer>.wrap {\n  display: flex;\n  flex-flow: row;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .wrap>.timer-btn, .note-btn, .note-save, .sand,\n.exit, .save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.account {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  justify-content: space-around;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 197) + ");\n}\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 198) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 199) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + ")\n}\n\n.account-container {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  justify-content: center;\n}\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 203) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 204) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 205) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 194) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}\n\n.level-one   { background-color: #03A9F4; }\n.level-two   { background-color: #009688; }\n.level-three { background-color: #4caf50; }\n.level-four  { background-color: #ffeb3b; }\n.level-five  { background-color: #ff9800; }\n\n.date {\n  font-weight: bold;\n  align-self: center;\n  margin-bottom: 0px;\n}\n\n.wrap-date {\n  display: flex;\n  flex-flow: column;\n}\n\n.list-exit {\n  align-self: flex-start;\n  text-transform: uppercase;\n  font-weight: 800;\n  margin: 5px 5px 0 5px;\n  color: black;\n  padding: 0 5px;\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n}\n\n.list-exit:hover {\n  background: #9E9E9E;\n  cursor: pointer;\n  user-select: none;\n}", ""]);
+	exports.push([module.id, "body {\n  background: #9E9E9E;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n}\n\n.app {\n  display: flex;\n  flex-flow: row wrap;\n  font-size: 16px;\n}\n\n.bar {\n  background: #BDBDBD;\n  display: flex;\n  height: 90px;\n  width: 100%;\n  margin-bottom: 5px;\n}\n\n.help {\n  background: #BDBDBD;\n  display: flex;\n  align-self: center;\n  flex-flow: column;\n  justify-content: center;\n  flex: 1;\n  width: 100%;\n}\n\n.help>p {\n  margin: 20px;\n  font-weight: 500;\n  text-transform: initial;\n}\n\n.help-title {\n  font-size: 20px;\n  font-weight: bold;\n  align-self: center;\n}\n\n.help-prop {\n  font-weight: bold;;\n  text-decoration: underline;\n  text-transform: uppercase;\n}\n\n.nav {\n  display: flex;\n  flex-flow: column;\n  justify-content: flex-start;\n  margin: 5px 15px;\n  flex: 1 200px;\n  font-weight: bold;\n  text-transform: uppercase;\n}\n\n.btn {\n  background: #03A9F4;\n  width: 100%;\n  height: 50px;\n  margin: 5px 0px;\n  border-radius: 5px;\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  align-items: center;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.btn:hover {\n  background: #BDBDBD\n}\n\n.content {\n  margin: 5px 15px;\n  background: #BDBDBD;\n  display: flex;\n  flex-flow: column wrap;\n  flex: 4 400px;\n  justify-content: flex-start;\n  padding: 0px 10px 0px 10px;\n}\n\n\n.archiv {\n  margin: 3px 0px;\n}\n\n.list {\n  height: 100%;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.task>.wrap {\n  display: flex;\n  flex-flow: row wrap;\n  border-radius: 15px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n\n.search {\n  align-self: center;\n  width: 30%;\n  margin: 10px;\n  height: 25px;\n  margin-left: 0;\n  border-radius: 10px;\n  border: 0px;\n  outline: none;\n  font-size: 15px;\n  padding-left: 10px;\n  transition: width 0.4s ease-in-out;\n}\n\n.search-icon {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 194) + ");\n}\n\n.search:focus {\n  width: 60%;\n}\n\n.field {\n  font-family: 'Droid Sans', sans-serif;\n  display: flex;\n  flex-flow: row wrap;\n  padding: 0 20px;\n}\n\n.area {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  font-size: 15px;\n  flex: 5;\n  border: 0px;\n  border-radius: 2px;\n  font-size: 15px;\n  padding-left: 10px;\n  resize: none;\n  outline-color: #03A9F4;\n}\n\n.collection {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-around;\n}\n\n.folder>.wrap {\n  height: 200px;\n  width: 200px;\n  border-radius: 10%;\n  margin: 15px;\n  display: flex;\n  flex-flow: column wrap;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  cursor: pointer;\n}\n\n.folder>.wrap:hover {\n  background: #9E9E9E;\n}\n\n.folder-panel {\n  display: flex;\n  flex-flow: row;\n  flex: 1;\n  justify-content: center;\n}\n\n.folder-name {\n  align-self: center;\n  display: inline-block;\n  flex: 2;\n}\n\n.descript {\n  margin: 0;\n  flex: 1;\n  align-self: center;\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  border-radius: 20px;\n  background-color: #F5F5F5;\n  border: 0;\n  outline: none;\n}\n\n.delete-btn {\n  background: url(" + __webpack_require__(/*! ../img/delete.png */ 195) + ");\n  height: 48px;\n  width: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.edit-btn {\n  background: url(" + __webpack_require__(/*! ../img/edit.png */ 196) + ");\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.complete {\n  cursor: pointer;\n  background: #9E9E9E;\n  align-self: center;\n  border-radius: 100%;\n  margin: 0px 15px 0px 5px;\n  height: 15px;\n  width: 15px;\n  border: 5px solid #BDBDBD;\n}\n\n.complete:active {\n  background: #BDBDBD;\n  border-color: #03A9F4;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\n.note-btn {\n  background: darkslateblue;\n  flex-flow: column;\n}\n\n.note {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n  padding: 20px 5px;\n}\n\n.note-panel {\n  background: #03A9F4;\n  display: flex;\n  flex-flow: column;\n}\n\n.note-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  font-size: 16px;\n  width: 100%;\n  height: 560px;\n  border: 0px;\n  outline: none;\n  resize: none;\n}\n\n.note-save {\n  background: #c1ff9b;\n}\n\n.stopwatch, .timer>.wrap {\n  display: flex;\n  flex-flow: row;\n  color: mediumvioletred;\n  font-size: 20px;\n  font-weight: bold;\n  margin: 0;\n  padding: 0;\n  align-items: center;\n}\n\n.timer {\n  display: flex;\n  flex-flow: row;\n}\n\n.stopwatch-btn, .back, .wrap>.timer-btn, .note-btn, .note-save, .sand,\n.exit, .save, .timer-spoiler-btn, .timer-spoiler-off-btn {\n  width: 48px;\n  height: 48px;\n  align-self: center;\n  cursor: pointer;\n}\n\n.note-btn {\n  background: url(" + __webpack_require__(/*! ../img/note.png */ 197) + ");\n}\n\n.stopwatch-btn {\n  background: url(" + __webpack_require__(/*! ../img/play.png */ 198) + ");\n}\n\n.pause {\n  background: url(" + __webpack_require__(/*! ../img/pause.png */ 199) + ");\n}\n\n.timer-btn {\n  background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + ")\n}\n\n.timer-spoiler-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + ");\n}\n\n.timer-spoiler-off-btn {\n  background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + ");\n}\n\n.save {\n  background: url(" + __webpack_require__(/*! ../img/save.png */ 203) + ");\n}\n\n.exit {\n  background: url(" + __webpack_require__(/*! ../img/exit.png */ 204) + ")\n}\n\n.sand {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 205) + ");\n}\n\n.search {\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 194) + ");\n  background-color: #F5F5F5;\n  background-position: 2px 2px;\n  background-repeat: no-repeat;\n  padding: 0px 0px 0px 30px;\n}\n\n.sand:hover {\n  transform: rotate(90deg);\n}\n\n.edit-field {\n  font-family: 'Droid Sans', sans-serif;\n  background-color: #F5F5F5;\n  flex: 1;\n  height: 50%;\n  align-self: center;\n  border-radius: 0;\n  margin-right: 10px;\n  margin-left: 40px;\n  outline: none;\n}\n\n.edit-close, .edit-save {\n  margin-left: 5px;\n  margin-right: 3px;\n}\n\n.archiv {\n  padding: 0px 0px 0px 20px;\n}\n\n.folder-field {\n  background-color: #F5F5F5;\n  font-family: 'Droid Sans', sans-serif;\n  width: 195px;\n  margin-top: 75px;\n  justify-content: center;\n  outline: none;\n  border: 0px;\n}\n\n.folder-edit-panel {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.folder-edit {\n  display: flex;\n  flex-flow: column;\n}\n\n.wrap {\n  display: flex;\n  flex-flow: row wrap;\n}\n\n.level-one   { background-color: #03A9F4; }\n.level-two   { background-color: #009688; }\n.level-three { background-color: #4caf50; }\n.level-four  { background-color: #ffeb3b; }\n.level-five  { background-color: #ff9800; }\n\n.date {\n  font-weight: bold;\n  align-self: center;\n  margin-bottom: 0px;\n}\n\n.wrap-date {\n  display: flex;\n  flex-flow: column;\n}\n\n.list-exit {\n  align-self: flex-start;\n  text-transform: uppercase;\n  font-weight: 800;\n  margin: 5px 5px 0 5px;\n  color: black;\n  padding: 0 5px;\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n}\n\n.list-exit:hover {\n  background: #9E9E9E;\n  cursor: pointer;\n  user-select: none;\n}\n\n.account {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  justify-content: space-around;\n}\n\n.account-container {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  justify-content: center;\n}\n\n.account-prop {\n  font-weight: bold;\n  margin-right: 10px;\n  text-transform: uppercase;\n}\n\n.account-data {\n  font-size: 20px;\n}", ""]);
 	
 	// exports
 
@@ -25021,71 +25096,6 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
-
-/***/ },
-/* 207 */
-/*!**************************************!*\
-  !*** ./src/js/component/account.jsx ***!
-  \**************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Account = function (_React$Component) {
-	  _inherits(Account, _React$Component);
-	
-	  function Account(props) {
-	    _classCallCheck(this, Account);
-	
-	    return _possibleConstructorReturn(this, (Account.__proto__ || Object.getPrototypeOf(Account)).call(this, props));
-	  }
-	
-	  _createClass(Account, [{
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-	
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'account' },
-	        Object.keys(this.props.data).map(function (item, i) {
-	          return _react2.default.createElement(
-	            'p',
-	            { className: 'account-data', key: i },
-	            item + ' ' + _this2.props.data[item]
-	          );
-	        })
-	      );
-	    }
-	  }]);
-	
-	  return Account;
-	}(_react2.default.Component);
-	
-	exports.default = Account;
-	;
 
 /***/ }
 /******/ ]);

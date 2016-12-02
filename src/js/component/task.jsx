@@ -138,7 +138,6 @@ export default class Task extends React.Component {
         <p className='descript'>{this.props.info.description}</p>
         {this.timer(timer)}
         <Stopwatch
-          old={this.props.info.now}
           id={this.props.info.id}
           time={stopwatch}
         />
@@ -282,38 +281,6 @@ export default class Task extends React.Component {
 
     return arr;
   }
-
-/*  formatStopwatch(stopwatch) {
-    let [h, m, s] = stopwatch;
-
-    if (s > 59) {
-      ++m;
-      s -= 60;
-    }
-    if (m > 59) {
-      ++h;
-      m -= 60;
-    }
-
-    return [h, m, s];
-  }
-  formatTimer(timer) {
-    let [h, m, s] = timer;
-
-    if (s < 0) {
-      --m;
-      s += 60;
-    }
-    if (m < 0) {
-      --h;
-      m += 60;
-    }
-    if (h < 0) {
-      h = m = s = 0;
-    }
-
-    return [h, m, s];
-  }*/
 
   color() {
 

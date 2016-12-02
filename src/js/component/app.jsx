@@ -11,7 +11,9 @@ import {load, loadJournal} from '../db/storage.js';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {db: load() || db};
+    this.state = {
+      'db': load() || db
+    };
 
     this.handleNavBtn       = this.handleNavBtn.bind(this);
     this.handleAddNewTask   = this.handleAddNewTask.bind(this);
@@ -31,6 +33,8 @@ export default class App extends React.Component {
     this.searchTaskDB = this.searchTaskDB.bind(this);
     this.setStateDB   = this.setStateDB.bind(this);
     this.getFolderDB  = this.getFolderDB.bind(this);
+
+    this.setWrapper = this.setWrapper.bind(this);
   }
 
   handleDeleteFolder(e) {
@@ -82,17 +86,26 @@ export default class App extends React.Component {
     const db   = [...this.state.db],
           task = this.searchTaskDB(e.detail.id, db);
 
+    ++account['late'];
     task.arr.splice(task.i, 1);
     this.setStateDB(db);
   }
 
   handleCompleteTask(e) {
     const db   = [...this.state.db],
-          task = this.searchTaskDB(e.detail.id, db);
+      _task = this.searchTaskDB(e.detail.id, db),
+      task = _task.arr[_task.i],
+      min = new Date(0, 0, 0, task.stopwatch[0], task.stopwatch[1], task.stopwatch[2]).getMinutes();
 
-    task.arr[task.i].complete = true;
-    task.arr[task.i].project  = 'ARCHIV';
-    db[this.getFolderDB('ARCHIV')].tasks.unshift(task.arr.splice(task.i, 1)[0]);
+    ++account['completed'];
+    account['minutes'] += min;
+
+    const money = Math.floor(task.price / min * task.timePrice);
+    account['wallet'] += isFinite(money) ? money : 0;
+
+    task.complete = true;
+    task.project  = 'ARCHIV';
+    db[this.getFolderDB('ARCHIV')].tasks.unshift(_task.arr.splice(_task.i, 1)[0]);
     this.setStateDB(db);
   }
 
@@ -112,7 +125,16 @@ export default class App extends React.Component {
     this.setStateDB(db);
   }
 
+  setWrapper(func) {
+    return (a) => {
+        const db = [...this.state.db];
+        func(a, db);
+        this.setStateDB(db);
+    };
+  }
+
   handleOpenNote(e) {
+
     this.setState({
       viewContent: 'note',
       value      : e.detail.value,
