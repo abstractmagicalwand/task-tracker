@@ -4,19 +4,22 @@ import ReactDOM from 'react-dom';
 export default class Field extends React.Component {
   constructor(props) {
     super(props);
-    this.handleGetText = this.handleGetText.bind(this);
+    this.handleNewTask = this.handleNewTask.bind(this);
 
-    this.getNewTask = this.getNewTask.bind(this);
+    this.createTask = this.createTask.bind(this);
   }
 
-  handleGetText() {
+  handleNewTask() {
     if (!ReactDOM.findDOMNode(this.refs.text).value.length) return;
-    const event = new CustomEvent('addNewTask', {
-      detail: this.getNewTask(ReactDOM.findDOMNode(this.refs.text).value)
-    });
-    ReactDOM.findDOMNode(this.refs.text).value = '';
 
-    window.dispatchEvent(event);
+    const task = this.createTask(ReactDOM.findDOMNode(this.refs.text).value);
+
+    if (!task.description.length) return;
+
+    window.dispatchEvent(new CustomEvent('addNewTask', {
+      detail: task
+    }));
+    ReactDOM.findDOMNode(this.refs.text).value = '';
   }
 
   render() {
@@ -24,16 +27,22 @@ export default class Field extends React.Component {
       <div className='field'>
         <textarea className='area' ref='text' placeholder='Write you task...'>
         </textarea>
-        <span title='add task' className='sand' onClick={this.handleGetText}/>
+        <span title='add task' className='sand' onClick={this.handleNewTask}/>
       </div>
     );
   }
 
-  getNewTask(text) {
-    const priority = /\*+/,
-          project  = /@[\wа-яё]+/i,
-          tags     = /#[\wа-яё]+/ig,
-          death    = /\d\d\/\d\d\/\d\d/;
+  createTask(text) {
+    const priority  = /\*+/,
+          project   = /@[\wа-яё]+/i,
+          tags      = /#[\wа-яё]+/ig,
+          death     = /\d\d\/\d\d\/\d\d/,
+          money     = /(?:\$)\d+/,
+          timePrice = /\d\d:\d\d:\d\d/,
+          formatTimePrice = timePrice.test(text) ?
+            timePrice.exec(text)[0].split(':') : null,
+          endFormatTimePrice = formatTimePrice ?
+            +formatTimePrice[0] * 60 + +formatTimePrice[1] : 0;
 
     const task = {
       stopwatch: [0, 0, 0],
@@ -44,14 +53,18 @@ export default class Field extends React.Component {
       priority: priority.test(text) ? priority.exec(text)[0].length : 0,
       project: project.test(text) ? project.exec(text)[0] : 'SANS',
       timeDeath: death.test(text) ? death.exec(text)[0].split(/\//) : null,
+      price: money.test(text) ? money.exec(text)[0].slice(1) : 5,
+      timePrice: endFormatTimePrice,
       description: text
         .replace(priority, '')
-        .replace(project,  '')
-        .replace(tags,     '')
-        .replace(death,    '')
+        .replace(project, '')
+        .replace(tags, '')
+        .replace(death, '')
+        .replace(timePrice, '')
+        .replace(money, '')
         .trim()
     };
-
+    console.log(task);
     return task;
   }
 };

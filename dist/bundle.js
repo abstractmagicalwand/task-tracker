@@ -22100,7 +22100,7 @@
 	      var db = [].concat(_toConsumableArray(this.state.db)),
 	          _task = this.searchTaskDB(e.detail.id, db),
 	          task = _task.arr[_task.i],
-	          min = new Date(0, 0, 0, task.stopwatch[0], task.stopwatch[1], task.stopwatch[2]).getMinutes();
+	          min = task.stopwatch[0] * 60 + task.stopwatch[1];
 	
 	      ++_journal.account['completed'];
 	      _journal.account['minutes'] += min;
@@ -22701,22 +22701,25 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, props));
 	
-	    _this.handleGetText = _this.handleGetText.bind(_this);
+	    _this.handleNewTask = _this.handleNewTask.bind(_this);
 	
-	    _this.getNewTask = _this.getNewTask.bind(_this);
+	    _this.createTask = _this.createTask.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(Field, [{
-	    key: 'handleGetText',
-	    value: function handleGetText() {
+	    key: 'handleNewTask',
+	    value: function handleNewTask() {
 	      if (!_reactDom2.default.findDOMNode(this.refs.text).value.length) return;
-	      var event = new CustomEvent('addNewTask', {
-	        detail: this.getNewTask(_reactDom2.default.findDOMNode(this.refs.text).value)
-	      });
-	      _reactDom2.default.findDOMNode(this.refs.text).value = '';
 	
-	      window.dispatchEvent(event);
+	      var task = this.createTask(_reactDom2.default.findDOMNode(this.refs.text).value);
+	
+	      if (!task.description.length) return;
+	
+	      window.dispatchEvent(new CustomEvent('addNewTask', {
+	        detail: task
+	      }));
+	      _reactDom2.default.findDOMNode(this.refs.text).value = '';
 	    }
 	  }, {
 	    key: 'render',
@@ -22725,16 +22728,20 @@
 	        'div',
 	        { className: 'field' },
 	        _react2.default.createElement('textarea', { className: 'area', ref: 'text', placeholder: 'Write you task...' }),
-	        _react2.default.createElement('span', { title: 'add task', className: 'sand', onClick: this.handleGetText })
+	        _react2.default.createElement('span', { title: 'add task', className: 'sand', onClick: this.handleNewTask })
 	      );
 	    }
 	  }, {
-	    key: 'getNewTask',
-	    value: function getNewTask(text) {
+	    key: 'createTask',
+	    value: function createTask(text) {
 	      var priority = /\*+/,
 	          project = /@[\wа-яё]+/i,
 	          tags = /#[\wа-яё]+/ig,
-	          death = /\d\d\/\d\d\/\d\d/;
+	          death = /\d\d\/\d\d\/\d\d/,
+	          money = /(?:\$)\d+/,
+	          timePrice = /\d\d:\d\d:\d\d/,
+	          formatTimePrice = timePrice.test(text) ? timePrice.exec(text)[0].split(':') : null,
+	          endFormatTimePrice = formatTimePrice ? +formatTimePrice[0] * 60 + +formatTimePrice[1] : 0;
 	
 	      var task = {
 	        stopwatch: [0, 0, 0],
@@ -22745,9 +22752,11 @@
 	        priority: priority.test(text) ? priority.exec(text)[0].length : 0,
 	        project: project.test(text) ? project.exec(text)[0] : 'SANS',
 	        timeDeath: death.test(text) ? death.exec(text)[0].split(/\//) : null,
-	        description: text.replace(priority, '').replace(project, '').replace(tags, '').replace(death, '').trim()
+	        price: money.test(text) ? money.exec(text)[0].slice(1) : 5,
+	        timePrice: endFormatTimePrice,
+	        description: text.replace(priority, '').replace(project, '').replace(tags, '').replace(death, '').replace(timePrice, '').replace(money, '').trim()
 	      };
-	
+	      console.log(task);
 	      return task;
 	    }
 	  }]);
@@ -23093,14 +23102,14 @@
 	      // j - short name from journal
 	      var j = typeof journal[0].date === 'string' ? new Date(journal[0].date) : journal[0].date;
 	
-	      var journalToFormat = [j.getHours(), j.getMinutes(), j.getSeconds()];
+	      var journalHMS = [j.getHours(), j.getMinutes(), j.getSeconds()];
 	
 	      var now = new Date();
 	
 	      var nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
 	
 	      if (timer) {
-	        result.timer = this.formatTimer(this.diffArrs(timer, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
+	        result.timer = this.formatTimer(this.diffArrs(timer, this.formatTimer(this.diffArrs(nowDate, journalHMS))));
 	      }
 	
 	      if (!timer || Math.min.apply(Math, _toConsumableArray(result.timer)) < 0) result.timer = timer;
@@ -23108,7 +23117,7 @@
 	      if (stopwatch.some(function (item) {
 	        return item > 0;
 	      })) {
-	        result.stopwatch = this.formatStopwatch(this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
+	        result.stopwatch = this.formatStopwatch(this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalHMS))));
 	      } else {
 	        result.stopwatch = stopwatch;
 	      }

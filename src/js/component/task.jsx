@@ -206,23 +206,34 @@ export default class Task extends React.Component {
     const j = (typeof(journal[0].date) === 'string') ? new Date(journal[0].date) :
       journal[0].date;
 
-    const journalToFormat = [j.getHours(), j.getMinutes(), j.getSeconds()];
+    const journalHMS = [j.getHours(), j.getMinutes(), j.getSeconds()];
 
     const now = new Date();
 
     const nowDate = [now.getHours(), now.getMinutes(), now.getSeconds()];
 
     if (timer) {
-      result.timer = this.formatTimer(this.diffArrs
-                                     (timer, this.formatTimer
-                                     (this.diffArrs
-                                     (nowDate, journalToFormat))));
+      result.timer = this.formatTimer(
+        this.diffArrs(
+          timer,
+          this.formatTimer(
+            this.diffArrs(nowDate, journalHMS)
+          )
+        )
+      );
     }
 
     if (!timer || Math.min(...result.timer) < 0) result.timer = timer;
 
     if (stopwatch.some(item => item > 0)) {
-      result.stopwatch = this.formatStopwatch(this.addArrs(stopwatch, this.formatTimer(this.diffArrs(nowDate, journalToFormat))));
+      result.stopwatch = this.formatStopwatch(
+        this.addArrs(
+          stopwatch,
+          this.formatTimer(
+            this.diffArrs(nowDate, journalHMS)
+          )
+        )
+      );
     } else {
       result.stopwatch = stopwatch;
     }

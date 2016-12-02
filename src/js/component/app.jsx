@@ -93,9 +93,9 @@ export default class App extends React.Component {
 
   handleCompleteTask(e) {
     const db   = [...this.state.db],
-      _task = this.searchTaskDB(e.detail.id, db),
-      task = _task.arr[_task.i],
-      min = new Date(0, 0, 0, task.stopwatch[0], task.stopwatch[1], task.stopwatch[2]).getMinutes();
+          _task = this.searchTaskDB(e.detail.id, db),
+          task = _task.arr[_task.i],
+          min = task.stopwatch[0] * 60 + task.stopwatch[1];
 
     ++account['completed'];
     account['minutes'] += min;
