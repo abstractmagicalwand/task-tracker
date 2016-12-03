@@ -1,6 +1,5 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
-import Bar      from '../component/bar.jsx';
 import Help     from '../component/help.jsx';
 
 export default class Nav extends React.Component {
@@ -19,7 +18,6 @@ export default class Nav extends React.Component {
   render() {
     return (
       <div className='nav'>
-        <Bar />
         <div
           className='btn'
           name='inbox'
@@ -43,6 +41,12 @@ export default class Nav extends React.Component {
           name='account'
           onClick={this.handleClickBtn}>
           account
+        </div>
+        <div
+          className='btn'
+          name='spells'
+          onClick={this.handleClickBtn}>
+          spells
         </div>
         <Help />
       </div>

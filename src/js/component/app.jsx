@@ -101,7 +101,7 @@ export default class App extends React.Component {
     account['minutes'] += min;
 
     const money = Math.floor(task.price / min * task.timePrice);
-    account['wallet'] += isFinite(money) ? money : 0;
+    account['wallet(usd)'] += isFinite(money) ? money : 0;
 
     task.complete = true;
     task.project  = 'ARCHIV';

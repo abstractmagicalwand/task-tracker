@@ -136,6 +136,7 @@ export default class Task extends React.Component {
         <input type='checkbox'/>
         </lable>
         <p className='descript'>{this.props.info.description}</p>
+        <p className='price'>{this.props.info.price}$ / {this.props.info.timePrice} min.</p>
         {this.timer(timer)}
         <Stopwatch
           id={this.props.info.id}

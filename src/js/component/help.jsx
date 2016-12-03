@@ -8,15 +8,15 @@ export default class Help extends React.Component {
 
   render() {
     return (
-      <table>
-        <caption>spells</caption>
+      <table className='spells'>
+        <caption className='spells spells-title'>spells</caption>
         <tbody>
-          <tr><td>timer death</td><td>hh/mm/ss</td></tr>
-          <tr><td>priority</td><td>*</td></tr>
-          <tr><td>project</td><td>@name-project</td></tr>
-          <tr><td>tags</td><td>#nameTag</td></tr>
-          <tr><td>price</td><td>$money</td></tr>
-          <tr><td>time price</td><td>[hh/mm/ss]</td></tr>
+          <tr><td className='props'>timer death</td><td className='value'>hh/mm/ss</td></tr>
+          <tr><td className='props'>priority</td><td className='value'>*</td></tr>
+          <tr><td className='props'>project</td><td className='value'>@name-project</td></tr>
+          <tr><td className='props'>tags</td><td className='value'>#nameTag</td></tr>
+          <tr><td className='props'>price</td><td className='value'>$money</td></tr>
+          <tr><td className='props'>time price</td><td className='value'>hh:mm:ss</td></tr>
         </tbody>
       </table>
     );
