@@ -224,10 +224,18 @@ body {
   border: 5px solid #BDBDBD;
 }
 
-.complete:active {
-  background: #BDBDBD;
-  border-color: #03A9F4;
-}
+.complete:active { background-color: #BDBDBD; }
+.level-one>.complete:active { border-color: #03A9F4; }
+.level-two>.complete:active { border-color: #009688; }
+.level-three>.complete:active { border-color: #4caf50; }
+.level-four>.complete:active { border-color: #ffeb3b; }
+.level-five>.complete:active { border-color: #ff9800; }
+
+.level-one { background-color: #03A9F4; }
+.level-two { background-color: #009688; }
+.level-three { background-color: #4caf50; }
+.level-four { background-color: #ffeb3b; }
+.level-five { background-color: #ff9800; }
 
 input[type=checkbox] {
   display: none;
@@ -385,11 +393,6 @@ input[type=checkbox] {
   flex-flow: row wrap;
 }
 
-.level-one   { background-color: #03A9F4; }
-.level-two   { background-color: #009688; }
-.level-three { background-color: #4caf50; }
-.level-four  { background-color: #ffeb3b; }
-.level-five  { background-color: #ff9800; }
 
 .date {
   font-weight: bold;
