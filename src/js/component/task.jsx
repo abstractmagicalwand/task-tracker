@@ -66,13 +66,12 @@ export default class Task extends React.Component {
 
   render() {
     const time = this.diffDate(this.props.info.project === 'ARCHIV' ?
-                               [] :
-                               this.getClearJournal(this.props.info.id));
+      [] : this.getClearJournal(this.props.info.id));
 
     return (
       <div className='task'>
         {this.edit()}
-        {this.content(time.stopwatch, time.timer)}
+        {this.content(time.stopwatch, time.timer, time.lable)}
         {this.archiv()}
       </div>
     );
@@ -125,7 +124,7 @@ export default class Task extends React.Component {
     );
   }
 
-  content(stopwatch, timer) {
+  content(stopwatch, timer, lable) {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
 
     return (
@@ -138,6 +137,7 @@ export default class Task extends React.Component {
         <p className='descript'>{this.props.info.description}</p>
         <p className='price'>{this.props.info.price}$ / {this.props.info.timePrice} min.</p>
         {this.timer(timer)}
+        {lable ? <span className='lable'></span> : null}
         <Stopwatch
           id={this.props.info.id}
           time={stopwatch}
@@ -198,10 +198,13 @@ export default class Task extends React.Component {
           stopwatch = this.props.info.stopwatch,
           result    = {
             timer: timer,
-            stopwatch: stopwatch
+            stopwatch: stopwatch,
+            lable: false
           };
 
-    if (!journal.length) return result;
+    if (!journal.length) {
+      return result;
+    }
 
     // j - short name from journal
     const j = (typeof(journal[0].date) === 'string') ? new Date(journal[0].date) :
@@ -227,6 +230,7 @@ export default class Task extends React.Component {
     if (!timer || Math.min(...result.timer) < 0) result.timer = timer;
 
     if (stopwatch.some(item => item > 0)) {
+      result.lable = true;
       result.stopwatch = this.formatStopwatch(
         this.addArrs(
           stopwatch,

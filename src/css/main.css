@@ -6,6 +6,13 @@ body {
   font-size: 15px;
 }
 
+.lable {
+  background: red;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+}
+
 .app {
   display: flex;
   flex-flow: row wrap;
