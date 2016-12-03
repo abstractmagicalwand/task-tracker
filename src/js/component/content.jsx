@@ -2,7 +2,6 @@ import React      from 'react';
 import ReactDOM   from 'react-dom';
 import List       from './list.jsx';
 import Collection from './collection.jsx';
-import Account    from './account.jsx';
 import Note       from './note.jsx';
 
 export default class Content extends React.Component {
@@ -26,8 +25,6 @@ export default class Content extends React.Component {
         return <Collection db={this.props.db} />;
     case 'archiv':
         return <List type='archiv' db={this.props.db} />;
-    case 'account':
-        return <Account data={this.props.account}/>;
     case 'search':
         return <List
             journal={this.props.journal}

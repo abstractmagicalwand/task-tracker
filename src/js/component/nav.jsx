@@ -1,6 +1,5 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
-import Help     from '../component/help.jsx';
 
 export default class Nav extends React.Component {
   constructor(props) {
@@ -44,11 +43,10 @@ export default class Nav extends React.Component {
         </div>
         <div
           className='btn'
-          name='spells'
+          name='spell'
           onClick={this.handleClickBtn}>
-          spells
+          spell
         </div>
-        <Help />
       </div>
     );
   }

@@ -1,15 +1,14 @@
-import React    from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 
-export default class Help extends React.Component {
+export default class Spell extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-      <table className='spells'>
-        <caption className='spells spells-title'>spells</caption>
+      <table className='spell'>
+        <caption className='spell-title'>spells</caption>
         <tbody>
           <tr><td className='props'>timer death</td><td className='value'>hh/mm/ss</td></tr>
           <tr><td className='props'>priority</td><td className='value'>*</td></tr>

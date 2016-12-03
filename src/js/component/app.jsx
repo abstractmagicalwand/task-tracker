@@ -1,9 +1,11 @@
-import React               from 'react';
-import ReactDOM            from 'react-dom';
-import Content             from '../component/content.jsx';
-import Nav                 from '../component/nav.jsx';
-import Help                from '../component/help.jsx';
-import {db}                from '../db/index.js';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import Content from './content.jsx';
+import Nav from './nav.jsx';
+import Mini from './mini.jsx';
+
+import {db} from '../db/index.js';
 import {journal, account}  from '../db/journal.js';
 import {load, loadJournal} from '../db/storage.js';
 
@@ -12,7 +14,10 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      'db': load() || db
+      db: load() || db,
+      viewContent: null,
+      viewLast: null,
+      viewMini: 'spell'
     };
 
     this.handleNavBtn       = this.handleNavBtn.bind(this);
@@ -49,8 +54,12 @@ export default class App extends React.Component {
 
     const newState = Object.assign({}, this.state);
 
-    newState.viewLast    = this.state.viewContent;
-    newState.viewContent = e.detail.category;
+    if (e.detail.category === 'spell' || e.detail.category === 'account') {
+      newState.viewMini = e.detail.category;
+    } else {
+      newState.viewLast = this.state.viewContent;
+      newState.viewContent = e.detail.category;
+    }
 
     this.setState(newState);
   }
@@ -228,14 +237,15 @@ export default class App extends React.Component {
   }
 
   render() {
+    console.log(account);
     return (
       <div className='app'>
         <Nav />
+        <Mini account={account} view={this.state.viewMini} />
         <Content
           view={this.state.viewContent ? this.state.viewContent : 'inbox'}
           db={this.state.db}
           journal={journal}
-          account={account}
           value={this.state.value ? this.state.value : ''}
         />
       </div>
