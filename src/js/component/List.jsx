@@ -1,8 +1,8 @@
 import React           from 'react';
 import ReactDOM        from 'react-dom';
-import Field           from './field.jsx';
-import Search          from './search.jsx';
-import Task            from './task.jsx';
+import Field           from './Field.jsx';
+import Search          from './Search.jsx';
+import Task            from './Task.jsx';
 import {journal, temp} from '../db/journal.js';
 
 export default class List extends React.Component {
@@ -27,9 +27,17 @@ export default class List extends React.Component {
   render() {
     return (
       <div className='list'>
-        {this.props.type === 'project' ? <span onTouchStart={this.handleBlockSelect} className='list-exit' onClick={this.handleClickBackList}>{'\u25C0' + ' back'}</span> : null}
-        {this.props.type !== 'archiv'  ? <Search /> : null}
-        {this.props.type !== 'archiv'  ? <Field />  : null}
+        {this.props.type === 'project' ?
+          (<span
+            onTouchStart={this.handleBlockSelect}
+            className='list__button-back'
+            onClick={this.handleClickBackList}>
+            {'\u25C0 back'}
+          </span>) :
+          null
+        }
+        {this.props.type !== 'archiv' ? <Search /> : null}
+        {this.props.type !== 'archiv' ? <Field /> : null}
         {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
       </div>
     );
@@ -64,7 +72,6 @@ export default class List extends React.Component {
   }
 
   getCompTasks(tasks) {
-
     const exceptions = ['project', 'archiv', 'search'];
 
     function compareDateYMD(date1, date2) {
@@ -106,10 +113,8 @@ export default class List extends React.Component {
 
   getDate(task, date) {
     return (
-      <div className='wrap-date' key={task.id}>
-        <p className='date'>
-        {this.getFormatDate(task.date)}
-        </p>
+      <div className='list__container-date' key={task.id}>
+        <p className='list__date'>{this.getFormatDate(task.date)}</p>
         <Task
           journal={this.props.journal}
           info={task}

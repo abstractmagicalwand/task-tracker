@@ -17,7 +17,7 @@ export default class Search extends React.Component {
   render() {
     return (
       <input
-        className='search'
+        className='list__search'
         type='text'
         onChange={this.handleSearchReq}
       />

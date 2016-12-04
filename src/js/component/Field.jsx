@@ -24,10 +24,14 @@ export default class Field extends React.Component {
 
   render() {
     return (
-      <div className='field'>
-        <textarea className='area' ref='text' placeholder='Write you task...'>
+      <div className='list__field'>
+        <textarea
+          className='list__input-area'
+          ref='text'
+          placeholder='Write you task...'
+        >
         </textarea>
-        <span title='add task' className='sand' onClick={this.handleNewTask}/>
+        <span className='list__add-button' onClick={this.handleNewTask} />
       </div>
     );
   }
@@ -64,7 +68,7 @@ export default class Field extends React.Component {
         .replace(money, '')
         .trim()
     };
-    console.log(task);
+
     return task;
   }
 };

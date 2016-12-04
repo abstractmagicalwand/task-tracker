@@ -44,12 +44,13 @@ export default class Stopwatch extends React.Component {
   }
 
   render() {
+    const status = this.state.interval ? 'play' : 'pause';
     return (
       <span className='stopwatch'>
         {this.show()}
         <span
-          className={'stopwatch-btn ' + (this.state.interval ? '' : 'pause')}
-          title={this.state.interval ? 'play' : 'pause'}
+          className={`button-${status}`}
+          title={status}
           onClick={this.toggle}
         />
       </span>
@@ -69,7 +70,7 @@ export default class Stopwatch extends React.Component {
     const s = this.props.time;
 
     return (
-      <span className='wrap'>
+      <span className='stopwatch__scoreboard'>
         <span>{s[0] < 10 ? `0${s[0]}` : s[0]}:</span>
         <span>{s[1] < 10 ? `0${s[1]}` : s[1]}:</span>
         <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>

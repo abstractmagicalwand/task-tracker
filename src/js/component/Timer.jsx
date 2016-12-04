@@ -60,7 +60,13 @@ export default class Timer extends React.Component {
 
   hidden() {
     if (!this.state.spoiler) return;
-    return <span className='timer-spoiler-btn' onClick={this.spoiler} title='show'/>;
+    return (
+      <span
+        className='button-open'
+        onClick={this.spoiler}
+        title='show'
+      />
+    );
   }
 
   show() {
@@ -68,13 +74,17 @@ export default class Timer extends React.Component {
     const t = this.props.time;
 
     return (
-      <span className='wrap'>
-        <span className='timer-btn' title='cancel' onClick={this.cancel}></span>
+      <span className='timer__container'>
+        <span
+          className='button-cancel'
+          title='cancel'
+          onClick={this.cancel}
+        />
         <span>{t[0] < 10 ? `0${t[0]}` : t[0]}:</span>
         <span>{t[1] < 10 ? `0${t[1]}` : t[1]}:</span>
         <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
         <span
-          className='timer-spoiler-off-btn'
+          className='button-spoil'
           title='spoil'
           onClick={this.spoiler}
         />

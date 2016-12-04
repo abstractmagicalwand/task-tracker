@@ -9,24 +9,20 @@ export default class Account extends React.Component {
   render() {
     return (
       <div className='account'>
-        {
-          Object.keys(this.props.data).map((item, i) => {
+        {Object.keys(this.props.data).map((item, i) => {
             return (
-              <p className='account-data' key={i}>
-                <span
-                  className='account-prop'>
+              <p className='account__item' key={i}>
+                <span className='account__prop'>
                   {`${item}`}
                 </span>
-                <span
-                  className='account-value'>
+                <span className='account__value'>
                   {`${this.props.data[item]}`}
                 </span>
               </p>
             );
-          })
-        }
+        })}
       </div>
     );
-  }
+  };
 
 };

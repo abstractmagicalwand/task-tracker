@@ -1,7 +1,7 @@
 import React     from 'react';
 import ReactDOM  from 'react-dom';
-import Stopwatch from './stopwatch.jsx';
-import Timer     from './timer.jsx';
+import Stopwatch from './Stopwatch.jsx';
+import Timer     from './Timer.jsx';
 
 export default class Task extends React.Component {
   constructor(props) {
@@ -99,7 +99,6 @@ export default class Task extends React.Component {
 
     return (
       <Timer
-        className='wrap'
         delete={this.handleDelete}
         id={this.props.info.id}
         time={time}
@@ -111,15 +110,15 @@ export default class Task extends React.Component {
     if (!this.state.edit) return;
 
     return (
-      <span className={'wrap ' + this.color()}>
+      <span className={`task__container task__container_level_${this.color()}`}>
         <input
-          className='edit-field'
+          className='task__field'
           type='text'
           ref='value'
           defaultValue={`${this.props.info.description}`}
         />
-        <span className='save' onClick={this.handleSaveEdit}></span>
-        <span className='exit' onClick={this.handleEdit}></span>
+        <span className='button-save' onClick={this.handleSaveEdit}></span>
+        <span className='button-exit' onClick={this.handleEdit}></span>
       </span>
     );
   }
@@ -128,34 +127,40 @@ export default class Task extends React.Component {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
 
     return (
-      <span className={'wrap ' + this.color()}>
+      <span className={`task__container task__container_level_${this.color()}`}>
         <lable
           onClick={this.handleComplete}
-          className='complete'>
+          className='task__checkbox'
+        >
         <input type='checkbox'/>
         </lable>
-        <p className='descript'>{this.props.info.description}</p>
-        <p className='price'>{this.props.info.price}$ / {this.props.info.timePrice} min.</p>
+        <p className='task__descript'>{this.props.info.description}</p>
+        <p className='task__price'>
+          {this.props.info.price}$ / {this.props.info.timePrice} min.
+        </p>
         {this.timer(timer)}
-        {lable ? <span className='lable'></span> : null}
+        {lable ? <span className='task__lable'></span> : null}
         <Stopwatch
           id={this.props.info.id}
           time={stopwatch}
         />
         <span
           title='edit task'
-          className='edit-btn'
-          onClick={this.handleEdit}>
+          className='button-edit'
+          onClick={this.handleEdit}
+        >
         </span>
         <span
           title='open note'
-          className='note-btn'
-          onClick={this.handleNote}>
+          className='button-note'
+          onClick={this.handleNote}
+        >
         </span>
         <span
           title='delete task'
-          className='delete-btn'
-          onClick={this.handleDelete}>
+          className='button-delete'
+          onClick={this.handleDelete}
+        >
         </span>
       </span>
     );
@@ -164,9 +169,10 @@ export default class Task extends React.Component {
   archiv() {
     if (this.props.info.project !== 'ARCHIV') return;
     return (
-      <span className='wrap level-one'>
-        <p className='descript archiv'>{this.props.info.description}</p>
-        <span className='delete-btn' onClick={this.handleDelete}></span>
+      <span className='task__container task__container_level_one'>
+        <p className='task__descript'>{this.props.info.description}</p>
+        <span className='button-delete' onClick={this.handleDelete}>
+        </span>
       </span>
     );
   }
@@ -302,15 +308,15 @@ export default class Task extends React.Component {
 
     switch (this.props.info.priority) {
     case 0:
-        return 'level-one';
+        return '_one';
     case 1:
-        return 'level-two';
+        return '_two';
     case 2:
-        return 'level-three';
+        return '_three';
     case 3:
-        return 'level-four';
+        return '_four';
     case 4:
-        return 'level-five';
+        return '_five';
     }
 
   }

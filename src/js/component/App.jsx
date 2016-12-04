@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Content from './content.jsx';
-import Nav from './nav.jsx';
-import Mini from './mini.jsx';
+import BoardMain from './BoardMain.jsx';
+import BoardExtra from './BoardExtra.jsx';
+import NavigationMenu from './NavigationMenu.jsx';
 
 import {db} from '../db/index.js';
 import {journal, account}  from '../db/journal.js';
@@ -237,17 +237,22 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log(account);
     return (
       <div className='app'>
-        <Nav />
-        <Mini account={account} view={this.state.viewMini} />
-        <Content
-          view={this.state.viewContent ? this.state.viewContent : 'inbox'}
-          db={this.state.db}
-          journal={journal}
-          value={this.state.value ? this.state.value : ''}
-        />
+        <div className='app__container app__container_gorizontal'>
+        <div className='app__sidebar app__sidebar_vertical'>
+          <NavigationMenu />
+          <BoardExtra account={account} view={this.state.viewMini} />
+        </div>
+        <div className='app__content app__content_vertical'>
+          <BoardMain
+            view={this.state.viewContent ? this.state.viewContent : 'inbox'}
+            db={this.state.db}
+            journal={journal}
+            value={this.state.value ? this.state.value : ''}
+          />
+        </div>
+        </div>
       </div>
     );
   }

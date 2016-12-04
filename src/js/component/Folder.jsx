@@ -71,7 +71,8 @@ export default class Folder extends React.Component {
     return (
       <div
         className='folder'
-        onClick={this.handleClickFolder}>
+        onClick={this.handleClickFolder}
+      >
         {this.content()}
         {this.edit()}
       </div>
@@ -82,18 +83,19 @@ export default class Folder extends React.Component {
     if (this.state.edit) return;
 
     return (
-      <span className='wrap level-one'>
+      <div className='folder__container folder__container_level_one'>
         <p
-          className='folder-name'
-          onClick={this.handleClickFolder}>
+          className='folder__name'
+          onClick={this.handleClickFolder}
+        >
           {`${this.props.info.project}`}
         </p>
-        <span className='folder-panel'>
-          <span className='delete-btn' onClick={this.handleDeleteFolder} />
-          <span className='edit-btn'   onClick={this.handleEditFolder} />
-          <span className='note-btn'   onClick={this.handleNoteFolder} />
+        <span className='folder__panel'>
+          <span className='button-delete' onClick={this.handleDeleteFolder} />
+          <span className='button-edit'   onClick={this.handleEditFolder} />
+          <span className='button-note'   onClick={this.handleNoteFolder} />
         </span>
-      </span>
+      </div>
     );
   }
 
@@ -101,17 +103,23 @@ export default class Folder extends React.Component {
     if (!this.state.edit) return;
 
     return (
-      <span className='wrap level-one'>
-        <span className='folder-edit'>
+      <span className='folder__container folder__container_level_one'>
+        <span className='folder__edit'>
           <input
-            className='folder-field'
+            className='folder__field'
             type='text'
             ref='value'
             defaultValue={`${this.props.info.project}`}
           />
-          <span className='folder-edit-panel'>
-            <span className='save' onClick={this.handleSaveEditFolder}></span>
-            <span className='exit' onClick={this.handleBackEditFolder}></span>
+          <span className='folder__edit-panel'>
+            <span
+              className='button-save'
+              onClick={this.handleSaveEditFolder}
+            />
+            <span
+              className='button-exit'
+              onClick={this.handleBackEditFolder}
+            />
           </span>
         </span>
       </span>
