@@ -26,12 +26,12 @@ export default class Field extends React.Component {
     return (
       <div className='list__field'>
         <textarea
-          className='list__input-area'
+          className='list__area'
           ref='text'
           placeholder='Write you task...'
         >
         </textarea>
-        <span className='list__add-button' onClick={this.handleNewTask} />
+        <span className='button-add' onClick={this.handleNewTask} />
       </div>
     );
   }

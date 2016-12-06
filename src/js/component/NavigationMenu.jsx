@@ -17,7 +17,9 @@ export default class NavigationMenu extends React.Component {
   render() {
     return (
       <div className='navigation-menu'>
-        <div className='navigation-menu__container'>
+        <div className={
+          'navigation-menu__container navigation-menu__container_vertical'
+        }>
           <div
             className='navigation-menu__button'
             name='inbox'

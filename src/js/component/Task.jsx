@@ -55,7 +55,8 @@ export default class Task extends React.Component {
   }
 
   handleNote(e) {
-    if (!e.target.classList.contains('note-btn')) return;
+    if (!e.target.classList.contains('button-note')) return;
+    console.log('!!!')
     window.dispatchEvent(new CustomEvent('openNote', {
       detail: {
         id: this.props.info.id,
@@ -117,8 +118,10 @@ export default class Task extends React.Component {
           ref='value'
           defaultValue={`${this.props.info.description}`}
         />
-        <span className='button-save' onClick={this.handleSaveEdit}></span>
-        <span className='button-exit' onClick={this.handleEdit}></span>
+        <span className='task__panel'>
+          <span className='button-save' onClick={this.handleSaveEdit} />
+          <span className='button-exit' onClick={this.handleEdit} />
+        </span>
       </span>
     );
   }
@@ -128,39 +131,40 @@ export default class Task extends React.Component {
 
     return (
       <span className={`task__container task__container_level_${this.color()}`}>
-        <lable
-          onClick={this.handleComplete}
-          className='task__checkbox'
-        >
-        <input type='checkbox'/>
-        </lable>
+        <div className='task__container-checkbox'>
+          <lable
+            onClick={this.handleComplete}
+            className='task__checkbox'
+          >
+          <input type='checkbox'/>
+          </lable>
+        </div>
         <p className='task__descript'>{this.props.info.description}</p>
-        <p className='task__price'>
-          {this.props.info.price}$ / {this.props.info.timePrice} min.
-        </p>
-        {this.timer(timer)}
-        {lable ? <span className='task__lable'></span> : null}
-        <Stopwatch
-          id={this.props.info.id}
-          time={stopwatch}
-        />
-        <span
-          title='edit task'
-          className='button-edit'
-          onClick={this.handleEdit}
-        >
-        </span>
-        <span
-          title='open note'
-          className='button-note'
-          onClick={this.handleNote}
-        >
-        </span>
-        <span
-          title='delete task'
-          className='button-delete'
-          onClick={this.handleDelete}
-        >
+        <span className='task__panel'>
+          {/*<p className='task__price'>
+            {this.props.info.price}$ / {this.props.info.timePrice} min.
+          </p>*/}
+          {this.timer(timer)}
+          {lable ? <span className='task__lable'></span> : null}
+          <Stopwatch
+            id={this.props.info.id}
+            time={stopwatch}
+          />
+          <span
+            title='edit task'
+            className='button-edit'
+            onClick={this.handleEdit}
+          />
+          <span
+            title='open note'
+            className='button-note'
+            onClick={this.handleNote}
+          />
+          <span
+            title='delete task'
+            className='button-delete'
+            onClick={this.handleDelete}
+          />
         </span>
       </span>
     );
@@ -171,7 +175,8 @@ export default class Task extends React.Component {
     return (
       <span className='task__container task__container_level_one'>
         <p className='task__descript'>{this.props.info.description}</p>
-        <span className='button-delete' onClick={this.handleDelete}>
+        <span className='task__panel'>
+          <span className='button-delete' onClick={this.handleDelete} />
         </span>
       </span>
     );

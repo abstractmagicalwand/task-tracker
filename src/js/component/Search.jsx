@@ -16,11 +16,13 @@ export default class Search extends React.Component {
 
   render() {
     return (
-      <input
-        className='list__search'
-        type='text'
-        onChange={this.handleSearchReq}
-      />
+      <div className='list__container-search'>
+        <input
+          className='list__search'
+          type='text'
+          onChange={this.handleSearchReq}
+        />
+      </div>
     );
   }
 };

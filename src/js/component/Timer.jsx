@@ -62,7 +62,7 @@ export default class Timer extends React.Component {
     if (!this.state.spoiler) return;
     return (
       <span
-        className='button-open'
+        className='button-close'
         onClick={this.spoiler}
         title='show'
       />
@@ -84,7 +84,7 @@ export default class Timer extends React.Component {
         <span>{t[1] < 10 ? `0${t[1]}` : t[1]}:</span>
         <span>{t[2] < 10 ? `0${t[2]}` : t[2]}</span>
         <span
-          className='button-spoil'
+          className='button-open'
           title='spoil'
           onClick={this.spoiler}
         />

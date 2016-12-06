@@ -11,7 +11,7 @@ const account = {
   'completed': 0,
   'late': 0,
   'minutes': 0,
-  'wallet(usd)': 0
+  'wallet': 0
 };
 
 const DEFAULT_PRICE_TASK = 300;

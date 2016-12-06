@@ -27,6 +27,7 @@ export default class List extends React.Component {
   render() {
     return (
       <div className='list'>
+        <div className='list__container list__container_vertical'>
         {this.props.type === 'project' ?
           (<span
             onTouchStart={this.handleBlockSelect}
@@ -38,7 +39,12 @@ export default class List extends React.Component {
         }
         {this.props.type !== 'archiv' ? <Search /> : null}
         {this.props.type !== 'archiv' ? <Field /> : null}
-        {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
+          <div className='list__container-task-box'>
+            <div className='list__container-task'>
+            {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -113,7 +119,10 @@ export default class List extends React.Component {
 
   getDate(task, date) {
     return (
-      <div className='list__container-date' key={task.id}>
+      <div
+        className='list__container-date list__container-date_vertical'
+        key={task.id}
+      >
         <p className='list__date'>{this.getFormatDate(task.date)}</p>
         <Task
           journal={this.props.journal}

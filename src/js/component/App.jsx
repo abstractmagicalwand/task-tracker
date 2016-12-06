@@ -143,14 +143,13 @@ export default class App extends React.Component {
   }
 
   handleOpenNote(e) {
-
+    console.log(e);
     this.setState({
       viewContent: 'note',
       value      : e.detail.value,
       edit       : e.detail.project || e.detail.id,
       viewLast   : this.state.viewContent || 'inbox'
     });
-
   }
 
   handleSaveNote(e) {
@@ -240,18 +239,20 @@ export default class App extends React.Component {
     return (
       <div className='app'>
         <div className='app__container app__container_gorizontal'>
-        <div className='app__sidebar app__sidebar_vertical'>
-          <NavigationMenu />
-          <BoardExtra account={account} view={this.state.viewMini} />
-        </div>
-        <div className='app__content app__content_vertical'>
-          <BoardMain
-            view={this.state.viewContent ? this.state.viewContent : 'inbox'}
-            db={this.state.db}
-            journal={journal}
-            value={this.state.value ? this.state.value : ''}
-          />
-        </div>
+          <div className='app__sidebar app__sidebar_vertical'>
+            <NavigationMenu />
+            <BoardExtra account={account} view={this.state.viewMini} />
+          </div>
+          <div
+            className='app__content app__content_vertical'
+          >
+            <BoardMain
+              view={this.state.viewContent ? this.state.viewContent : 'inbox'}
+              db={this.state.db}
+              journal={journal}
+              value={this.state.value ? this.state.value : ''}
+            />
+          </div>
         </div>
       </div>
     );

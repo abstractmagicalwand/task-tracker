@@ -8,19 +8,28 @@ export default class Account extends React.Component {
 
   render() {
     return (
-      <div className='account'>
-        {Object.keys(this.props.data).map((item, i) => {
-            return (
-              <p className='account__item' key={i}>
-                <span className='account__prop'>
-                  {`${item}`}
-                </span>
-                <span className='account__value'>
-                  {`${this.props.data[item]}`}
-                </span>
-              </p>
-            );
-        })}
+      <div className='board-extra'>
+        <table className='board-extra__table'>
+          <caption className='board-extra__title'>account</caption>
+          <tbody className='board-extra__content'>
+            <tr>
+              <td>completed</td>
+              <td>{`${this.props.data.completed}`}</td>
+            </tr>
+            <tr>
+              <td>late</td>
+              <td>{`${this.props.data.late}`}</td>
+            </tr>
+            <tr>
+              <td>minutes</td>
+              <td>{`${this.props.data.minutes}`}</td>
+            </tr>
+            <tr>
+              <td>wallet</td>
+              <td>{`${this.props.data.wallet}$`}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   };

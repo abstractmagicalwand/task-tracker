@@ -30,7 +30,7 @@ export default class Folder extends React.Component {
 
   handleDeleteFolder(e) {
 
-    if (!e.target.classList.contains('delete-btn')) return;
+    if (!e.target.classList.contains('button-delete')) return;
 
     window.dispatchEvent(new CustomEvent('deleteFolder', {
       detail: {project: this.props.info.project}
@@ -38,7 +38,7 @@ export default class Folder extends React.Component {
   }
 
   handleEditFolder(e) {
-    if (!e.target.classList.contains('edit-btn')) return;
+    if (!e.target.classList.contains('button-edit')) return;
     this.setStateToggleEdit();
   }
 
@@ -58,7 +58,7 @@ export default class Folder extends React.Component {
   }
 
   handleNoteFolder(e) {
-    if (!e.target.classList.contains('note-btn')) return;
+    if (!e.target.classList.contains('button-note')) return;
     window.dispatchEvent(new CustomEvent('openNote', {
       detail: {
         value: this.props.info.note,
@@ -104,23 +104,21 @@ export default class Folder extends React.Component {
 
     return (
       <span className='folder__container folder__container_level_one'>
-        <span className='folder__edit'>
-          <input
-            className='folder__field'
-            type='text'
-            ref='value'
-            defaultValue={`${this.props.info.project}`}
+        <input
+          className='folder__field'
+          type='text'
+          ref='value'
+          defaultValue={`${this.props.info.project}`}
+        />
+        <span className='folder__edit-panel'>
+          <span
+            className='button-save'
+            onClick={this.handleSaveEditFolder}
           />
-          <span className='folder__edit-panel'>
-            <span
-              className='button-save'
-              onClick={this.handleSaveEditFolder}
-            />
-            <span
-              className='button-exit'
-              onClick={this.handleBackEditFolder}
-            />
-          </span>
+          <span
+            className='button-exit'
+            onClick={this.handleBackEditFolder}
+          />
         </span>
       </span>
     );
