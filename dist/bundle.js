@@ -22800,6 +22800,8 @@
 	        description: text.replace(priority, '').replace(project, '').replace(tags, '').replace(death, '').replace(timePrice, '').replace(money, '').trim()
 	      };
 	
+	      task.shortDescript = '' + (task.description.length > 95 ? task.description.slice(0, 61) + '...' : task.description);
+	
 	      return task;
 	    }
 	  }]);
@@ -22930,15 +22932,19 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Task.__proto__ || Object.getPrototypeOf(Task)).call(this, props));
 	
-	    _this.state = { edit: false };
+	    _this.state = {
+	      edit: false,
+	      descript: false
+	    };
 	
 	    _this.handleDelete = _this.handleDelete.bind(_this);
 	    _this.handleNote = _this.handleNote.bind(_this);
 	    _this.handleComplete = _this.handleComplete.bind(_this);
-	    _this.handleEdit = _this.handleEdit.bind(_this);
-	    _this.handleSaveEdit = _this.handleSaveEdit.bind(_this);
+	    _this.handleExit = _this.handleExit.bind(_this);
+	    _this.handleSave = _this.handleSave.bind(_this);
+	    _this.handleToggle = _this.handleToggle.bind(_this);
+	    _this.handleClickDescript = _this.handleClickDescript.bind(_this);
 	
-	    _this.setStateToggleEdit = _this.setStateToggleEdit.bind(_this);
 	    _this.edit = _this.edit.bind(_this);
 	    _this.content = _this.content.bind(_this);
 	    _this.archiv = _this.archiv.bind(_this);
@@ -22967,14 +22973,14 @@
 	      e.target.checked = false;
 	    }
 	  }, {
-	    key: 'handleEdit',
-	    value: function handleEdit() {
-	      this.setStateToggleEdit();
+	    key: 'handleExit',
+	    value: function handleExit() {
+	      this.handleToggle();
 	    }
 	  }, {
-	    key: 'handleSaveEdit',
-	    value: function handleSaveEdit(e) {
-	      this.setStateToggleEdit();
+	    key: 'handleSave',
+	    value: function handleSave(e) {
+	      this.handleToggle();
 	      window.dispatchEvent(new CustomEvent('save', {
 	        detail: {
 	          value: _reactDom2.default.findDOMNode(this.refs.value).value,
@@ -22993,6 +22999,21 @@
 	          value: this.props.info.note
 	        }
 	      }));
+	    }
+	  }, {
+	    key: 'handleToggle',
+	    value: function handleToggle() {
+	      var newState = Object.assign({}, this.state);
+	      newState.edit = !this.state.edit;
+	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'handleClickDescript',
+	    value: function handleClickDescript() {
+	      var newState = Object.assign({}, this.state);
+	      newState.descript = !this.state.descript;
+	      this.setState(newState);
+	      console.log(this.state.descript);
 	    }
 	  }, {
 	    key: 'render',
@@ -23044,7 +23065,9 @@
 	
 	      return _react2.default.createElement(
 	        'span',
-	        { className: 'task__container task__container_level_' + this.color() },
+	        {
+	          className: 'task__container-descript  task__container task__container_level_' + this.color()
+	        },
 	        _react2.default.createElement('input', {
 	          className: 'task__field',
 	          type: 'text',
@@ -23054,8 +23077,8 @@
 	        _react2.default.createElement(
 	          'span',
 	          { className: 'task__panel' },
-	          _react2.default.createElement('span', { className: 'button-save', onClick: this.handleSaveEdit }),
-	          _react2.default.createElement('span', { className: 'button-exit', onClick: this.handleEdit })
+	          _react2.default.createElement('span', { className: 'button-save', onClick: this.handleSave }),
+	          _react2.default.createElement('span', { className: 'button-exit', onClick: this.handleExit })
 	        )
 	      );
 	    }
@@ -23066,48 +23089,94 @@
 	
 	      return _react2.default.createElement(
 	        'span',
-	        { className: 'task__container task__container_level_' + this.color() },
+	        { className: 'task__container-descript' + (this.state.descript ? ' task__container-descript_full' : '') },
 	        _react2.default.createElement(
-	          'div',
-	          { className: 'task__container-checkbox' },
+	          'span',
+	          { className: 'task__container task__container_level_' + this.color() },
 	          _react2.default.createElement(
-	            'lable',
+	            'div',
+	            { className: 'task__container-checkbox' },
+	            _react2.default.createElement(
+	              'lable',
+	              {
+	                onClick: this.handleComplete,
+	                className: 'task__checkbox'
+	              },
+	              _react2.default.createElement('input', { type: 'checkbox' })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'p',
 	            {
-	              onClick: this.handleComplete,
-	              className: 'task__checkbox'
+	              className: 'task__descript',
+	              onClick: this.handleClickDescript
 	            },
-	            _react2.default.createElement('input', { type: 'checkbox' })
+	            this.props.info.shortDescript
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'task__panel' },
+	            this.timer(timer),
+	            lable ? _react2.default.createElement('span', { className: 'task__lable' }) : null,
+	            _react2.default.createElement(_Stopwatch2.default, {
+	              id: this.props.info.id,
+	              time: stopwatch
+	            }),
+	            _react2.default.createElement('span', {
+	              title: 'edit task',
+	              className: 'button-edit',
+	              onClick: this.handleExit
+	            }),
+	            _react2.default.createElement('span', {
+	              title: 'open note',
+	              className: 'button-note',
+	              onClick: this.handleNote
+	            }),
+	            _react2.default.createElement('span', {
+	              title: 'delete task',
+	              className: 'button-delete',
+	              onClick: this.handleDelete
+	            })
 	          )
 	        ),
 	        _react2.default.createElement(
-	          'p',
-	          { className: 'task__descript' },
-	          this.props.info.description
-	        ),
-	        _react2.default.createElement(
 	          'span',
-	          { className: 'task__panel' },
-	          this.timer(timer),
-	          lable ? _react2.default.createElement('span', { className: 'task__lable' }) : null,
-	          _react2.default.createElement(_Stopwatch2.default, {
-	            id: this.props.info.id,
-	            time: stopwatch
-	          }),
-	          _react2.default.createElement('span', {
-	            title: 'edit task',
-	            className: 'button-edit',
-	            onClick: this.handleEdit
-	          }),
-	          _react2.default.createElement('span', {
-	            title: 'open note',
-	            className: 'button-note',
-	            onClick: this.handleNote
-	          }),
-	          _react2.default.createElement('span', {
-	            title: 'delete task',
-	            className: 'button-delete',
-	            onClick: this.handleDelete
-	          })
+	          { className: 'task__detail', hidden: !this.state.descript },
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'task__attribute' },
+	              'Description:'
+	            ),
+	            ' ',
+	            this.props.info.description
+	          ),
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'task__attribute' },
+	              'Price:'
+	            ),
+	            '  ',
+	            this.props.info.price,
+	            ' USD'
+	          ),
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'task__attribute' },
+	              'Time on complete:'
+	            ),
+	            '  ',
+	            this.props.info.timePrice,
+	            ' minutes'
+	          )
 	        )
 	      );
 	    }
@@ -23129,11 +23198,6 @@
 	          _react2.default.createElement('span', { className: 'button-delete', onClick: this.handleDelete })
 	        )
 	      );
-	    }
-	  }, {
-	    key: 'setStateToggleEdit',
-	    value: function setStateToggleEdit() {
-	      this.setState({ edit: !this.state.edit });
 	    }
 	  }, {
 	    key: 'getClearJournal',
@@ -24010,7 +24074,9 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Folder.__proto__ || Object.getPrototypeOf(Folder)).call(this, props));
 	
-	    _this.state = { edit: false };
+	    _this.state = {
+	      edit: false
+	    };
 	
 	    _this.handleDeleteFolder = _this.handleDeleteFolder.bind(_this);
 	    _this.handleEditFolder = _this.handleEditFolder.bind(_this);
@@ -24712,6 +24778,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Me very old task. Mb completed?',
+	    shortDescript: 'Me very old task. Mb completed?',
 	    id: 2,
 	    complete: false,
 	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
@@ -24728,6 +24795,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Drink milk.',
+	    shortDescript: 'Drink milk.',
 	    id: 232,
 	    complete: false,
 	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
@@ -24745,6 +24813,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Buy milk.',
+	    shortDescript: 'Buy milk.',
 	    id: 1,
 	    note: '',
 	    complete: false,
@@ -24762,6 +24831,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Will meet with girl.',
+	    shortDescript: 'Will meet with girl.',
 	    id: 3,
 	    note: '',
 	    complete: false,
@@ -24779,6 +24849,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Scamper.',
+	    shortDescript: 'Scamper.',
 	    id: 1322131231231232,
 	    complete: false,
 	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
@@ -24808,7 +24879,7 @@
 	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 192);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 203)(content, {});
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 205)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -24836,7 +24907,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Rajdhani|Ubuntu);", ""]);
 	
 	// module
-	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n}\n\n.app__content {\n  flex: 3;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.app__container_gorizontal,\n.task__container_gorizontal {\n  flex-flow: row wrap;\n}\n\n.app__sidebar_vertical,\n.app__content_vertical,\n.navigation-menu__container_vertical,\n.list__container_vertical{\n  flex-flow: column wrap;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border: 3px solid #000;\n  font-family: 'Rajdhani', sans-serif;\n}\n\n\n\n\n.board-extra__title {\n\n}\n\n.board-extra__content {\n\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  overflow: auto;\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container-task-box {\n  overflow: auto;\n  flex: 1;\n  flex-direction: column;\n}\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  width: 80%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: center;\n  margin-bottom: 10px;\n}\n\n.list__area {\n  width: 80%;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  margin: 0px 10px 15px;\n  width: 100%;\n}\n\n.task__container_level_one {\n\n}\n\n.task__container-checkbox {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  margin-left: 10px;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 5;\n  margin: 10px 0 10px 30px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 194) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 195) + "); }\n.button-add    { background: url(" + __webpack_require__(/*! ../img/add.png */ 196) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 197) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 198) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 199) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 204) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 205) + "); }", ""]);
+	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n}\n\n.app__content {\n  flex: 3;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.app__container_gorizontal,\n.task__container_gorizontal {\n  flex-flow: row wrap;\n}\n\n.app__sidebar_vertical,\n.app__content_vertical,\n.navigation-menu__container_vertical,\n.list__container_vertical{\n  flex-flow: column wrap;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border: 3px solid #000;\n  font-family: 'Rajdhani', sans-serif;\n}\n\n\n\n\n.board-extra__title {\n\n}\n\n.board-extra__content {\n\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  /*overflow: auto;*/\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container-task-box {\n  /*overflow: auto;*/\n  flex: 1;\n  flex-direction: column;\n}\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  width: 80%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: center;\n  margin-bottom: 10px;\n}\n\n.list__area {\n  width: 80%;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n/* animation */\n/*.task__container-descript_full {\n  background: darkslateblue;\n}*/\n\n/*.task__detail_spoil {\n  visibility: hidden;\n};*/\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n  /*margin-left: 10px;*/\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 30px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 194) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 195) + "); }\n.button-add    { background: url(" + __webpack_require__(/*! ../img/add.png */ 196) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 197) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 198) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 199) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 203) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 204) + "); }", ""]);
 	
 	// exports
 
@@ -24983,6 +25054,24 @@
 
 /***/ },
 /* 203 */
+/*!***************************!*\
+  !*** ./src/img/pause.png ***!
+  \***************************/
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LHySwk/KuAAAAFElEQVQY02NgoA7g/8D/YahT1AAAhhA3yVo4XisAAAAASUVORK5CYII="
+
+/***/ },
+/* 204 */
+/*!**************************!*\
+  !*** ./src/img/play.png ***!
+  \**************************/
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LFRv8GjcZAAAAm0lEQVRYw+2WwQ3CMBAEB36UAEVQB69UkT5cSAqhBN4UQQv5bhoAgRQPUaSbe1sj2eu7g6IoNufgKx6cXEEIoy0ITy6uIIRmC8KLqysIYbIFYebmCkK49wtvPtZoCzqFN1+q2YLV4c1PNdmCMDO8O37sGOf9XpH8yM39aOfdtgq12cntWh048shUh36XQG60eMmr4x+W36IoVrMAxYYe1+9lz2UAAAAASUVORK5CYII="
+
+/***/ },
+/* 205 */
 /*!*************************************!*\
   !*** ./~/style-loader/addStyles.js ***!
   \*************************************/
@@ -25235,24 +25324,6 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
-
-/***/ },
-/* 204 */
-/*!***************************!*\
-  !*** ./src/img/pause.png ***!
-  \***************************/
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LHySwk/KuAAAAFElEQVQY02NgoA7g/8D/YahT1AAAhhA3yVo4XisAAAAASUVORK5CYII="
-
-/***/ },
-/* 205 */
-/*!**************************!*\
-  !*** ./src/img/play.png ***!
-  \**************************/
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LFRv8GjcZAAAAm0lEQVRYw+2WwQ3CMBAEB36UAEVQB69UkT5cSAqhBN4UQQv5bhoAgRQPUaSbe1sj2eu7g6IoNufgKx6cXEEIoy0ITy6uIIRmC8KLqysIYbIFYebmCkK49wtvPtZoCzqFN1+q2YLV4c1PNdmCMDO8O37sGOf9XpH8yM39aOfdtgq12cntWh048shUh36XQG60eMmr4x+W36IoVrMAxYYe1+9lz2UAAAAASUVORK5CYII="
 
 /***/ }
 /******/ ]);

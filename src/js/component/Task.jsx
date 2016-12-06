@@ -7,24 +7,28 @@ export default class Task extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {edit: false};
+    this.state = {
+      edit: false,
+      descript: false
+    };
 
-    this.handleDelete   = this.handleDelete.bind(this);
-    this.handleNote     = this.handleNote.bind(this);
-    this.handleComplete = this.handleComplete.bind(this);
-    this.handleEdit     = this.handleEdit.bind(this);
-    this.handleSaveEdit = this.handleSaveEdit.bind(this);
+    this.handleDelete        = this.handleDelete.bind(this);
+    this.handleNote          = this.handleNote.bind(this);
+    this.handleComplete      = this.handleComplete.bind(this);
+    this.handleExit          = this.handleExit.bind(this);
+    this.handleSave          = this.handleSave.bind(this);
+    this.handleToggle        = this.handleToggle.bind(this);
+    this.handleClickDescript = this.handleClickDescript.bind(this);
 
-    this.setStateToggleEdit = this.setStateToggleEdit.bind(this);
-    this.edit               = this.edit.bind(this);
-    this.content            = this.content.bind(this);
-    this.archiv             = this.archiv.bind(this);
-    this.timer              = this.timer.bind(this);
-    this.getClearJournal    = this.getClearJournal.bind(this);
-    this.diffArrs           = this.diffArrs.bind(this);
-    this.diffDate           = this.diffDate.bind(this);
-    this.addArrs            = this.addArrs.bind(this);
-    this.color              = this.color.bind(this);
+    this.edit            = this.edit.bind(this);
+    this.content         = this.content.bind(this);
+    this.archiv          = this.archiv.bind(this);
+    this.timer           = this.timer.bind(this);
+    this.getClearJournal = this.getClearJournal.bind(this);
+    this.diffArrs        = this.diffArrs.bind(this);
+    this.diffDate        = this.diffDate.bind(this);
+    this.addArrs         = this.addArrs.bind(this);
+    this.color           = this.color.bind(this);
   }
 
   handleDelete() {
@@ -40,12 +44,12 @@ export default class Task extends React.Component {
     e.target.checked = false;
   }
 
-  handleEdit() {
-    this.setStateToggleEdit();
+  handleExit() {
+    this.handleToggle();
   }
 
-  handleSaveEdit(e) {
-    this.setStateToggleEdit();
+  handleSave(e) {
+    this.handleToggle();
     window.dispatchEvent(new CustomEvent('save', {
       detail: {
         value: ReactDOM.findDOMNode(this.refs.value).value,
@@ -65,15 +69,28 @@ export default class Task extends React.Component {
     }));
   }
 
+  handleToggle() {
+    const newState = Object.assign({}, this.state);
+    newState.edit = !this.state.edit;
+    this.setState(newState);
+  }
+
+  handleClickDescript() {
+    const newState = Object.assign({}, this.state);
+    newState.descript = !this.state.descript;
+    this.setState(newState);
+    console.log(this.state.descript);
+  }
+
   render() {
     const time = this.diffDate(this.props.info.project === 'ARCHIV' ?
       [] : this.getClearJournal(this.props.info.id));
 
     return (
       <div className='task'>
-        {this.edit()}
-        {this.content(time.stopwatch, time.timer, time.lable)}
-        {this.archiv()}
+          {this.edit()}
+          {this.content(time.stopwatch, time.timer, time.lable)}
+          {this.archiv()}
       </div>
     );
   }
@@ -111,7 +128,9 @@ export default class Task extends React.Component {
     if (!this.state.edit) return;
 
     return (
-      <span className={`task__container task__container_level_${this.color()}`}>
+      <span
+        className={`task__container-descript  task__container task__container_level_${this.color()}`}
+      >
         <input
           className='task__field'
           type='text'
@@ -119,8 +138,8 @@ export default class Task extends React.Component {
           defaultValue={`${this.props.info.description}`}
         />
         <span className='task__panel'>
-          <span className='button-save' onClick={this.handleSaveEdit} />
-          <span className='button-exit' onClick={this.handleEdit} />
+          <span className='button-save' onClick={this.handleSave} />
+          <span className='button-exit' onClick={this.handleExit} />
         </span>
       </span>
     );
@@ -130,41 +149,54 @@ export default class Task extends React.Component {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
 
     return (
-      <span className={`task__container task__container_level_${this.color()}`}>
-        <div className='task__container-checkbox'>
-          <lable
-            onClick={this.handleComplete}
-            className='task__checkbox'
-          >
-          <input type='checkbox'/>
-          </lable>
-        </div>
-        <p className='task__descript'>{this.props.info.description}</p>
-        <span className='task__panel'>
-          {/*<p className='task__price'>
-            {this.props.info.price}$ / {this.props.info.timePrice} min.
-          </p>*/}
-          {this.timer(timer)}
-          {lable ? <span className='task__lable'></span> : null}
-          <Stopwatch
-            id={this.props.info.id}
-            time={stopwatch}
-          />
-          <span
-            title='edit task'
-            className='button-edit'
-            onClick={this.handleEdit}
-          />
-          <span
-            title='open note'
-            className='button-note'
-            onClick={this.handleNote}
-          />
-          <span
-            title='delete task'
-            className='button-delete'
-            onClick={this.handleDelete}
-          />
+      <span className={`task__container-descript${this.state.descript ? ' task__container-descript_full' : ''}`}>
+        <span className={`task__container task__container_level_${this.color()}`}>
+          <div className='task__container-checkbox'>
+            <lable
+              onClick={this.handleComplete}
+              className='task__checkbox'
+            >
+            <input type='checkbox'/>
+            </lable>
+          </div>
+            <p
+              className='task__descript'
+              onClick={this.handleClickDescript}
+            >
+            {this.props.info.shortDescript}
+          </p>
+
+          <span className='task__panel'>
+            {/*<p className='task__price'>
+              {this.props.info.price}$ / {this.props.info.timePrice} min.
+            </p>*/}
+            {this.timer(timer)}
+            {lable ? <span className='task__lable'></span> : null}
+            <Stopwatch
+              id={this.props.info.id}
+              time={stopwatch}
+            />
+            <span
+              title='edit task'
+              className='button-edit'
+              onClick={this.handleExit}
+            />
+            <span
+              title='open note'
+              className='button-note'
+              onClick={this.handleNote}
+            />
+            <span
+              title='delete task'
+              className='button-delete'
+              onClick={this.handleDelete}
+            />
+          </span>
+        </span>
+        <span className='task__detail' hidden={!this.state.descript}>
+          <p><span className='task__attribute'>Description:</span> {this.props.info.description}</p>
+          <p><span className='task__attribute'>Price:</span>  {this.props.info.price} USD</p>
+          <p><span className='task__attribute'>Time on complete:</span>  {this.props.info.timePrice} minutes</p>
         </span>
       </span>
     );
@@ -182,7 +214,7 @@ export default class Task extends React.Component {
     );
   }
 
-  setStateToggleEdit() { this.setState({edit: !this.state.edit}); }
+
 
   getClearJournal(id) {
     let index;

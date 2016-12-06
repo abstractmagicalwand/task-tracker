@@ -5,7 +5,9 @@ export default class Folder extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {edit: false};
+    this.state = {
+      edit: false
+    };
 
     this.handleDeleteFolder   = this.handleDeleteFolder.bind(this);
     this.handleEditFolder     = this.handleEditFolder.bind(this);

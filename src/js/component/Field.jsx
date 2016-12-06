@@ -69,6 +69,8 @@ export default class Field extends React.Component {
         .trim()
     };
 
+    task.shortDescript = `${task.description.length > 95 ? `${task.description.slice(0, 61)}...` : task.description}`;
+
     return task;
   }
 };
