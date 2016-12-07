@@ -56,6 +56,11 @@ export default class Field extends React.Component {
     );
   }
 
+  componentDidUpdate() {
+    console.log(ReactDOM.findDOMNode(this.refs.text).style.focus);
+    this.state.show ? ReactDOM.findDOMNode(this.refs.text).focus() : null;
+  }
+
   createTask(text) {
     const priority  = /\*+/,
           project   = /@[\wа-яё]+/i,
