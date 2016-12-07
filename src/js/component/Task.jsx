@@ -163,7 +163,7 @@ export default class Task extends React.Component {
               className='task__descript'
               onClick={this.handleClickDescript}
             >
-            {this.props.info.shortDescript}
+            {this.props.info.preview}
           </p>
 
           <span className='task__panel'>

@@ -131,12 +131,17 @@
 .list__field {
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
   margin-bottom: 10px;
+  justify-content: space-around;
+  align-content: flex-start;
 }
 
-.list__area {
-  width: 80%;
+.list__area_hidden {
+  display: none;
+}
+
+.list__area_show {
+  width: 90%;
 }
 
 .list__input-area {
@@ -362,7 +367,6 @@
 
 .button-save   { background: url('../img/save.png')     ; }
 .button-exit   { background: url('../img/exit.png')     ; }
-.button-add    { background: url('../img/add.png')      ; }
 .button-delete { background: url('../img/delete.png')   ; }
 .button-edit   { background: url('../img/edit.png')     ; }
 .button-note   { background: url('../img/note.png')     ; }
@@ -371,3 +375,16 @@
 .button-open   { background: url('../img/timer-off.png'); }
 .button-pause  { background: url('../img/pause.png')    ; }
 .button-play   { background: url('../img/play.png')     ; }
+
+.button-add {
+  background: url('../img/add.png');
+  margin: auto;
+}
+
+.list_container-button-add {
+  background: lightslategray;
+  border-radius: 100%; /* 900 x 50 */
+  display: flex;
+  height: 48px;
+  width: 48px;
+}

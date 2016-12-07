@@ -3,7 +3,7 @@ const db = [{
   note: '',
   tasks: [{
     description: 'Me very old task. Mb completed?',
-    shortDescript: 'Me very old task. Mb completed?',
+    preview: 'Me very old task. Mb completed?',
     id: 2,
     complete: false,
     tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes',
@@ -25,7 +25,7 @@ const db = [{
   note: '',
   tasks: [{
     description: 'Drink milk.',
-    shortDescript: 'Drink milk.',
+    preview: 'Drink milk.',
     id: 232,
     complete: false,
     tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes',
@@ -48,7 +48,7 @@ const db = [{
   note: '',
   tasks: [{
     description: 'Buy milk.',
-    shortDescript: 'Buy milk.',
+    preview: 'Buy milk.',
     id: 1,
     note: '',
     complete: false,
@@ -71,7 +71,7 @@ const db = [{
   note: '',
   tasks: [{
     description: 'Will meet with girl.',
-    shortDescript: 'Will meet with girl.',
+    preview: 'Will meet with girl.',
     id: 3,
     note: '',
     complete: false,
@@ -93,7 +93,7 @@ const db = [{
   note: '',
   tasks: [{
     description: 'Scamper.',
-    shortDescript: 'Scamper.',
+    preview: 'Scamper.',
     id: 1322131231231232,
     complete: false,
     tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran',

@@ -22740,25 +22740,43 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, props));
 	
-	    _this.handleNewTask = _this.handleNewTask.bind(_this);
+	    _this.state = {
+	      show: false
+	    };
 	
+	    _this.handleClickAdd = _this.handleClickAdd.bind(_this);
 	    _this.createTask = _this.createTask.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(Field, [{
-	    key: 'handleNewTask',
-	    value: function handleNewTask() {
-	      if (!_reactDom2.default.findDOMNode(this.refs.text).value.length) return;
+	    key: 'handleClickAdd',
+	    value: function handleClickAdd() {
+	      function addTask() {
+	        if (!_reactDom2.default.findDOMNode(this.refs.text).value.length) return;
 	
-	      var task = this.createTask(_reactDom2.default.findDOMNode(this.refs.text).value);
+	        var task = this.createTask(_reactDom2.default.findDOMNode(this.refs.text).value);
 	
-	      if (!task.description.length) return;
+	        if (!task.description.length) return;
 	
-	      window.dispatchEvent(new CustomEvent('addNewTask', {
-	        detail: task
-	      }));
-	      _reactDom2.default.findDOMNode(this.refs.text).value = '';
+	        window.dispatchEvent(new CustomEvent('addNewTask', {
+	          detail: task
+	        }));
+	        _reactDom2.default.findDOMNode(this.refs.text).value = '';
+	      }
+	
+	      var newState = Object.assign({}, this.state);
+	
+	      if (!this.state.show) {
+	        newState.show = true;
+	        this.setState(newState);
+	        return;
+	      }
+	
+	      addTask.bind(this)();
+	
+	      newState.show = false;
+	      this.setState(newState);
 	    }
 	  }, {
 	    key: 'render',
@@ -22767,11 +22785,15 @@
 	        'div',
 	        { className: 'list__field' },
 	        _react2.default.createElement('textarea', {
-	          className: 'list__area',
+	          className: 'list__area_' + (this.state.show ? 'show' : 'hidden'),
 	          ref: 'text',
 	          placeholder: 'Write you task...'
 	        }),
-	        _react2.default.createElement('span', { className: 'button-add', onClick: this.handleNewTask })
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'list_container-button-add' },
+	          _react2.default.createElement('span', { className: 'button-add', onClick: this.handleClickAdd })
+	        )
 	      );
 	    }
 	  }, {
@@ -22800,7 +22822,7 @@
 	        description: text.replace(priority, '').replace(project, '').replace(tags, '').replace(death, '').replace(timePrice, '').replace(money, '').trim()
 	      };
 	
-	      task.shortDescript = '' + (task.description.length > 95 ? task.description.slice(0, 61) + '...' : task.description);
+	      task.preview = '' + (task.description.length > 95 ? task.description.slice(0, 61) + '...' : task.description);
 	
 	      return task;
 	    }
@@ -23111,7 +23133,7 @@
 	              className: 'task__descript',
 	              onClick: this.handleClickDescript
 	            },
-	            this.props.info.shortDescript
+	            this.props.info.preview
 	          ),
 	          _react2.default.createElement(
 	            'span',
@@ -24778,7 +24800,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Me very old task. Mb completed?',
-	    shortDescript: 'Me very old task. Mb completed?',
+	    preview: 'Me very old task. Mb completed?',
 	    id: 2,
 	    complete: false,
 	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
@@ -24795,7 +24817,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Drink milk.',
-	    shortDescript: 'Drink milk.',
+	    preview: 'Drink milk.',
 	    id: 232,
 	    complete: false,
 	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
@@ -24813,7 +24835,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Buy milk.',
-	    shortDescript: 'Buy milk.',
+	    preview: 'Buy milk.',
 	    id: 1,
 	    note: '',
 	    complete: false,
@@ -24831,7 +24853,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Will meet with girl.',
-	    shortDescript: 'Will meet with girl.',
+	    preview: 'Will meet with girl.',
 	    id: 3,
 	    note: '',
 	    complete: false,
@@ -24849,7 +24871,7 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Scamper.',
-	    shortDescript: 'Scamper.',
+	    preview: 'Scamper.',
 	    id: 1322131231231232,
 	    complete: false,
 	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
@@ -24907,7 +24929,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Rajdhani|Ubuntu);", ""]);
 	
 	// module
-	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n}\n\n.app__content {\n  flex: 3;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.app__container_gorizontal,\n.task__container_gorizontal {\n  flex-flow: row wrap;\n}\n\n.app__sidebar_vertical,\n.app__content_vertical,\n.navigation-menu__container_vertical,\n.list__container_vertical{\n  flex-flow: column wrap;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border: 3px solid #000;\n  font-family: 'Rajdhani', sans-serif;\n}\n\n\n\n\n.board-extra__title {\n\n}\n\n.board-extra__content {\n\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  /*overflow: auto;*/\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container-task-box {\n  /*overflow: auto;*/\n  flex: 1;\n  flex-direction: column;\n}\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  width: 80%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: center;\n  margin-bottom: 10px;\n}\n\n.list__area {\n  width: 80%;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n/* animation */\n/*.task__container-descript_full {\n  background: darkslateblue;\n}*/\n\n/*.task__detail_spoil {\n  visibility: hidden;\n};*/\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n  /*margin-left: 10px;*/\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 30px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 194) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 195) + "); }\n.button-add    { background: url(" + __webpack_require__(/*! ../img/add.png */ 196) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 197) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 198) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 199) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 203) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 204) + "); }", ""]);
+	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n}\n\n.app__content {\n  flex: 3;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.app__container_gorizontal,\n.task__container_gorizontal {\n  flex-flow: row wrap;\n}\n\n.app__sidebar_vertical,\n.app__content_vertical,\n.navigation-menu__container_vertical,\n.list__container_vertical{\n  flex-flow: column wrap;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border: 3px solid #000;\n  font-family: 'Rajdhani', sans-serif;\n}\n\n\n\n\n.board-extra__title {\n\n}\n\n.board-extra__content {\n\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  /*overflow: auto;*/\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container-task-box {\n  /*overflow: auto;*/\n  flex: 1;\n  flex-direction: column;\n}\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  width: 80%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row wrap;\n  margin-bottom: 10px;\n  justify-content: space-around;\n  align-content: flex-start;\n}\n\n.list__area_hidden {\n  display: none;\n}\n\n.list__area_show {\n  width: 90%;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n/* animation */\n/*.task__container-descript_full {\n  background: darkslateblue;\n}*/\n\n/*.task__detail_spoil {\n  visibility: hidden;\n};*/\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n  /*margin-left: 10px;*/\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 30px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 194) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 195) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 197) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 198) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 199) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 203) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 204) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 196) + ");\n  margin: auto;\n}\n\n.list_container-button-add {\n  background: lightslategray;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n}", ""]);
 	
 	// exports
 

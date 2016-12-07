@@ -4,34 +4,54 @@ import ReactDOM from 'react-dom';
 export default class Field extends React.Component {
   constructor(props) {
     super(props);
-    this.handleNewTask = this.handleNewTask.bind(this);
+    this.state = {
+      show: false
+    };
 
+    this.handleClickAdd = this.handleClickAdd.bind(this);
     this.createTask = this.createTask.bind(this);
   }
 
-  handleNewTask() {
-    if (!ReactDOM.findDOMNode(this.refs.text).value.length) return;
+  handleClickAdd() {
+    function addTask() {
+      if (!ReactDOM.findDOMNode(this.refs.text).value.length) return;
 
-    const task = this.createTask(ReactDOM.findDOMNode(this.refs.text).value);
+      const task = this.createTask(ReactDOM.findDOMNode(this.refs.text).value);
 
-    if (!task.description.length) return;
+      if (!task.description.length) return;
 
-    window.dispatchEvent(new CustomEvent('addNewTask', {
-      detail: task
-    }));
-    ReactDOM.findDOMNode(this.refs.text).value = '';
+      window.dispatchEvent(new CustomEvent('addNewTask', {
+        detail: task
+      }));
+      ReactDOM.findDOMNode(this.refs.text).value = '';
+    }
+
+    const newState = Object.assign({}, this.state);
+
+    if (!this.state.show) {
+      newState.show = true;
+      this.setState(newState);
+      return;
+    }
+
+    addTask.bind(this)();
+
+    newState.show = false;
+    this.setState(newState);
   }
 
   render() {
     return (
       <div className='list__field'>
         <textarea
-          className='list__area'
+          className={`list__area_${this.state.show ? 'show' : 'hidden'}`}
           ref='text'
           placeholder='Write you task...'
         >
         </textarea>
-        <span className='button-add' onClick={this.handleNewTask} />
+        <span className='list_container-button-add'>
+          <span className='button-add' onClick={this.handleClickAdd} />
+        </span>
       </div>
     );
   }
@@ -44,9 +64,11 @@ export default class Field extends React.Component {
           money     = /(?:\$)\d+/,
           timePrice = /\d\d:\d\d:\d\d/,
           formatTimePrice = timePrice.test(text) ?
-            timePrice.exec(text)[0].split(':') : null,
+            timePrice.exec(text)[0].split(':') :
+            null,
           endFormatTimePrice = formatTimePrice ?
-            +formatTimePrice[0] * 60 + +formatTimePrice[1] : 0;
+            +formatTimePrice[0] * 60 + +formatTimePrice[1] :
+            0;
 
     const task = {
       stopwatch: [0, 0, 0],
@@ -69,7 +91,7 @@ export default class Field extends React.Component {
         .trim()
     };
 
-    task.shortDescript = `${task.description.length > 95 ? `${task.description.slice(0, 61)}...` : task.description}`;
+    task.preview = `${task.description.length > 95 ? `${task.description.slice(0, 61)}...` : task.description}`;
 
     return task;
   }
