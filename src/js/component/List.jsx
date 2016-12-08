@@ -13,15 +13,10 @@ export default class List extends React.Component {
 
     this.getDate      = this.getDate.bind(this);
     this.getCompTasks = this.getCompTasks.bind(this);
-    this.handleBlockSelect = this.handleBlockSelect.bind(this);
   }
 
   handleClickBackList(e) {
-    window.dispatchEvent(new CustomEvent('back'));
-  }
-
-  handleBlockSelect(e) {
-    console.log(1);
+    window.dispatchEvent(new CustomEvent('BACK'));
   }
 
   render() {

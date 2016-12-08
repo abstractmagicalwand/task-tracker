@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom';
 export default class NavigationMenu extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClickBtn = this.handleClickBtn.bind(this);
+    this.handleClickButton = this.handleClickButton.bind(this);
   }
 
-  handleClickBtn(e) {
-    const event = new CustomEvent('clickNavBtn', {
+  handleClickButton(e) {
+    const event = new CustomEvent('RELOCATE', {
       detail: {category: e.target.getAttribute('name')}
     });
     window.dispatchEvent(event);
@@ -23,31 +23,31 @@ export default class NavigationMenu extends React.Component {
           <div
             className='navigation-menu__button'
             name='inbox'
-            onClick={this.handleClickBtn}>
+            onClick={this.handleClickButton}>
             inbox
           </div>
           <div
             className='navigation-menu__button'
             name='project'
-            onClick={this.handleClickBtn}>
+            onClick={this.handleClickButton}>
             project
           </div>
           <div
             className='navigation-menu__button'
             name='archiv'
-            onClick={this.handleClickBtn}>
+            onClick={this.handleClickButton}>
             archiv
           </div>
           <div
             className='navigation-menu__button'
             name='account'
-            onClick={this.handleClickBtn}>
+            onClick={this.handleClickButton}>
             account
           </div>
           <div
             className='navigation-menu__button'
             name='spell'
-            onClick={this.handleClickBtn}>
+            onClick={this.handleClickButton}>
             spell
           </div>
         </div>

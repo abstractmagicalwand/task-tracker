@@ -30,7 +30,7 @@ export default class Stopwatch extends React.Component {
       ++h;
     }
 
-    window.dispatchEvent(new CustomEvent('tick', {
+    window.dispatchEvent(new CustomEvent('TICK', {
       detail: {
         type: 'stopwatch',
         time: [h, m, s],

@@ -25,7 +25,7 @@ export default class Folder extends React.Component {
     const tag = e.target.tagName;
     if (e.target.className !== 'wrap' && tag !== 'DIV' && tag !== 'P') return;
 
-    window.dispatchEvent(new CustomEvent('clickNavBtn', {
+    window.dispatchEvent(new CustomEvent('RELOCATE', {
       detail: {category: this.props.info.project}
     }));
   }
@@ -34,7 +34,7 @@ export default class Folder extends React.Component {
 
     if (!e.target.classList.contains('button-delete')) return;
 
-    window.dispatchEvent(new CustomEvent('deleteFolder', {
+    window.dispatchEvent(new CustomEvent('FOLDER_DELETE', {
       detail: {project: this.props.info.project}
     }));
   }
@@ -47,7 +47,7 @@ export default class Folder extends React.Component {
   handleSaveEditFolder(e) {
     this.setStateToggleEdit();
 
-    window.dispatchEvent(new CustomEvent('save', {
+    window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
       detail: {
         value: ReactDOM.findDOMNode(this.refs.value).value.slice(0, 21),
         project: this.props.info.project
@@ -61,7 +61,7 @@ export default class Folder extends React.Component {
 
   handleNoteFolder(e) {
     if (!e.target.classList.contains('button-note')) return;
-    window.dispatchEvent(new CustomEvent('openNote', {
+    window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
       detail: {
         value: this.props.info.note,
         project: this.props.info.project

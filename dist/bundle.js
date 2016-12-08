@@ -22015,9 +22015,9 @@
 	      viewMini: 'spell'
 	    };
 	
-	    _this.handleNavBtn = _this.handleNavBtn.bind(_this);
-	    _this.handleAddNewTask = _this.handleAddNewTask.bind(_this);
-	    _this.handleSearchReq = _this.handleSearchReq.bind(_this);
+	    _this.handleNavigation = _this.handleNavigation.bind(_this);
+	    _this.handleCreateTask = _this.handleCreateTask.bind(_this);
+	    _this.handleSearch = _this.handleSearch.bind(_this);
 	    _this.handleDeleteFolder = _this.handleDeleteFolder.bind(_this);
 	    _this.handleDeleteTask = _this.handleDeleteTask.bind(_this);
 	    _this.handleCompleteTask = _this.handleCompleteTask.bind(_this);
@@ -22047,8 +22047,8 @@
 	      this.setStateDB(db);
 	    }
 	  }, {
-	    key: 'handleNavBtn',
-	    value: function handleNavBtn(e) {
+	    key: 'handleNavigation',
+	    value: function handleNavigation(e) {
 	      e.preventDefault();
 	
 	      var newState = Object.assign({}, this.state);
@@ -22063,8 +22063,8 @@
 	      this.setState(newState);
 	    }
 	  }, {
-	    key: 'handleAddNewTask',
-	    value: function handleAddNewTask(e) {
+	    key: 'handleCreateTask',
+	    value: function handleCreateTask(e) {
 	      e.preventDefault();
 	      var db = [].concat(_toConsumableArray(this.state.db));
 	
@@ -22083,8 +22083,8 @@
 	      this.setStateDB(db);
 	    }
 	  }, {
-	    key: 'handleSearchReq',
-	    value: function handleSearchReq(e) {
+	    key: 'handleSearch',
+	    value: function handleSearch(e) {
 	      e.preventDefault();
 	      this.setState({
 	        viewContent: 'search',
@@ -22236,20 +22236,20 @@
 	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      window.removeEventListener('clickNavBtn', this.handleNavBtn);
-	      window.removeEventListener('addNewTask', this.handleAddNewTask);
-	      window.removeEventListener('searchValue', this.handleSearchReq);
-	      window.removeEventListener('deleteFolder', this.handleDeleteFolder);
-	      window.removeEventListener('deleteTask', this.handleDeleteTask);
-	      window.removeEventListener('complete', this.handleCompleteTask);
-	      window.removeEventListener('save', this.handleSaveEdit);
-	      window.removeEventListener('openNote', this.handleOpenNote);
-	      window.removeEventListener('saveNote', this.handleSaveNote);
-	      window.removeEventListener('back', this.handleBackContent);
-	      window.removeEventListener('tick', this.handleTick);
-	      window.removeEventListener('deleteTimer', this.handleCancelTimer);
-	      window.removeEventListener('clearJournal', this.handleClearJournal);
-	      window.removeEventListener('setJournal', this.handleSetJournal);
+	      window.removeEventListener('RELOCATE', this.handleNavigation);
+	      window.removeEventListener('TASK_CREATE', this.handleCreateTask);
+	      window.removeEventListener('SEARCH', this.handleSearch);
+	      window.removeEventListener('FOLDER_DELETE', this.handleDeleteFolder);
+	      window.removeEventListener('TASK_DELETE', this.handleDeleteTask);
+	      window.removeEventListener('COMPLETED', this.handleCompleteTask);
+	      window.removeEventListener('EDIT_SAVE', this.handleSaveEdit);
+	      window.removeEventListener('NOTE_OPEN', this.handleOpenNote);
+	      window.removeEventListener('NOTE_SAVE', this.handleSaveNote);
+	      window.removeEventListener('BACK', this.handleBackContent);
+	      window.removeEventListener('TICK', this.handleTick);
+	      window.removeEventListener('TIMER_DELETE', this.handleCancelTimer);
+	      window.removeEventListener('JOURNAL_CLEAR', this.handleClearJournal);
+	      window.removeEventListener('JOURNAL_SET', this.handleSetJournal);
 	    }
 	  }, {
 	    key: 'render',
@@ -22284,20 +22284,20 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      window.addEventListener('clickNavBtn', this.handleNavBtn);
-	      window.addEventListener('addNewTask', this.handleAddNewTask);
-	      window.addEventListener('searchValue', this.handleSearchReq);
-	      window.addEventListener('deleteFolder', this.handleDeleteFolder);
-	      window.addEventListener('deleteTask', this.handleDeleteTask);
-	      window.addEventListener('complete', this.handleCompleteTask);
-	      window.addEventListener('save', this.handleSaveEdit);
-	      window.addEventListener('openNote', this.handleOpenNote);
-	      window.addEventListener('saveNote', this.handleSaveNote);
-	      window.addEventListener('back', this.handleBackContent);
-	      window.addEventListener('tick', this.handleTick);
-	      window.addEventListener('deleteTimer', this.handleCancelTimer);
-	      window.addEventListener('clearJournal', this.handleClearJournal);
-	      window.addEventListener('setInJournal', this.handleSetJournal);
+	      window.addEventListener('RELOCATE', this.handleNavigation);
+	      window.addEventListener('TASK_CREATE', this.handleCreateTask);
+	      window.addEventListener('SEARCH', this.handleSearch);
+	      window.addEventListener('FOLDER_DELETE', this.handleDeleteFolder);
+	      window.addEventListener('TASK_DELETE', this.handleDeleteTask);
+	      window.addEventListener('COMPLETED', this.handleCompleteTask);
+	      window.addEventListener('EDIT_SAVE', this.handleSaveEdit);
+	      window.addEventListener('NOTE_OPEN', this.handleOpenNote);
+	      window.addEventListener('NOTE_SAVE', this.handleSaveNote);
+	      window.addEventListener('BACK', this.handleBackContent);
+	      window.addEventListener('TICK', this.handleTick);
+	      window.addEventListener('TIMER_DELETE', this.handleCancelTimer);
+	      window.addEventListener('JOURNAL_CLEAR', this.handleClearJournal);
+	      window.addEventListener('JOURNAL_SET', this.handleSetJournal);
 	    }
 	  }, {
 	    key: 'searchTaskDB',
@@ -22508,19 +22508,13 @@
 	
 	    _this.getDate = _this.getDate.bind(_this);
 	    _this.getCompTasks = _this.getCompTasks.bind(_this);
-	    _this.handleBlockSelect = _this.handleBlockSelect.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(List, [{
 	    key: 'handleClickBackList',
 	    value: function handleClickBackList(e) {
-	      window.dispatchEvent(new CustomEvent('back'));
-	    }
-	  }, {
-	    key: 'handleBlockSelect',
-	    value: function handleBlockSelect(e) {
-	      console.log(1);
+	      window.dispatchEvent(new CustomEvent('BACK'));
 	    }
 	  }, {
 	    key: 'render',
@@ -22759,7 +22753,7 @@
 	
 	        if (!task.description.length) return;
 	
-	        window.dispatchEvent(new CustomEvent('addNewTask', {
+	        window.dispatchEvent(new CustomEvent('TASK_CREATE', {
 	          detail: task
 	        }));
 	        _reactDom2.default.findDOMNode(this.refs.text).value = '';
@@ -22799,7 +22793,6 @@
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
-	      console.log(_reactDom2.default.findDOMNode(this.refs.text).style.focus);
 	      this.state.show ? _reactDom2.default.findDOMNode(this.refs.text).focus() : null;
 	    }
 	  }, {
@@ -22886,7 +22879,7 @@
 	  _createClass(Search, [{
 	    key: 'handleSearchReq',
 	    value: function handleSearchReq(e) {
-	      window.dispatchEvent(new CustomEvent('searchValue', {
+	      window.dispatchEvent(new CustomEvent('SEARCH', {
 	        detail: { value: e.target.value }
 	      }));
 	    }
@@ -22967,7 +22960,7 @@
 	
 	    _this.handleDelete = _this.handleDelete.bind(_this);
 	    _this.handleNote = _this.handleNote.bind(_this);
-	    _this.handleComplete = _this.handleComplete.bind(_this);
+	    _this.handleCompleted = _this.handleCompleted.bind(_this);
 	    _this.handleExit = _this.handleExit.bind(_this);
 	    _this.handleSave = _this.handleSave.bind(_this);
 	    _this.handleToggle = _this.handleToggle.bind(_this);
@@ -22988,14 +22981,15 @@
 	  _createClass(Task, [{
 	    key: 'handleDelete',
 	    value: function handleDelete() {
-	      window.dispatchEvent(new CustomEvent('deleteTask', {
+	      window.dispatchEvent(new CustomEvent('TASK_DELETE', {
 	        detail: { id: this.props.info.id }
 	      }));
 	    }
 	  }, {
-	    key: 'handleComplete',
-	    value: function handleComplete(e) {
-	      window.dispatchEvent(new CustomEvent('complete', {
+	    key: 'handleCompleted',
+	    value: function handleCompleted(e) {
+	      console.log(e);
+	      window.dispatchEvent(new CustomEvent('COMPLETED', {
 	        detail: { id: this.props.info.id }
 	      }));
 	      e.target.checked = false;
@@ -23009,7 +23003,7 @@
 	    key: 'handleSave',
 	    value: function handleSave(e) {
 	      this.handleToggle();
-	      window.dispatchEvent(new CustomEvent('save', {
+	      window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
 	        detail: {
 	          value: _reactDom2.default.findDOMNode(this.refs.value).value,
 	          id: this.props.info.id
@@ -23021,7 +23015,7 @@
 	    value: function handleNote(e) {
 	      if (!e.target.classList.contains('button-note')) return;
 	      console.log('!!!');
-	      window.dispatchEvent(new CustomEvent('openNote', {
+	      window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
 	        detail: {
 	          id: this.props.info.id,
 	          value: this.props.info.note
@@ -23065,7 +23059,7 @@
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      if (!(this.props.info.project === 'ARCHIV')) {
-	        window.dispatchEvent(new CustomEvent('setInJournal', {
+	        window.dispatchEvent(new CustomEvent('JOURNAL_SET', {
 	          detail: {
 	            id: this.props.info.id,
 	            date: new Date()
@@ -23127,7 +23121,7 @@
 	            _react2.default.createElement(
 	              'lable',
 	              {
-	                onClick: this.handleComplete,
+	                onClick: this.handleCompleted,
 	                className: 'task__checkbox'
 	              },
 	              _react2.default.createElement('input', { type: 'checkbox' })
@@ -23241,7 +23235,7 @@
 	        return false;
 	      });
 	
-	      window.dispatchEvent(new CustomEvent('clearJournal', {
+	      window.dispatchEvent(new CustomEvent('JOURNAL_CLEAR', {
 	        detail: { index: index }
 	      }));
 	
@@ -23439,7 +23433,7 @@
 	        ++h;
 	      }
 	
-	      window.dispatchEvent(new CustomEvent('tick', {
+	      window.dispatchEvent(new CustomEvent('TICK', {
 	        detail: {
 	          type: 'stopwatch',
 	          time: [h, m, s],
@@ -23615,7 +23609,7 @@
 	        --h;
 	      }
 	
-	      window.dispatchEvent(new CustomEvent('tick', {
+	      window.dispatchEvent(new CustomEvent('TICK', {
 	        detail: {
 	          type: 'timer',
 	          time: [h, m, s],
@@ -23720,7 +23714,7 @@
 	  }, {
 	    key: 'delete',
 	    value: function _delete() {
-	      window.dispatchEvent(new CustomEvent('deleteTimer', {
+	      window.dispatchEvent(new CustomEvent('TIMER_DELETE', {
 	        detail: { id: this.props.id }
 	      }));
 	    }
@@ -24125,7 +24119,7 @@
 	      var tag = e.target.tagName;
 	      if (e.target.className !== 'wrap' && tag !== 'DIV' && tag !== 'P') return;
 	
-	      window.dispatchEvent(new CustomEvent('clickNavBtn', {
+	      window.dispatchEvent(new CustomEvent('RELOCATE', {
 	        detail: { category: this.props.info.project }
 	      }));
 	    }
@@ -24135,7 +24129,7 @@
 	
 	      if (!e.target.classList.contains('button-delete')) return;
 	
-	      window.dispatchEvent(new CustomEvent('deleteFolder', {
+	      window.dispatchEvent(new CustomEvent('FOLDER_DELETE', {
 	        detail: { project: this.props.info.project }
 	      }));
 	    }
@@ -24150,7 +24144,7 @@
 	    value: function handleSaveEditFolder(e) {
 	      this.setStateToggleEdit();
 	
-	      window.dispatchEvent(new CustomEvent('save', {
+	      window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
 	        detail: {
 	          value: _reactDom2.default.findDOMNode(this.refs.value).value.slice(0, 21),
 	          project: this.props.info.project
@@ -24166,7 +24160,7 @@
 	    key: 'handleNoteFolder',
 	    value: function handleNoteFolder(e) {
 	      if (!e.target.classList.contains('button-note')) return;
-	      window.dispatchEvent(new CustomEvent('openNote', {
+	      window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
 	        detail: {
 	          value: this.props.info.note,
 	          project: this.props.info.project
@@ -24304,7 +24298,7 @@
 	  }, {
 	    key: 'handleClickSave',
 	    value: function handleClickSave(e) {
-	      window.dispatchEvent(new CustomEvent('saveNote', {
+	      window.dispatchEvent(new CustomEvent('NOTE_SAVE', {
 	        detail: {
 	          value: _reactDom2.default.findDOMNode(this.refs.text).value
 	        }
@@ -24717,14 +24711,14 @@
 	
 	    var _this = _possibleConstructorReturn(this, (NavigationMenu.__proto__ || Object.getPrototypeOf(NavigationMenu)).call(this, props));
 	
-	    _this.handleClickBtn = _this.handleClickBtn.bind(_this);
+	    _this.handleClickButton = _this.handleClickButton.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(NavigationMenu, [{
-	    key: 'handleClickBtn',
-	    value: function handleClickBtn(e) {
-	      var event = new CustomEvent('clickNavBtn', {
+	    key: 'handleClickButton',
+	    value: function handleClickButton(e) {
+	      var event = new CustomEvent('RELOCATE', {
 	        detail: { category: e.target.getAttribute('name') }
 	      });
 	      window.dispatchEvent(event);
@@ -24743,7 +24737,7 @@
 	            {
 	              className: 'navigation-menu__button',
 	              name: 'inbox',
-	              onClick: this.handleClickBtn },
+	              onClick: this.handleClickButton },
 	            'inbox'
 	          ),
 	          _react2.default.createElement(
@@ -24751,7 +24745,7 @@
 	            {
 	              className: 'navigation-menu__button',
 	              name: 'project',
-	              onClick: this.handleClickBtn },
+	              onClick: this.handleClickButton },
 	            'project'
 	          ),
 	          _react2.default.createElement(
@@ -24759,7 +24753,7 @@
 	            {
 	              className: 'navigation-menu__button',
 	              name: 'archiv',
-	              onClick: this.handleClickBtn },
+	              onClick: this.handleClickButton },
 	            'archiv'
 	          ),
 	          _react2.default.createElement(
@@ -24767,7 +24761,7 @@
 	            {
 	              className: 'navigation-menu__button',
 	              name: 'account',
-	              onClick: this.handleClickBtn },
+	              onClick: this.handleClickButton },
 	            'account'
 	          ),
 	          _react2.default.createElement(
@@ -24775,7 +24769,7 @@
 	            {
 	              className: 'navigation-menu__button',
 	              name: 'spell',
-	              onClick: this.handleClickBtn },
+	              onClick: this.handleClickButton },
 	            'spell'
 	          )
 	        )
@@ -24935,7 +24929,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Rajdhani|Ubuntu);", ""]);
 	
 	// module
-	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n}\n\n.app__content {\n  flex: 3;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.app__container_gorizontal,\n.task__container_gorizontal {\n  flex-flow: row wrap;\n}\n\n.app__sidebar_vertical,\n.app__content_vertical,\n.navigation-menu__container_vertical,\n.list__container_vertical{\n  flex-flow: column wrap;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border: 3px solid #000;\n  font-family: 'Rajdhani', sans-serif;\n}\n\n.board-extra__title {\n\n}\n\n.board-extra__content {\n\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  /*overflow: auto;*/\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container-task-box {\n  /*overflow: auto;*/\n  flex: 1;\n  flex-direction: column;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  width: 20%;\n  /*animation: expand_search .5s linear;*/\n  /*animation-direction: reverse;*/\n}\n\n.list__search:focus {\n  /*animation-direction: normal;*/\n  width: 80%;\n  animation: expand_search .5s linear;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  margin-bottom: 10px;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  animation: close_field .1s ease-in;\n  width: 0%;\n  height: 0px;\n  visibility: hidden;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 45px;\n  animation: open_field .5s ease-out;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n/* animation */\n/*.task__container-descript_full {\n  background: darkslateblue;\n}*/\n\n/*.task__detail_spoil {\n  visibility: hidden;\n};*/\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n  animation: open_detail .5s linear;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n  /*margin-left: 10px;*/\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 30px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 194) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 195) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 197) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 198) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 199) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 200) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 201) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 202) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 203) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 204) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 196) + ");\n}\n\n.list_container-button-add {\n  background: lightslategray;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-left: 5px;\n}\n\n@keyframes open_detail {\n  0% {\n    height: 0%;\n  }\n  50% {\n    height: 50%;\n  }\n  100% {\n    height: 70%;\n  }\n}\n\n@keyframes close_datail {\n  0% {\n    height: 70%;\n  }\n  50% {\n    height: 50%;\n  }\n  100% {\n    height: 0%;\n  }\n}\n\n@keyframes open_field {\n  0% {\n    height: 0px;\n    width: 0%;\n  }\n\n  10% {\n    height: 10px;\n  }\n\n  25% {\n    height: 20px;\n    width: 25%;\n  }\n\n  50% {\n    height: 30px;\n    width: 50%;\n  }\n\n  100% {\n    height: 45px;\n    width: 90%;\n  }\n}\n\n@keyframes close_field {\n  0% {\n    height: 45px;\n    width: 90%;\n  }\n\n  10% {\n    height: 30px;\n    width: 50%;\n  }\n\n  25% {\n    height: 20px;\n    width: 25%;\n  }\n\n  50% {\n    height: 10px;\n  }\n\n  100% {\n    height: 0px;\n    width: 0%;\n  }\n}\n\n@keyframes expand_search {\n  0% {\n    width: 20%;\n  }\n\n  25% {\n    width: 35%;\n  }\n\n  50% {\n    width: 50%;\n  }\n\n  75% {\n    width: 65%;\n  }\n\n  100% {\n    width: 80%;\n  }\n}", ""]);
+	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n}\n\n.app__content {\n  flex: 3;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.app__container_gorizontal,\n.task__container_gorizontal {\n  flex-flow: row wrap;\n}\n\n.app__sidebar_vertical,\n.app__content_vertical,\n.navigation-menu__container_vertical,\n.list__container_vertical{\n  flex-flow: column wrap;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border: 3px solid #000;\n  font-family: 'Rajdhani', sans-serif;\n  opacity: 1;\n  \n}\n\n.board-extra__table {\n  animation: invisibility .5s linear;\n}\n\n.board-extra__title {\n\n}\n\n.board-extra__content {\n\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container-task-box {\n  flex: 1;\n  flex-direction: column;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  width: 20%;\n  animation: down_width .5s linear;\n}\n\n.list__search:focus {\n  width: 80%;\n  animation: up_width .5s linear;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  margin-bottom: 10px;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  animation: down_width_height .1s ease-in;\n  width: 0%;\n  height: 0px;\n  visibility: hidden;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 45px;\n  animation: up_width_height .5s ease-out;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n  animation: up_height .5s linear;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 30px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 194) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 195) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 196) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 197) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 198) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 199) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 200) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 201) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 202) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 203) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 204) + ");\n}\n\n.list_container-button-add {\n  background: lightslategray;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-left: 5px;\n}\n\n@keyframes up_heightt {\n  from {\n    height: 100%;\n  } \n\n  to {\n    height: 0%;\n  }\n}\n\n@keyframes up_height {\n  0% {\n    height: 0%;\n  }\n  50% {\n    height: 50%;\n  }\n  100% {\n    height: 70%;\n  }\n}\n\n@keyframes down_height {\n  from {\n    height: 70%;\n  }\n\n  to {\n    height: 0%;\n  }\n}\n\n@keyframes invisibility {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n@keyframes up_width_height {\n  0% {\n    height: 0px;\n    width: 0%;\n  }\n\n  10% {\n    height: 10px;\n  }\n\n  25% {\n    height: 20px;\n    width: 25%;\n  }\n\n  50% {\n    height: 30px;\n    width: 50%;\n  }\n\n  100% {\n    height: 45px;\n    width: 90%;\n  }\n}\n\n@keyframes down_width_height {\n  0% {\n    height: 45px;\n    width: 90%;\n  }\n\n  10% {\n    height: 30px;\n    width: 50%;\n  }\n\n  25% {\n    height: 20px;\n    width: 25%;\n  }\n\n  50% {\n    height: 10px;\n  }\n\n  100% {\n    height: 0px;\n    width: 0%;\n  }\n}\n\n@keyframes up_width {\n  from {\n    width: 20%;\n  }\n\n  to {\n    width: 80%;\n  }\n}", ""]);
 	
 	// exports
 
@@ -25019,15 +25013,6 @@
 
 /***/ },
 /* 196 */
-/*!*************************!*\
-  !*** ./src/img/add.png ***!
-  \*************************/
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAM0lEQVR4Ae3RoREAMBACwfTf9EekgMy8wLBHASs4dUmatwgAAAAAs9w/QPBkAAAAKEvSBTV8zzG4BEJAAAAAAElFTkSuQmCC"
-
-/***/ },
-/* 197 */
 /*!****************************!*\
   !*** ./src/img/delete.png ***!
   \****************************/
@@ -25036,7 +25021,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAqklEQVR4Ae2VxRWDUBAA572UQWqJNkYxscr+jdue44br4jv/gs7g0BGG4XNLGX5beoXEreYojQXmQQuXp9WABSwg7LlEllzYI1oBYQ0sQonLYw7WiE5gz5tH4q9/sdcJPIT/RHROJxBNRPU6gUgiqlcLRBNRffuB9i9R+ze5/ce0/Ret/U9F/x87++FUxlXSOypzqhQ4UpklQWl9gAd1EkdciYtzxKNFDOMOajyuIqb0hAYAAAAASUVORK5CYII="
 
 /***/ },
-/* 198 */
+/* 197 */
 /*!**************************!*\
   !*** ./src/img/edit.png ***!
   \**************************/
@@ -25045,7 +25030,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAApUlEQVR4Ae3RuwkCYRBF4QNbh4+1FzGwGsEObEGswFZM7WB9FCEsJgpmAzuJ3IvCzv3z78D8/MVqtZYzTw40WLbgzuvzjjQ23pAIvC2xDbglsRtI7DXHWaWJh+b2PeskcRJ9bZLomEj4JNExlfCDCQHfEvmY2Dj4mNDyIbF08obbh1f87Xf8Zdz8vPjv+dmYedw8bj4PXDU8bh43j5vHzSPgDavV3qRrsQhO25JyAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 199 */
+/* 198 */
 /*!**************************!*\
   !*** ./src/img/note.png ***!
   \**************************/
@@ -25054,7 +25039,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACzoAAAs6AWR/Vw0AAAAHdElNRQfgCw4LEyL1RRiXAAAAl0lEQVRYw+3XTQ5AMBCG4dE4gvg5pSPUnWyIw9VGqCC+zmhi8b2zE5lnhRJhjMU1MklIHo+vD8oZMGBWAyChWdynEBpAZMAJHZBAaAGY0AMgYQEgwgYAhBV4JexATPg8QExkAmR/urdKw9v3iTjlDECB3ORyf2QIECBA4F/A8une+XqpM5xNr1Pfqa3pAHzMKBX/hRiLWwHAZPOEat0YGwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 200 */
+/* 199 */
 /*!****************************!*\
   !*** ./src/img/cancel.png ***!
   \****************************/
@@ -25063,7 +25048,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABYElEQVR4Ae3Xt3HjQByF8R9GEQcxrgCpofO2C8a0vcirCLIGMqIa4MVEKLMXnvkPRktw9vz3IgDke+uNP4T/nBg6t3Sr1bq1dG7o2OFozK2lDq3NNXpTm9hJT2hnotaDlz5Lmdp6YS8qU49SvjyaqmQycC310LWBDCo3Uk9d59RiKh2gydNd+3hQwKMXulHbSgdqq9bJJPz83ieXUocufXIf3o518Mwu2L/DUUfEpSO8CxE7jQjmweITxIhv7OFT+DYTwbrTJEbEL99qJeJEkvIiwtuoY4GhlBkR30QNBc6lnIgs++RMYCnlRGTZJwuBWyknIss+2Qi0UmZEtI9qiwcUb6LinVx8mJafaOWXivKL3c9frpvCG075LbP8pl/+2FL+4IXKtdRTV6qSh98rA5lUJnsf3yf25KVtuQsIUBtnXaHGar1pzKykDq3MNA7HsaEzCxut1sbCWbjG/rb85wukqCp0O2MACwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 201 */
+/* 200 */
 /*!******************************!*\
   !*** ./src/img/timer-on.png ***!
   \******************************/
@@ -25072,7 +25057,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACL0lEQVR4Ae3Vz2pTQRTH8a+NyaUkuJI0y9ok7pWIi/6BLvyDrnShaKwbQdHqqoX2DcQHUGittVJsn0AoCFoaaA2kWJFWrvEJLBWXNnrvuBkOCJ17T651Ic3nbApzzvzKZDLhgDCO0usEdJS5zyIb7NAi4DsfWeQBRfbBYUaoYxy1RpUUFjd5xCHacpEvmJj6xDkARggwTOkjsrzAKGuaWwT274eoFNjASIW8YYx+8mTI0MMA4ywT7hHV4pJu+6aM/GKaPvZSYoYAgxQ/uYxClvcyssVJolTwkQCqqDyXgVdkiZNjSfqnULiAbE/a8WT8KY1EcCb+3jflcLKgCoAcvkyliHRDPtoToA6AU/JxXyNSXW42ugAxa9dWiVCSe9/XdkBZvhfHcBq1LW9BHyBW7OooTgu2ZSxRwIRdXcBFnof+RAGDdvUDTju2JZ8ooGBXv+HUsi2ZRAGeXPF/HLAbf0Q9f3VE27jIKzpAEkN2uhF/TcdJYtJOz+N0z7Ysk0TNTt/BqShPRYl2HSe0s71EWLMRM7Rrzk7WiFS1bQEV2nFanrqrRErJT4dPDq0j8jO1SRcxzmNsLZFGI8NrmRlG4RkSQU7x38v2PEGlm3UZ8anEnH1Teut4KOX5LGMBs5QdF3OOUPq2OAp6eRoYqZAVJhikgIdHgSEmqWGQ4p16e9HNU4yyHuORyFn82M03GYbkUlxn1bF1SI0rdLEPitzlJetss8sPvtJgntv00vFf+A28TwB4fl1vlgAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 202 */
+/* 201 */
 /*!*******************************!*\
   !*** ./src/img/timer-off.png ***!
   \*******************************/
@@ -25081,7 +25066,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACOklEQVR4Ae2WT0sUcRyHH3ZXJdhb0XrUdiW6b1Sgl8L+3QoiamEP3tbICqTFegFaC3VuMw9lhu9ACELWUKgkSynWtxCG12xnv12+DEPN99f+BvaSPZ+L+HvgYWbQGfYJYsyT/4F9wBTTxFPgFotssktAwC6bvOImeby4jyB/JDKUeYcYW6NEGpQSVUzOILpo4gLbCO595RwAJVoI9zCpxSTGaCMdrM4YLf15Kkki4A13OMUhUvSSY5hJlmPje1yCThIzkUSdI8ajnyVAIvvJZQDfhIsizUighE3iRJYlRPeEDriIWAnjX0RPJDGKGzJsI0bCCkA2vFFfSOOkjPy2B4QQGAE4Hp5dw8l71erUYhJlAiMAc2qv4qCgUsAgOBJxDNFWexCTCVVeAzgS8TTUvYHJoiq3wZmIp6rmAiZbqpyAmMRD3Iyo9wmTXVUOgn+CfrW+YxKokgL/BH3qtDDZU6UX/BNk/h7YUSUH/glyer6DyUdVhsGZqDkf8gYmC6pMAnhfxV09m8dkXJVl8E/wVk8qmORVaVPwThxDdAM4WFNpFgPjrxue6+8aOCmpFlD0TOgXCFdwkg5fHU2y/gk+k8IN5xHdEj3eidN0wDPCRIdXMYMXB1hHdE2K3Ugcjrz6A+YYIo6jvECSJz4g4do0qDJCP31k9NNxBX1FJr9RTxHPTePJWZqIe2wxyuPkiTTXWUWMrXCVFEDihJKnwkvW+cYPWuywwTwVBlCiCdqcpDtoYpwu8ogJ/jl+AQVVXWskAfRLAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 203 */
+/* 202 */
 /*!***************************!*\
   !*** ./src/img/pause.png ***!
   \***************************/
@@ -25090,13 +25075,22 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LHySwk/KuAAAAFElEQVQY02NgoA7g/8D/YahT1AAAhhA3yVo4XisAAAAASUVORK5CYII="
 
 /***/ },
-/* 204 */
+/* 203 */
 /*!**************************!*\
   !*** ./src/img/play.png ***!
   \**************************/
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LFRv8GjcZAAAAm0lEQVRYw+2WwQ3CMBAEB36UAEVQB69UkT5cSAqhBN4UQQv5bhoAgRQPUaSbe1sj2eu7g6IoNufgKx6cXEEIoy0ITy6uIIRmC8KLqysIYbIFYebmCkK49wtvPtZoCzqFN1+q2YLV4c1PNdmCMDO8O37sGOf9XpH8yM39aOfdtgq12cntWh048shUh36XQG60eMmr4x+W36IoVrMAxYYe1+9lz2UAAAAASUVORK5CYII="
+
+/***/ },
+/* 204 */
+/*!*************************!*\
+  !*** ./src/img/add.png ***!
+  \*************************/
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAM0lEQVR4Ae3RoREAMBACwfTf9EekgMy8wLBHASs4dUmatwgAAAAAs9w/QPBkAAAAKEvSBTV8zzG4BEJAAAAAAElFTkSuQmCC"
 
 /***/ },
 /* 205 */

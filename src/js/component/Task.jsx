@@ -14,7 +14,7 @@ export default class Task extends React.Component {
 
     this.handleDelete        = this.handleDelete.bind(this);
     this.handleNote          = this.handleNote.bind(this);
-    this.handleComplete      = this.handleComplete.bind(this);
+    this.handleCompleted     = this.handleCompleted.bind(this);
     this.handleExit          = this.handleExit.bind(this);
     this.handleSave          = this.handleSave.bind(this);
     this.handleToggle        = this.handleToggle.bind(this);
@@ -32,13 +32,14 @@ export default class Task extends React.Component {
   }
 
   handleDelete() {
-    window.dispatchEvent(new CustomEvent('deleteTask', {
+    window.dispatchEvent(new CustomEvent('TASK_DELETE', {
       detail: {id: this.props.info.id}
     }));
   }
 
-  handleComplete(e) {
-    window.dispatchEvent(new CustomEvent('complete', {
+  handleCompleted(e) {
+    console.log(e);
+    window.dispatchEvent(new CustomEvent('COMPLETED', {
       detail: {id: this.props.info.id}
     }));
     e.target.checked = false;
@@ -50,7 +51,7 @@ export default class Task extends React.Component {
 
   handleSave(e) {
     this.handleToggle();
-    window.dispatchEvent(new CustomEvent('save', {
+    window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
       detail: {
         value: ReactDOM.findDOMNode(this.refs.value).value,
         id: this.props.info.id
@@ -61,7 +62,7 @@ export default class Task extends React.Component {
   handleNote(e) {
     if (!e.target.classList.contains('button-note')) return;
     console.log('!!!')
-    window.dispatchEvent(new CustomEvent('openNote', {
+    window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
       detail: {
         id: this.props.info.id,
         value: this.props.info.note
@@ -101,7 +102,7 @@ export default class Task extends React.Component {
 
   componentWillUnmount() {
     if (!(this.props.info.project === 'ARCHIV')) {
-      window.dispatchEvent(new CustomEvent('setInJournal', {
+      window.dispatchEvent(new CustomEvent('JOURNAL_SET', {
         detail: {
           id: this.props.info.id,
           date: new Date()
@@ -153,7 +154,7 @@ export default class Task extends React.Component {
         <span className={`task__container task__container_level_${this.color()}`}>
           <div className='task__container-checkbox'>
             <lable
-              onClick={this.handleComplete}
+              onClick={this.handleCompleted}
               className='task__checkbox'
             >
             <input type='checkbox'/>
@@ -214,8 +215,6 @@ export default class Task extends React.Component {
     );
   }
 
-
-
   getClearJournal(id) {
     let index;
     const tmp = this.props.journal.filter((item, i)=> {
@@ -229,7 +228,7 @@ export default class Task extends React.Component {
 
     });
 
-    window.dispatchEvent(new CustomEvent('clearJournal', {
+    window.dispatchEvent(new CustomEvent('JOURNAL_CLEAR', {
       detail: {index: index}
     }));
 

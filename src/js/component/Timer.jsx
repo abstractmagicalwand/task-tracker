@@ -31,7 +31,7 @@ export default class Timer extends React.Component {
       --h;
     }
 
-    window.dispatchEvent(new CustomEvent('tick', {
+    window.dispatchEvent(new CustomEvent('TICK', {
       detail: {
         type: 'timer',
         time: [h, m, s],
@@ -113,13 +113,14 @@ export default class Timer extends React.Component {
   }
 
   delete() {
-    window.dispatchEvent(new CustomEvent('deleteTimer', {
+    window.dispatchEvent(new CustomEvent('TIMER_DELETE', {
       detail: {id: this.props.id}
     }));
   }
 
   deleteTask() {
-    if (!Math.max(...this.props.time) || Math.min(...this.props.time) < 0) this.props.delete();
+    if (!Math.max(...this.props.time) || Math.min(...this.props.time) < 0) 
+      this.props.delete();
   }
 
 };

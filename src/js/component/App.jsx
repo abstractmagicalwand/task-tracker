@@ -20,9 +20,9 @@ export default class App extends React.Component {
       viewMini: 'spell'
     };
 
-    this.handleNavBtn       = this.handleNavBtn.bind(this);
-    this.handleAddNewTask   = this.handleAddNewTask.bind(this);
-    this.handleSearchReq    = this.handleSearchReq.bind(this);
+    this.handleNavigation   = this.handleNavigation.bind(this);
+    this.handleCreateTask   = this.handleCreateTask.bind(this);
+    this.handleSearch       = this.handleSearch.bind(this);
     this.handleDeleteFolder = this.handleDeleteFolder.bind(this);
     this.handleDeleteTask   = this.handleDeleteTask.bind(this);
     this.handleCompleteTask = this.handleCompleteTask.bind(this);
@@ -49,7 +49,7 @@ export default class App extends React.Component {
     this.setStateDB(db);
   }
 
-  handleNavBtn(e) {
+  handleNavigation(e) {
     e.preventDefault();
 
     const newState = Object.assign({}, this.state);
@@ -64,7 +64,7 @@ export default class App extends React.Component {
     this.setState(newState);
   }
 
-  handleAddNewTask(e) {
+  handleCreateTask(e) {
     e.preventDefault();
     const db = [...this.state.db];
 
@@ -83,7 +83,7 @@ export default class App extends React.Component {
     this.setStateDB(db);
   }
 
-  handleSearchReq(e) {
+  handleSearch(e) {
     e.preventDefault();
     this.setState({
       viewContent: 'search',
@@ -219,20 +219,20 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    window.removeEventListener('clickNavBtn' , this.handleNavBtn);
-    window.removeEventListener('addNewTask'  , this.handleAddNewTask);
-    window.removeEventListener('searchValue' , this.handleSearchReq);
-    window.removeEventListener('deleteFolder', this.handleDeleteFolder);
-    window.removeEventListener('deleteTask'  , this.handleDeleteTask);
-    window.removeEventListener('complete'    , this.handleCompleteTask);
-    window.removeEventListener('save'        , this.handleSaveEdit);
-    window.removeEventListener('openNote'    , this.handleOpenNote);
-    window.removeEventListener('saveNote'    , this.handleSaveNote);
-    window.removeEventListener('back'        , this.handleBackContent);
-    window.removeEventListener('tick'        , this.handleTick);
-    window.removeEventListener('deleteTimer' , this.handleCancelTimer);
-    window.removeEventListener('clearJournal', this.handleClearJournal);
-    window.removeEventListener('setJournal'  , this.handleSetJournal);
+    window.removeEventListener('RELOCATE', this.handleNavigation);
+    window.removeEventListener('TASK_CREATE', this.handleCreateTask);
+    window.removeEventListener('SEARCH', this.handleSearch);
+    window.removeEventListener('FOLDER_DELETE', this.handleDeleteFolder);
+    window.removeEventListener('TASK_DELETE', this.handleDeleteTask);
+    window.removeEventListener('COMPLETED', this.handleCompleteTask);
+    window.removeEventListener('EDIT_SAVE', this.handleSaveEdit);
+    window.removeEventListener('NOTE_OPEN', this.handleOpenNote);
+    window.removeEventListener('NOTE_SAVE', this.handleSaveNote);
+    window.removeEventListener('BACK', this.handleBackContent);
+    window.removeEventListener('TICK', this.handleTick);
+    window.removeEventListener('TIMER_DELETE', this.handleCancelTimer);
+    window.removeEventListener('JOURNAL_CLEAR', this.handleClearJournal);
+    window.removeEventListener('JOURNAL_SET', this.handleSetJournal);
   }
 
   render() {
@@ -259,20 +259,20 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('clickNavBtn' , this.handleNavBtn);
-    window.addEventListener('addNewTask'  , this.handleAddNewTask);
-    window.addEventListener('searchValue' , this.handleSearchReq);
-    window.addEventListener('deleteFolder', this.handleDeleteFolder);
-    window.addEventListener('deleteTask'  , this.handleDeleteTask);
-    window.addEventListener('complete'    , this.handleCompleteTask);
-    window.addEventListener('save'        , this.handleSaveEdit);
-    window.addEventListener('openNote'    , this.handleOpenNote);
-    window.addEventListener('saveNote'    , this.handleSaveNote)
-    window.addEventListener('back'        , this.handleBackContent);
-    window.addEventListener('tick'        , this.handleTick);
-    window.addEventListener('deleteTimer' , this.handleCancelTimer);
-    window.addEventListener('clearJournal', this.handleClearJournal);
-    window.addEventListener('setInJournal', this.handleSetJournal);
+    window.addEventListener('RELOCATE', this.handleNavigation);
+    window.addEventListener('TASK_CREATE', this.handleCreateTask);
+    window.addEventListener('SEARCH', this.handleSearch);
+    window.addEventListener('FOLDER_DELETE', this.handleDeleteFolder);
+    window.addEventListener('TASK_DELETE', this.handleDeleteTask);
+    window.addEventListener('COMPLETED', this.handleCompleteTask);
+    window.addEventListener('EDIT_SAVE', this.handleSaveEdit);
+    window.addEventListener('NOTE_OPEN', this.handleOpenNote);
+    window.addEventListener('NOTE_SAVE', this.handleSaveNote)
+    window.addEventListener('BACK', this.handleBackContent);
+    window.addEventListener('TICK', this.handleTick);
+    window.addEventListener('TIMER_DELETE', this.handleCancelTimer);
+    window.addEventListener('JOURNAL_CLEAR', this.handleClearJournal);
+    window.addEventListener('JOURNAL_SET', this.handleSetJournal);
   }
 
   searchTaskDB(id, DB) {

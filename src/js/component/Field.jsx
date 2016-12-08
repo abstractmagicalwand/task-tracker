@@ -20,7 +20,7 @@ export default class Field extends React.Component {
 
       if (!task.description.length) return;
 
-      window.dispatchEvent(new CustomEvent('addNewTask', {
+      window.dispatchEvent(new CustomEvent('TASK_CREATE', {
         detail: task
       }));
       ReactDOM.findDOMNode(this.refs.text).value = '';
@@ -57,7 +57,6 @@ export default class Field extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log(ReactDOM.findDOMNode(this.refs.text).style.focus);
     this.state.show ? ReactDOM.findDOMNode(this.refs.text).focus() : null;
   }
 

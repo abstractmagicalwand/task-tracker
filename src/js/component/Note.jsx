@@ -14,7 +14,7 @@ export default class Note extends React.Component {
   }
 
   handleClickSave(e) {
-    window.dispatchEvent(new CustomEvent('saveNote', {
+    window.dispatchEvent(new CustomEvent('NOTE_SAVE', {
       detail: {
         value: ReactDOM.findDOMNode(this.refs.text).value
       }

@@ -59,6 +59,12 @@
   align-items: center;
   border: 3px solid #000;
   font-family: 'Rajdhani', sans-serif;
+  opacity: 1;
+  
+}
+
+.board-extra__table {
+  animation: invisibility .5s linear;
 }
 
 .board-extra__title {
@@ -75,14 +81,12 @@
 }
 
 .list__container {
-  /*overflow: auto;*/
   flex: 1;
   display: flex;
   flex-flow: column wrap;
 }
 
 .list__container-task-box {
-  /*overflow: auto;*/
   flex: 1;
   flex-direction: column;
 }
@@ -109,14 +113,12 @@
 
 .list__search {
   width: 20%;
-  /*animation: expand_search .5s linear;*/
-  /*animation-direction: reverse;*/
+  animation: down_width .5s linear;
 }
 
 .list__search:focus {
-  /*animation-direction: normal;*/
   width: 80%;
-  animation: expand_search .5s linear;
+  animation: up_width .5s linear;
 }
 
 .list__container-date {
@@ -143,7 +145,7 @@
 }
 
 .list__area_hidden {
-  animation: close_field .1s ease-in;
+  animation: down_width_height .1s ease-in;
   width: 0%;
   height: 0px;
   visibility: hidden;
@@ -153,7 +155,7 @@
   display: flex;
   width: 90%;
   height: 45px;
-  animation: open_field .5s ease-out;
+  animation: up_width_height .5s ease-out;
 }
 
 .list__input-area {
@@ -206,26 +208,16 @@
   margin: 0px 10px 15px;
 }
 
-/* animation */
-/*.task__container-descript_full {
-  background: darkslateblue;
-}*/
-
-/*.task__detail_spoil {
-  visibility: hidden;
-};*/
-
 .task__detail {
   margin-top: 5px;
   border-left: 5px solid slategray;
   padding-left: 10px;
-  animation: open_detail .5s linear;
+  animation: up_height .5s linear;
 }
 
 .task__container-checkbox {
   display: flex;
   align-items: center;
-  /*margin-left: 10px;*/
 }
 
 .task__checkbox {
@@ -277,7 +269,6 @@
 .task__lable {
 
 }
-
 
 .timer__container {
   display: flex;
@@ -401,7 +392,17 @@
   margin-left: 5px;
 }
 
-@keyframes open_detail {
+@keyframes up_heightt {
+  from {
+    height: 100%;
+  } 
+
+  to {
+    height: 0%;
+  }
+}
+
+@keyframes up_height {
   0% {
     height: 0%;
   }
@@ -413,19 +414,27 @@
   }
 }
 
-@keyframes close_datail {
-  0% {
+@keyframes down_height {
+  from {
     height: 70%;
   }
-  50% {
-    height: 50%;
-  }
-  100% {
+
+  to {
     height: 0%;
   }
 }
 
-@keyframes open_field {
+@keyframes invisibility {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes up_width_height {
   0% {
     height: 0px;
     width: 0%;
@@ -451,7 +460,7 @@
   }
 }
 
-@keyframes close_field {
+@keyframes down_width_height {
   0% {
     height: 45px;
     width: 90%;
@@ -477,24 +486,12 @@
   }
 }
 
-@keyframes expand_search {
-  0% {
+@keyframes up_width {
+  from {
     width: 20%;
   }
 
-  25% {
-    width: 35%;
-  }
-
-  50% {
-    width: 50%;
-  }
-
-  75% {
-    width: 65%;
-  }
-
-  100% {
+  to {
     width: 80%;
   }
 }

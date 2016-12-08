@@ -9,7 +9,7 @@ export default class Search extends React.Component {
   }
 
   handleSearchReq(e) {
-    window.dispatchEvent(new CustomEvent('searchValue', {
+    window.dispatchEvent(new CustomEvent('SEARCH', {
       detail: {value: e.target.value}
     }));
   }
