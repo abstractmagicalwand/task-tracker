@@ -3,31 +3,22 @@
 .app__container {
   display: flex;
   font-family: 'Ubuntu', sans-serif;
+  flex-flow: row wrap;
 }
 
 .app__sidebar {
   flex: 1;
   margin-right: 30px;
+  flex-flow: column wrap;
 }
 
 .app__content {
   flex: 3;
+  flex-flow: column wrap;
 }
 
 .task, .stopwatch, .timer {
   display: flex;
-}
-
-.app__container_gorizontal,
-.task__container_gorizontal {
-  flex-flow: row wrap;
-}
-
-.app__sidebar_vertical,
-.app__content_vertical,
-.navigation-menu__container_vertical,
-.list__container_vertical{
-  flex-flow: column wrap;
 }
 
 .navigation-menu__button {
@@ -51,6 +42,7 @@
 
 .navigation-menu__container {
   display: flex;
+  flex-flow: column wrap;
 }
 
 .board-extra__container {

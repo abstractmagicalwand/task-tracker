@@ -9,25 +9,23 @@ export default class List extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleClickBackList = this.handleClickBackList.bind(this);
-
-    this.getDate      = this.getDate.bind(this);
+    this.handleClickBack = this.handleClickBack.bind(this);
+    this.getDate = this.getDate.bind(this);
     this.getCompTasks = this.getCompTasks.bind(this);
   }
 
-  handleClickBackList(e) {
+  handleClickBack(e) {
     window.dispatchEvent(new CustomEvent('BACK'));
   }
 
   render() {
     return (
       <div className='list'>
-        <div className='list__container list__container_vertical'>
+        <div className='list__container'>
         {this.props.type === 'project' ?
           (<span
-            onTouchStart={this.handleBlockSelect}
             className='list__button-back'
-            onClick={this.handleClickBackList}>
+            onClick={this.handleClickBack}>
             {'\u25C0 back'}
           </span>) :
           null
