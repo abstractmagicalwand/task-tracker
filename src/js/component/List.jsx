@@ -22,21 +22,21 @@ export default class List extends React.Component {
     return (
       <div className='list'>
         <div className='list__container'>
+        {this.props.type !== 'archiv' ? <Search /> : null} 
         {this.props.type === 'project' ?
           (<span
             className='list__button-back'
-            onClick={this.handleClickBack}>
-            {'\u25C0 back'}
-          </span>) :
+            onClick={this.handleClickBack} />) :
           null
         }
-        {this.props.type !== 'archiv' ? <Search /> : null}
-        {this.props.type !== 'archiv' ? <Field /> : null}
-          <div className='list__scroll-box'>
+          <div 
+            className={`list__scroll-box${this.props.type === 'project' ? ' list__scroll-box_height_small' : ''}`
+          }>
             <div className='list__container-task'>
             {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
             </div>
           </div>
+          {this.props.type !== 'archiv' ? <Field /> : null}
         </div>
       </div>
     );

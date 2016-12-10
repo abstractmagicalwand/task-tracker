@@ -46,6 +46,9 @@ export default class Field extends React.Component {
   render() {
     return (
       <div className='list__field'>
+        <span className='list__container-button-add'>
+          <span className='button-add' onClick={this.handleClickAdd} />
+        </span>
         <textarea
           className={
             'list__area ' + 
@@ -55,9 +58,6 @@ export default class Field extends React.Component {
           placeholder='Write you task...'
         >
         </textarea>
-        <span className='list_container-button-add'>
-          <span className='button-add' onClick={this.handleClickAdd} />
-        </span>
       </div>
     );
   }

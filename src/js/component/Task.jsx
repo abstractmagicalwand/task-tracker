@@ -77,7 +77,10 @@ export default class Task extends React.Component {
     this.setState(newState);
   }
 
-  handleClickDescript() {
+  handleClickDescript(e) {
+    if (!(e.target.classList.contains('task__container') || 
+      e.target.classList.contains('task__descript'))) return;
+
     const newState = Object.assign({}, this.state);
     newState.descript = !this.state.descript;
     this.setState(newState);
@@ -134,14 +137,14 @@ export default class Task extends React.Component {
         className={`task__container-descript  task__container task__container_level_${this.color()}`}
       >
         <input
-          className='task__field'
-          type='text'
-          ref='value'
+          className="task__field"
+          type="text"
+          ref="value"
           defaultValue={`${this.props.info.description}`}
         />
-        <span className='task__panel'>
-          <span className='button-save' onClick={this.handleSave} />
-          <span className='button-exit' onClick={this.handleExit} />
+        <span className="task__panel">
+          <span className="button-save" onClick={this.handleSave} />
+          <span className="button-exit" onClick={this.handleExit} />
         </span>
       </span>
     );
@@ -151,19 +154,25 @@ export default class Task extends React.Component {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
 
     return (
-      <span className={`task__container-descript${this.state.descript ? ' task__container-descript_full' : ''}`}>
-        <span className={`task__container task__container_level_${this.color()}`}>
-          <div className='task__container-checkbox'>
+      <span 
+        onClick={this.handleClickDescript} 
+        className={`task__container-descript${this.state.descript ? 
+          ' task__container-descript_full' : 
+          ''}`
+      }>
+        <span className={
+          `task__container task__container_level${this.color()}`
+        }>
+          <div className="task__container-checkbox">
             <lable
               onClick={this.handleCompleted}
-              className='task__checkbox'
+              className="task__checkbox"
             >
-            <input type='checkbox'/>
+            <input type="checkbox"/>
             </lable>
           </div>
           <p
-            className='task__descript'
-            onClick={this.handleClickDescript}
+            className="task__descript"
           >
             {this.createPreview(
               this.props.info.description, 
@@ -171,37 +180,51 @@ export default class Task extends React.Component {
             )}
           </p>
 
-          <span className='task__panel'>
-            {/*<p className='task__price'>
-              {this.props.info.price}$ / {this.props.info.timePrice} min.
-            </p>*/}
+          <span className="task__panel">
             {this.timer(timer)}
-            {lable ? <span className='task__lable'></span> : null}
+            {lable ? <span className="task__lable"></span> : null}
             <Stopwatch
               id={this.props.info.id}
               time={stopwatch}
             />
             <span
-              title='edit task'
-              className='button-edit'
+              title="edit"
+              className="button-edit"
               onClick={this.handleExit}
             />
             <span
-              title='open note'
-              className='button-note'
+              title="note"
+              className="button-note"
               onClick={this.handleNote}
             />
             <span
-              title='delete task'
-              className='button-delete'
+              title="delete"
+              className="button-delete"
               onClick={this.handleDelete}
             />
           </span>
         </span>
-        <span className='task__detail' hidden={!this.state.descript}>
-          <p><span className='task__attribute'>Description:</span> {this.props.info.description}</p>
-          <p><span className='task__attribute'>Price:</span>  {this.props.info.price} USD</p>
-          <p><span className='task__attribute'>Time on complete:</span>  {this.props.info.timePrice} minutes</p>
+        <span className="task__detail" hidden={!this.state.descript}>
+          <p>
+            <span className="task__attribute">
+              Description:
+            </span> 
+            {this.props.info.description}
+          </p>
+          <p>
+            <span className="task__attribute">
+              Price:
+            </span>  
+            {this.props.info.price}
+            \sUSD
+          </p>
+          <p>
+            <span className="task__attribute">
+              Time on complete:
+            </span>  
+            {this.props.info.timePrice} 
+            minutes
+          </p>
         </span>
       </span>
     );
@@ -210,10 +233,10 @@ export default class Task extends React.Component {
   archiv() {
     if (this.props.info.project !== 'ARCHIV') return;
     return (
-      <span className='task__container task__container_level_one'>
-        <p className='task__descript'>{this.props.info.description}</p>
-        <span className='task__panel'>
-          <span className='button-delete' onClick={this.handleDelete} />
+      <span className="task__container task__container_level_one">
+        <p className="task__descript">{this.props.info.description}</p>
+        <span className="task__panel">
+          <span className="button-delete" onClick={this.handleDelete} />
         </span>
       </span>
     );
@@ -257,7 +280,8 @@ export default class Task extends React.Component {
     }
 
     // j - short name from journal
-    const j = (typeof(journal[0].date) === 'string') ? new Date(journal[0].date) :
+    const j = (typeof(journal[0].date) === 'string') ? 
+      new Date(journal[0].date) :
       journal[0].date;
 
     const journalHMS = [j.getHours(), j.getMinutes(), j.getSeconds()];

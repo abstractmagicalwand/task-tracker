@@ -22532,24 +22532,21 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'list__container' },
-	          this.props.type === 'project' ? _react2.default.createElement(
-	            'span',
-	            {
-	              className: 'list__button-back',
-	              onClick: this.handleClickBack },
-	            '\u25C0 back'
-	          ) : null,
 	          this.props.type !== 'archiv' ? _react2.default.createElement(_Search2.default, null) : null,
-	          this.props.type !== 'archiv' ? _react2.default.createElement(_Field2.default, null) : null,
+	          this.props.type === 'project' ? _react2.default.createElement('span', {
+	            className: 'list__button-back',
+	            onClick: this.handleClickBack }) : null,
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'list__scroll-box' },
+	            {
+	              className: 'list__scroll-box' + (this.props.type === 'project' ? ' list__scroll-box_height_small' : '') },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'list__container-task' },
 	              this.getCompTasks(this.getTasks(this.props.type, this.props.db))
 	            )
-	          )
+	          ),
+	          this.props.type !== 'archiv' ? _react2.default.createElement(_Field2.default, null) : null
 	        )
 	      );
 	    }
@@ -22790,16 +22787,16 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'list__field' },
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'list__container-button-add' },
+	          _react2.default.createElement('span', { className: 'button-add', onClick: this.handleClickAdd })
+	        ),
 	        _react2.default.createElement('textarea', {
 	          className: 'list__area ' + ('list__area_' + (this.state.show ? 'show' : 'hidden')),
 	          ref: 'text',
 	          placeholder: 'Write you task...'
-	        }),
-	        _react2.default.createElement(
-	          'span',
-	          { className: 'list_container-button-add' },
-	          _react2.default.createElement('span', { className: 'button-add', onClick: this.handleClickAdd })
-	        )
+	        })
 	      );
 	    }
 	  }, {
@@ -23042,7 +23039,9 @@
 	    }
 	  }, {
 	    key: 'handleClickDescript',
-	    value: function handleClickDescript() {
+	    value: function handleClickDescript(e) {
+	      if (!(e.target.classList.contains('task__container') || e.target.classList.contains('task__descript'))) return;
+	
 	      var newState = Object.assign({}, this.state);
 	      newState.descript = !this.state.descript;
 	      this.setState(newState);
@@ -23122,10 +23121,12 @@
 	
 	      return _react2.default.createElement(
 	        'span',
-	        { className: 'task__container-descript' + (this.state.descript ? ' task__container-descript_full' : '') },
+	        {
+	          onClick: this.handleClickDescript,
+	          className: 'task__container-descript' + (this.state.descript ? ' task__container-descript_full' : '') },
 	        _react2.default.createElement(
 	          'span',
-	          { className: 'task__container task__container_level_' + this.color() },
+	          { className: 'task__container task__container_level' + this.color() },
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'task__container-checkbox' },
@@ -23141,8 +23142,7 @@
 	          _react2.default.createElement(
 	            'p',
 	            {
-	              className: 'task__descript',
-	              onClick: this.handleClickDescript
+	              className: 'task__descript'
 	            },
 	            this.createPreview(this.props.info.description, this.props.preview)
 	          ),
@@ -23156,17 +23156,17 @@
 	              time: stopwatch
 	            }),
 	            _react2.default.createElement('span', {
-	              title: 'edit task',
+	              title: 'edit',
 	              className: 'button-edit',
 	              onClick: this.handleExit
 	            }),
 	            _react2.default.createElement('span', {
-	              title: 'open note',
+	              title: 'note',
 	              className: 'button-note',
 	              onClick: this.handleNote
 	            }),
 	            _react2.default.createElement('span', {
-	              title: 'delete task',
+	              title: 'delete',
 	              className: 'button-delete',
 	              onClick: this.handleDelete
 	            })
@@ -23183,7 +23183,6 @@
 	              { className: 'task__attribute' },
 	              'Description:'
 	            ),
-	            ' ',
 	            this.props.info.description
 	          ),
 	          _react2.default.createElement(
@@ -23194,9 +23193,8 @@
 	              { className: 'task__attribute' },
 	              'Price:'
 	            ),
-	            '  ',
 	            this.props.info.price,
-	            ' USD'
+	            '\\sUSD'
 	          ),
 	          _react2.default.createElement(
 	            'p',
@@ -23206,9 +23204,8 @@
 	              { className: 'task__attribute' },
 	              'Time on complete:'
 	            ),
-	            '  ',
 	            this.props.info.timePrice,
-	            ' minutes'
+	            'minutes'
 	          )
 	        )
 	      );
@@ -24305,7 +24302,7 @@
 	  _createClass(Note, [{
 	    key: 'handleClickBack',
 	    value: function handleClickBack(e) {
-	      window.dispatchEvent(new CustomEvent('back'));
+	      window.dispatchEvent(new CustomEvent('BACK'));
 	    }
 	  }, {
 	    key: 'handleClickSave',
@@ -24937,7 +24934,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Rajdhani|Ubuntu);", ""]);
 	
 	// module
-	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n  flex-flow: row wrap;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n  flex-flow: column wrap;\n}\n\n.app__content {\n  flex: 3;\n  flex-flow: column wrap;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n  min-width: 300px; /*360px*/\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border-bottom: 10px solid cadetblue;\n  font-family: 'Rajdhani', sans-serif;\n  opacity: 1;\n  \n}\n\n.board-extra__table {\n  animation: invisibility .5s linear;\n}\n\n.board-extra__table {\n  border-collapse: collapse;\n  margin-bottom: 5px;\n}\n\ntd {\n  padding-right: 65px;\n  border-left: 5px solid slategray;\n  max-padding-right: 65px;\n}\n\n.board-extra__account_cell {\n  padding-right: 110px;\n}\n\n.board-extra__title {\n  border-bottom: 2px solid black;\n  margin-bottom: 5px;\n  font-weight: bold;\n}\n\n.board-extra__content {\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__scroll-box {\n  flex: 1;\n  flex-direction: column;\n  overflow: auto;\n  max-height: 80vh;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  display: flex;\n  width: 30%;\n  transition: width 0.4s ease-in;\n  border-radius: 10px;\n  border: 3px solid #000;\n  outline: none;  \n  font-size: 15px;\n  padding-left: 25px;\n  height: 20px;\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 195) + ") no-repeat left center;\n}\n\n.list__search:focus {\n  display: flex;\n  width: 60%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  margin-bottom: 10px;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  display: none;\n  width: 0%;\n  height: 0px;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 42px;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n  min-width: 300px;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n  animation: invisibility .5s linear ;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: plum;\n  box-shadow: inset 0px 0px 0px 5px pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 10px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 196) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 197) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 198) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 199) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 200) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 201) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 202) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 203) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 204) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 205) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 206) + ");\n}\n\n.list_container-button-add {\n  background: lightslategray;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-left: 5px;\n}\n\n@keyframes invisibility {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n@keyframes open_search {\n  0% {\n    width: 20%;\n  }\n\n  50% {\n    width: 50%;\n  }\n\n  100% {\n    width: 80%;\n  }\n}  \n\n@media screen and (max-width: 695px) {\n  .app__sidebar {\n    margin-right: 0;\n    align-content: center;\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .navigation-menu__button {\n    min-width: 360px;\n  }\n\n  .task__container {\n    min-width: 380px;\n  }\n  \n  .task__container-descript {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  body {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .list__search {\n    margin-top: 5px;\n    margin-bottom: 5px;\n  }\n\n  .list__search {\n    width: 60%;\n    height: 30px;\n  }\n\n  .list__search:focus {\n    width: 90%;\n  }\n\n  .board-extra__container {\n    margin-bottom: 10px;\n  }\n\n  .list__field {\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .button-add {\n    margin: 5px;  \n    background-position-y: center;\n    background-position-x: center;\n    height: 60px;\n    width: 60px;\n  }\n\n  .board-extra__container {\n    margin-left: 5px;\n    margin-right: 5px;\n    margin-top: 10px;\n  }\n\n  .list__area {\n    margin-bottom: 10px;\n    width: 95%;\n    height: 50vh;\n  }\n\n  .note__field {\n    width: 98vw;\n  }\n}\n", ""]);
+	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n  flex-flow: row wrap;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n  flex-flow: column wrap;\n}\n\n.app__content {\n  flex: 3;\n  flex-flow: column wrap;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.navigation-menu__button {\n  background: #4CAF50;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n  min-width: 300px;\n  -webkit-touch-callout: none; \n  -webkit-user-select: none; \n  -khtml-user-select: none; \n  -moz-user-select: none; \n  -ms-user-select: none; \n  user-select: none;\n  cursor: pointer;\n}\n\n.navigation-menu__button:hover {\n  background: #388E3C;\n}\n\n.navigation-menu__button:active {\n  background: #C8E6C9;\n}\n\n.navigation-menu__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border-bottom: 10px solid #4CAF50;\n  border-right: 2px solid #4CAF50;\n  font-family: 'Rajdhani', sans-serif;\n  opacity: 1;\n  \n}\n\n.board-extra__table {\n  animation: invisibility .5s linear;\n}\n\n.board-extra__table {\n  border-collapse: collapse;\n  margin-bottom: 5px;\n}\n\ntd {\n  padding-right: 65px;\n  border-left: 5px solid #FF5252;\n  max-padding-right: 65px;\n}\n\n.board-extra__account_cell {\n  padding-right: 110px;\n}\n\n.board-extra__title {\n  border-bottom: 2px solid black;\n  margin-bottom: 5px;\n  font-weight: bold;\n}\n\n.board-extra__content {\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n\n\n.list__scroll-box {\n  flex: 1;\n  flex-direction: column;\n  overflow: auto;\n  height: 80vh;\n  max-height: 80vh;\n}\n\n.list__scroll-box_height_small {\n  max-height: 73vh;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 0px; /*5*/\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: url(" + __webpack_require__(/*! ../img/arrow.png */ 209) + ") no-repeat;\n  height: 20px;\n  display: inline-block;\n  padding-left: 5px;\n  margin-top: 9px;\n  margin-bottom: 9px;\n\n/*  width: 50px;\n  padding: 2px 5px;\n  font-size: 14px;\n  font-weight: bold;\n  text-align: center;\n  text-transform: uppercase;*/\n}\n\n.list__button-back:hover {\n  opacity: .5;\n}\n\n.list__search {\n  display: flex;\n  width: 30%;\n  transition: width 0.4s ease-in;\n  border-radius: 10px;\n  border: 3px solid #000;\n  outline: none;  \n  font-size: 15px;\n  padding-left: 25px;\n  height: 20px;\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 195) + ") no-repeat left center;\n}\n\n.list__search:focus {\n  display: flex;\n  width: 60%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 2px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  display: none;\n  width: 0%;\n  height: 0px;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 8vh;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  height: 80vh;\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.list__area, .note__field {\n  font-size: 14px;\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 98%;\n  /*max-height: 500px;*/\n  max-width: 980px;\n  height: 85vh;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: #FF5252;\n  width: 100%;\n  min-width: 300px;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid #FF5252;\n  padding-left: 10px;\n  animation: invisibility .5s linear ;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: plum;\n  box-shadow: inset 0px 0px 0px 5px pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n  -webkit-touch-callout: none; \n  -webkit-user-select: none; \n  -khtml-user-select: none; \n  -moz-user-select: none; \n  -ms-user-select: none; \n  user-select: none;\n  cursor: default;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 10px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: #388E3C;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 196) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 197) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 198) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 199) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 200) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 201) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 202) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 203) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 204) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 205) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 206) + ");\n}\n\n.list__container-button-add {\n  background: #FF5252;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-right: 5px;\n  align-self: center;\n}\n\n@keyframes invisibility {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n@media screen and (max-width: 695px) {\n  .app__sidebar {\n    margin-right: 0;\n    align-content: center;\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .navigation-menu__button {\n    min-width: 360px;\n  }\n\n  .task__container {\n    min-width: 380px;\n  }\n  \n  .task__container-descript {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  body {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .list__search {\n    margin-top: 5px;\n    margin-bottom: 5px;\n  }\n\n  .list__search {\n    width: 60%;\n    height: 30px;\n  }\n\n  .list__search:focus {\n    width: 90%;\n  }\n\n  .board-extra__container {\n    margin-bottom: 10px;\n  }\n\n  .list__field {\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .button-add {\n    margin: 5px;  \n    background-position-y: center;\n    background-position-x: center;\n    height: 60px;\n    width: 60px;\n  }\n\n  .board-extra__container {\n    margin-left: 5px;\n    margin-right: 5px;\n    margin-top: 10px;\n  }\n\n  .list__area {\n    margin-bottom: 10px;\n    width: 95%;\n    height: 50vh;\n  }\n\n  .note__field {\n    width: 98.5vw;\n  }\n\n  .list__field {\n    order: 1;\n    margin-bottom: 10px;\n  }\n\n  .list__area {\n    height: 10vh;\n    margin-top: 10px;\n  }\n\n  .list__scroll-box {\n    order: 2;\n  }\n}\n\n.folder__container_level_one,\n.task__container_level_one {\n  background: #4CAF50;\n}\n.task__container_level_two {\n  background: #CDDC39;\n}\n.task__container_level_three {\n  background: #FFC107;\n}\n.task__container_level_four {\n  background: #FF5722;\n}\n.task__container_level_five {\n  background: #E040FB;\n}", ""]);
 	
 	// exports
 
@@ -25402,6 +25399,15 @@
 	};
 	
 	exports.config = config;
+
+/***/ },
+/* 209 */
+/*!***************************!*\
+  !*** ./src/img/arrow.png ***!
+  \***************************/
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAAUCAYAAAAdmmTCAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAABcSAAAXEgFnn9JSAAAAB3RJTUUH4AwKCwMNKRR82AAAAa1JREFUSMfVl7+LE0EUxz87O5udZJYsZMeABDxiQiTFgWnSXWlj6T9wwYCFvY2NlRaWNv4L8cd/IFiJleAfYHUI4QikOPHirpfs2GTPPY2FVXYeDDy+1efNfB/vDfxHaK3va60THIsAeKGUOtda910C7wCvAKuU+qm1vukK+G3gHWC38GkURQdVgZP/0AVwF3gGHBaitVZkWdbb2kjs1cdBsPF26DXgAfAYuH6lIiFsnuefgBTw9gkfhuH3P7UEeA782FolLyxTtaOUSsvgXeBNVWF3wJ8V4GPgoyvgZfhj4MQl8AJexHF8KqW8gYMhoih6H0XRkZRy4WIBjMdjzxgzqNVqn53y/Gg0+r0HdDrX6vX6W1fgPYDFYkG73Qag3+/r+Xz+ZLVaPdrpMyFW1tp8n06x1npKqW9XpmSSJCyXS2azmZhOpw/TNH262WyapamW9Xq9O8Ph8Ot6vd7nhPV83//7Ao0xl3mz2bzn+/6X0lNlYRgeVLqBu93uZR7H8ZGU8sMW/sKJlbjcyMaYW0EQvFZKnTcaDTc+I5PJhGJ7HAwGJkmSl61Wq1MVvl9tAVyfqtYQDAAAAABJRU5ErkJggg=="
 
 /***/ }
 /******/ ]);
