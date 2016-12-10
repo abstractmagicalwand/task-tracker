@@ -63,10 +63,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(/*! ./css/main.css */ 191);
+	__webpack_require__(/*! ./css/main.css */ 192);
 	
 	
 	window.localStorage.clear();
+	
 	_reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.getElementById('root'));
 
 /***/ },
@@ -21990,6 +21991,8 @@
 	
 	var _storage = __webpack_require__(/*! ../db/storage.js */ 181);
 	
+	var _config = __webpack_require__(/*! ../db/config.js */ 208);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -22012,7 +22015,8 @@
 	      db: (0, _storage.load)() || _index.db,
 	      viewContent: null,
 	      viewLast: null,
-	      viewMini: 'spell'
+	      viewMini: 'spell',
+	      previewLength: _config.config.PREVIEW_LENGTH
 	    };
 	
 	    _this.handleNavigation = _this.handleNavigation.bind(_this);
@@ -22275,7 +22279,8 @@
 	              view: this.state.viewContent ? this.state.viewContent : 'inbox',
 	              db: this.state.db,
 	              journal: _journal.journal,
-	              value: this.state.value ? this.state.value : ''
+	              value: this.state.value ? this.state.value : '',
+	              preview: _config.config.PREVIEW_LENGTH
 	            })
 	          )
 	        )
@@ -22416,7 +22421,8 @@
 	          return _react2.default.createElement(_List2.default, {
 	            journal: this.props.journal,
 	            type: 'inbox',
-	            db: this.props.db
+	            db: this.props.db,
+	            preview: this.props.preview
 	          });
 	        case 'project':
 	          return _react2.default.createElement(_Collection2.default, { db: this.props.db });
@@ -22427,7 +22433,8 @@
 	            journal: this.props.journal,
 	            type: 'search',
 	            value: this.props.value,
-	            db: this.props.db
+	            db: this.props.db,
+	            preview: this.props.preview
 	          });
 	        case 'note':
 	          return _react2.default.createElement(_Note2.default, { value: this.props.value });
@@ -22437,7 +22444,8 @@
 	            type: 'project',
 	            journal: this.props.journal,
 	            projectName: this.props.view,
-	            db: this.props.db
+	            db: this.props.db,
+	            preview: this.props.preview
 	          });
 	      }
 	    }
@@ -22535,7 +22543,7 @@
 	          this.props.type !== 'archiv' ? _react2.default.createElement(_Field2.default, null) : null,
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'list__container-task-box' },
+	            { className: 'list__scroll-box' },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'list__container-task' },
@@ -22621,7 +22629,8 @@
 	            journal: _this3.props.journal,
 	            info: task,
 	            key: task.id,
-	            stopwatch: _this3.props.stopwatch
+	            stopwatch: _this3.props.stopwatch,
+	            preview: _this3.props.preview
 	          });
 	        } else {
 	          _journal.temp.date = task.date;
@@ -22646,7 +22655,8 @@
 	        _react2.default.createElement(_Task2.default, {
 	          journal: this.props.journal,
 	          info: task,
-	          stopwatch: this.props.stopwatch
+	          stopwatch: this.props.stopwatch,
+	          preview: this.props.preview
 	        })
 	      );
 	    }
@@ -22716,6 +22726,8 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
+	var _config = __webpack_require__(/*! ../db/config.js */ 208);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22745,7 +22757,9 @@
 	    key: 'handleClickAdd',
 	    value: function handleClickAdd() {
 	      function addTask() {
-	        if (!_reactDom2.default.findDOMNode(this.refs.text).value.length) return;
+	        var value = _reactDom2.default.findDOMNode(this.refs.text).value;
+	
+	        if (!~value.indexOf(' ')) return;
 	
 	        var task = this.createTask(_reactDom2.default.findDOMNode(this.refs.text).value);
 	
@@ -22777,7 +22791,7 @@
 	        'div',
 	        { className: 'list__field' },
 	        _react2.default.createElement('textarea', {
-	          className: 'list__area_' + (this.state.show ? 'show' : 'hidden'),
+	          className: 'list__area ' + ('list__area_' + (this.state.show ? 'show' : 'hidden')),
 	          ref: 'text',
 	          placeholder: 'Write you task...'
 	        }),
@@ -22803,7 +22817,7 @@
 	          money = /(?:\$)\d+/,
 	          timePrice = /\d\d:\d\d:\d\d/,
 	          formatTimePrice = timePrice.test(text) ? timePrice.exec(text)[0].split(':') : null,
-	          endFormatTimePrice = formatTimePrice ? +formatTimePrice[0] * 60 + +formatTimePrice[1] : 0;
+	          endFormatTimePrice = formatTimePrice ? +formatTimePrice[0] * 60 + +formatTimePrice[1] : _config.config.DEFAULT_PRICE_MINUTES;
 	
 	      var task = {
 	        stopwatch: [0, 0, 0],
@@ -22814,12 +22828,10 @@
 	        priority: priority.test(text) ? priority.exec(text)[0].length : 0,
 	        project: project.test(text) ? project.exec(text)[0] : 'SANS',
 	        timeDeath: death.test(text) ? death.exec(text)[0].split(/\//) : null,
-	        price: money.test(text) ? money.exec(text)[0].slice(1) : 5,
+	        price: money.test(text) ? money.exec(text)[0].slice(1) : _config.config.DEFAULT_PRICE_TASK,
 	        timePrice: endFormatTimePrice,
 	        description: text.replace(priority, '').replace(project, '').replace(tags, '').replace(death, '').replace(timePrice, '').replace(money, '').trim()
 	      };
-	
-	      task.preview = '' + (task.description.length > 95 ? task.description.slice(0, 61) + '...' : task.description);
 	
 	      return task;
 	    }
@@ -22870,13 +22882,13 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this, props));
 	
-	    _this.handleSearchReq = _this.handleSearchReq.bind(_this);
+	    _this.handleRequest = _this.handleRequest.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(Search, [{
-	    key: 'handleSearchReq',
-	    value: function handleSearchReq(e) {
+	    key: 'handleRequest',
+	    value: function handleRequest(e) {
 	      window.dispatchEvent(new CustomEvent('SEARCH', {
 	        detail: { value: e.target.value }
 	      }));
@@ -22890,7 +22902,7 @@
 	        _react2.default.createElement('input', {
 	          className: 'list__search',
 	          type: 'text',
-	          onChange: this.handleSearchReq
+	          onChange: this.handleRequest
 	        })
 	      );
 	    }
@@ -22973,6 +22985,7 @@
 	    _this.diffDate = _this.diffDate.bind(_this);
 	    _this.addArrs = _this.addArrs.bind(_this);
 	    _this.color = _this.color.bind(_this);
+	    _this.createPreview = _this.createPreview.bind(_this);
 	    return _this;
 	  }
 	
@@ -23131,7 +23144,7 @@
 	              className: 'task__descript',
 	              onClick: this.handleClickDescript
 	            },
-	            this.props.info.preview
+	            this.createPreview(this.props.info.description, this.props.preview)
 	          ),
 	          _react2.default.createElement(
 	            'span',
@@ -23218,6 +23231,12 @@
 	          _react2.default.createElement('span', { className: 'button-delete', onClick: this.handleDelete })
 	        )
 	      );
+	    }
+	  }, {
+	    key: 'createPreview',
+	    value: function createPreview(str, n) {
+	      if (str.length < n) return str;
+	      return str.slice(0, n) + '...';
 	    }
 	  }, {
 	    key: 'getClearJournal',
@@ -23741,7 +23760,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.DEFAULT_PRICE_MINUTES = exports.DEFAULT_PRICE_TASK = exports.account = exports.temp = exports.journal = undefined;
+	exports.account = exports.temp = exports.journal = undefined;
 	
 	var _storage = __webpack_require__(/*! ./storage */ 181);
 	
@@ -23759,14 +23778,9 @@
 	  'wallet': 0
 	};
 	
-	var DEFAULT_PRICE_TASK = 300;
-	var DEFAULT_PRICE_MINUTES = 60;
-	
 	exports.journal = journal;
 	exports.temp = temp;
 	exports.account = account;
-	exports.DEFAULT_PRICE_TASK = DEFAULT_PRICE_TASK;
-	exports.DEFAULT_PRICE_MINUTES = DEFAULT_PRICE_MINUTES;
 
 /***/ },
 /* 181 */
@@ -24607,12 +24621,12 @@
 	              null,
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                'completed'
 	              ),
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                '' + this.props.data.completed
 	              )
 	            ),
@@ -24621,12 +24635,12 @@
 	              null,
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                'late'
 	              ),
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                '' + this.props.data.late
 	              )
 	            ),
@@ -24635,12 +24649,12 @@
 	              null,
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                'minutes'
 	              ),
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                '' + this.props.data.minutes
 	              )
 	            ),
@@ -24649,12 +24663,12 @@
 	              null,
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                'wallet'
 	              ),
 	              _react2.default.createElement(
 	                'td',
-	                null,
+	                { className: 'board-extra__account_cell' },
 	                this.props.data.wallet + '$'
 	              )
 	            )
@@ -24798,7 +24812,6 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Me very old task. Mb completed?',
-	    preview: 'Me very old task. Mb completed?',
 	    id: 2,
 	    complete: false,
 	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
@@ -24815,7 +24828,6 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Drink milk.',
-	    preview: 'Drink milk.',
 	    id: 232,
 	    complete: false,
 	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
@@ -24832,8 +24844,7 @@
 	  project: '@shop',
 	  note: '',
 	  tasks: [{
-	    description: 'Buy milk.',
-	    preview: 'Buy milk.',
+	    description: 'Buy milk',
 	    id: 1,
 	    note: '',
 	    complete: false,
@@ -24851,7 +24862,6 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Will meet with girl.',
-	    preview: 'Will meet with girl.',
 	    id: 3,
 	    note: '',
 	    complete: false,
@@ -24869,7 +24879,6 @@
 	  note: '',
 	  tasks: [{
 	    description: 'Scamper.',
-	    preview: 'Scamper.',
 	    id: 1322131231231232,
 	    complete: false,
 	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
@@ -24887,7 +24896,8 @@
 	exports.db = db;
 
 /***/ },
-/* 191 */
+/* 191 */,
+/* 192 */
 /*!**************************!*\
   !*** ./src/css/main.css ***!
   \**************************/
@@ -24896,10 +24906,10 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 192);
+	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 193);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 205)(content, {});
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 207)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -24916,24 +24926,24 @@
 	}
 
 /***/ },
-/* 192 */
+/* 193 */
 /*!*****************************************!*\
   !*** ./~/css-loader!./src/css/main.css ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 193)();
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 194)();
 	// imports
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Rajdhani|Ubuntu);", ""]);
 	
 	// module
-	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n  flex-flow: row wrap;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n  flex-flow: column wrap;\n}\n\n.app__content {\n  flex: 3;\n  flex-flow: column wrap;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border: 3px solid #000;\n  font-family: 'Rajdhani', sans-serif;\n  opacity: 1;\n  \n}\n\n.board-extra__table {\n  animation: invisibility .5s linear;\n}\n\n.board-extra__title {\n\n}\n\n.board-extra__content {\n\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container-task-box {\n  flex: 1;\n  flex-direction: column;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  width: 20%;\n  animation: down_width .5s linear;\n}\n\n.list__search:focus {\n  width: 80%;\n  animation: up_width .5s linear;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  margin-bottom: 10px;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  animation: down_width_height .1s ease-in;\n  width: 0%;\n  height: 0px;\n  visibility: hidden;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 45px;\n  animation: up_width_height .5s ease-out;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n  animation: up_height .5s linear;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 30px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 194) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 195) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 196) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 197) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 198) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 199) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 200) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 201) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 202) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 203) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 204) + ");\n}\n\n.list_container-button-add {\n  background: lightslategray;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-left: 5px;\n}\n\n@keyframes up_heightt {\n  from {\n    height: 100%;\n  } \n\n  to {\n    height: 0%;\n  }\n}\n\n@keyframes up_height {\n  0% {\n    height: 0%;\n  }\n  50% {\n    height: 50%;\n  }\n  100% {\n    height: 70%;\n  }\n}\n\n@keyframes down_height {\n  from {\n    height: 70%;\n  }\n\n  to {\n    height: 0%;\n  }\n}\n\n@keyframes invisibility {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n@keyframes up_width_height {\n  0% {\n    height: 0px;\n    width: 0%;\n  }\n\n  10% {\n    height: 10px;\n  }\n\n  25% {\n    height: 20px;\n    width: 25%;\n  }\n\n  50% {\n    height: 30px;\n    width: 50%;\n  }\n\n  100% {\n    height: 45px;\n    width: 90%;\n  }\n}\n\n@keyframes down_width_height {\n  0% {\n    height: 45px;\n    width: 90%;\n  }\n\n  10% {\n    height: 30px;\n    width: 50%;\n  }\n\n  25% {\n    height: 20px;\n    width: 25%;\n  }\n\n  50% {\n    height: 10px;\n  }\n\n  100% {\n    height: 0px;\n    width: 0%;\n  }\n}\n\n@keyframes up_width {\n  from {\n    width: 20%;\n  }\n\n  to {\n    width: 80%;\n  }\n}", ""]);
+	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n  flex-flow: row wrap;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n  flex-flow: column wrap;\n}\n\n.app__content {\n  flex: 3;\n  flex-flow: column wrap;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.navigation-menu__button {\n  background: cadetblue;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n  min-width: 300px; /*360px*/\n}\n\n.navigation-menu__button:hover {\n  background: darkslategray;\n}\n\n.navigation-menu__button:active {\n  background: grey;\n}\n\n.navigation-menu__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border-bottom: 10px solid cadetblue;\n  font-family: 'Rajdhani', sans-serif;\n  opacity: 1;\n  \n}\n\n.board-extra__table {\n  animation: invisibility .5s linear;\n}\n\n.board-extra__table {\n  border-collapse: collapse;\n  margin-bottom: 5px;\n}\n\ntd {\n  padding-right: 65px;\n  border-left: 5px solid slategray;\n  max-padding-right: 65px;\n}\n\n.board-extra__account_cell {\n  padding-right: 110px;\n}\n\n.board-extra__title {\n  border-bottom: 2px solid black;\n  margin-bottom: 5px;\n  font-weight: bold;\n}\n\n.board-extra__content {\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__scroll-box {\n  flex: 1;\n  flex-direction: column;\n  overflow: auto;\n  max-height: 80vh;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 10px;\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: lawngreen;\n  width: 50px;\n  padding: 2px 5px;\n}\n\n.list__search {\n  display: flex;\n  width: 30%;\n  transition: width 0.4s ease-in;\n  border-radius: 10px;\n  border: 3px solid #000;\n  outline: none;  \n  font-size: 15px;\n  padding-left: 25px;\n  height: 20px;\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 195) + ") no-repeat left center;\n}\n\n.list__search:focus {\n  display: flex;\n  width: 60%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 0px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  margin-bottom: 10px;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  display: none;\n  width: 0%;\n  height: 0px;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 42px;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 100%;\n  max-height: 500px;\n  max-width: 980px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: gray;\n  width: 100%;\n  min-width: 300px;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid slategray;\n  padding-left: 10px;\n  animation: invisibility .5s linear ;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: plum;\n  box-shadow: inset 0px 0px 0px 5px pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 10px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.folder__container_level_one {\n\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: lightblue;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder_level_one {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 196) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 197) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 198) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 199) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 200) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 201) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 202) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 203) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 204) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 205) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 206) + ");\n}\n\n.list_container-button-add {\n  background: lightslategray;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-left: 5px;\n}\n\n@keyframes invisibility {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n@keyframes open_search {\n  0% {\n    width: 20%;\n  }\n\n  50% {\n    width: 50%;\n  }\n\n  100% {\n    width: 80%;\n  }\n}  \n\n@media screen and (max-width: 695px) {\n  .app__sidebar {\n    margin-right: 0;\n    align-content: center;\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .navigation-menu__button {\n    min-width: 360px;\n  }\n\n  .task__container {\n    min-width: 380px;\n  }\n  \n  .task__container-descript {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  body {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .list__search {\n    margin-top: 5px;\n    margin-bottom: 5px;\n  }\n\n  .list__search {\n    width: 60%;\n    height: 30px;\n  }\n\n  .list__search:focus {\n    width: 90%;\n  }\n\n  .board-extra__container {\n    margin-bottom: 10px;\n  }\n\n  .list__field {\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .button-add {\n    margin: 5px;  \n    background-position-y: center;\n    background-position-x: center;\n    height: 60px;\n    width: 60px;\n  }\n\n  .board-extra__container {\n    margin-left: 5px;\n    margin-right: 5px;\n    margin-top: 10px;\n  }\n\n  .list__area {\n    margin-bottom: 10px;\n    width: 95%;\n    height: 50vh;\n  }\n\n  .note__field {\n    width: 98vw;\n  }\n}\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 193 */
+/* 194 */
 /*!**************************************!*\
   !*** ./~/css-loader/lib/css-base.js ***!
   \**************************************/
@@ -24992,7 +25002,16 @@
 
 
 /***/ },
-/* 194 */
+/* 195 */
+/*!****************************!*\
+  !*** ./src/img/search.png ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVQ4Ec3BMU7CYAAG0BfkHH8jZ5C4mGDirSBwjw7sBORIVEdhBibI50g6FOvGezy4D1sHVwef3v1haCkiIiJqQ3csxdFUMVCZOYlapw9x9OJm7CQmOmzFVNtcbHQ4iKLtWfzocBUDbU/iosNBVNpGYq/Dp5hpW4i1Du/iZOzm1Vm86VSLk7lnT0YWzmLljqFaRERErMS3yh0TGz8u9tbe8C2+VHqrfIlG0VulEY2it0ojdoreisZO8Q9F8bh+AdReVMyZp3KbAAAAAElFTkSuQmCC"
+
+/***/ },
+/* 196 */
 /*!**************************!*\
   !*** ./src/img/save.png ***!
   \**************************/
@@ -25001,7 +25020,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4NLREP3R5OAAAA50lEQVRYw+2XTQ7CIBCFH8ZD2B/X1l7MY+gJFG9jw63svrhQo0F+BhjTNOHNjj7mS5lOJwBFRdxqoKCj40hPrxPjRAOoZAAR8bRO5KRTLOJtpSr6LXIBQUQ+IIDgABgfrTA22FZ9ALu+9q/+3bnLB6wdpaPWIFgtQSparEqRC2A2wAUdBAT2kKk49+y6ozam9+hxJwBqoyUFWk7A2eqWfICd1d1TALR/kVj8wOkcR8QGOESsJvZB81OHLW8fjGiN9MyNpqEhX6fe4xpwzjcyFUv6wf2oyrgffGLjo1cYspLf/OmLilL0AJq2t6TWqQyvAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 195 */
+/* 197 */
 /*!**************************!*\
   !*** ./src/img/exit.png ***!
   \**************************/
@@ -25010,7 +25029,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAvUlEQVR4Ae3XTQrCMBAF4Hea0itovJjgYvRC/TmYlKT7CELdNQ87M4vCvFnGzgedNo2IRMzTY0RGPVgrZvTt9guqspYWMaIa1ITdZBOgYDfbT3j49QH4AE+IJ/D6rokX8Pitig9wQSaEeoacUAKcUAOM4ICS4EP+u0QNcOLkgNgP+aoZMk/yfUwTiueLdiPtlZsdb68E7t7bNSCeH5yNkLOfKgJYvQ+/swkw+P4BeaMDWsSEorg5AzoYJxL5APsNcp+a7wfsAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 196 */
+/* 198 */
 /*!****************************!*\
   !*** ./src/img/delete.png ***!
   \****************************/
@@ -25019,7 +25038,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAqklEQVR4Ae2VxRWDUBAA572UQWqJNkYxscr+jdue44br4jv/gs7g0BGG4XNLGX5beoXEreYojQXmQQuXp9WABSwg7LlEllzYI1oBYQ0sQonLYw7WiE5gz5tH4q9/sdcJPIT/RHROJxBNRPU6gUgiqlcLRBNRffuB9i9R+ze5/ce0/Ret/U9F/x87++FUxlXSOypzqhQ4UpklQWl9gAd1EkdciYtzxKNFDOMOajyuIqb0hAYAAAAASUVORK5CYII="
 
 /***/ },
-/* 197 */
+/* 199 */
 /*!**************************!*\
   !*** ./src/img/edit.png ***!
   \**************************/
@@ -25028,7 +25047,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAApUlEQVR4Ae3RuwkCYRBF4QNbh4+1FzGwGsEObEGswFZM7WB9FCEsJgpmAzuJ3IvCzv3z78D8/MVqtZYzTw40WLbgzuvzjjQ23pAIvC2xDbglsRtI7DXHWaWJh+b2PeskcRJ9bZLomEj4JNExlfCDCQHfEvmY2Dj4mNDyIbF08obbh1f87Xf8Zdz8vPjv+dmYedw8bj4PXDU8bh43j5vHzSPgDavV3qRrsQhO25JyAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 198 */
+/* 200 */
 /*!**************************!*\
   !*** ./src/img/note.png ***!
   \**************************/
@@ -25037,7 +25056,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACzoAAAs6AWR/Vw0AAAAHdElNRQfgCw4LEyL1RRiXAAAAl0lEQVRYw+3XTQ5AMBCG4dE4gvg5pSPUnWyIw9VGqCC+zmhi8b2zE5lnhRJhjMU1MklIHo+vD8oZMGBWAyChWdynEBpAZMAJHZBAaAGY0AMgYQEgwgYAhBV4JexATPg8QExkAmR/urdKw9v3iTjlDECB3ORyf2QIECBA4F/A8une+XqpM5xNr1Pfqa3pAHzMKBX/hRiLWwHAZPOEat0YGwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 199 */
+/* 201 */
 /*!****************************!*\
   !*** ./src/img/cancel.png ***!
   \****************************/
@@ -25046,7 +25065,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABYElEQVR4Ae3Xt3HjQByF8R9GEQcxrgCpofO2C8a0vcirCLIGMqIa4MVEKLMXnvkPRktw9vz3IgDke+uNP4T/nBg6t3Sr1bq1dG7o2OFozK2lDq3NNXpTm9hJT2hnotaDlz5Lmdp6YS8qU49SvjyaqmQycC310LWBDCo3Uk9d59RiKh2gydNd+3hQwKMXulHbSgdqq9bJJPz83ieXUocufXIf3o518Mwu2L/DUUfEpSO8CxE7jQjmweITxIhv7OFT+DYTwbrTJEbEL99qJeJEkvIiwtuoY4GhlBkR30QNBc6lnIgs++RMYCnlRGTZJwuBWyknIss+2Qi0UmZEtI9qiwcUb6LinVx8mJafaOWXivKL3c9frpvCG075LbP8pl/+2FL+4IXKtdRTV6qSh98rA5lUJnsf3yf25KVtuQsIUBtnXaHGar1pzKykDq3MNA7HsaEzCxut1sbCWbjG/rb85wukqCp0O2MACwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 200 */
+/* 202 */
 /*!******************************!*\
   !*** ./src/img/timer-on.png ***!
   \******************************/
@@ -25055,7 +25074,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACL0lEQVR4Ae3Vz2pTQRTH8a+NyaUkuJI0y9ok7pWIi/6BLvyDrnShaKwbQdHqqoX2DcQHUGittVJsn0AoCFoaaA2kWJFWrvEJLBWXNnrvuBkOCJ17T651Ic3nbApzzvzKZDLhgDCO0usEdJS5zyIb7NAi4DsfWeQBRfbBYUaoYxy1RpUUFjd5xCHacpEvmJj6xDkARggwTOkjsrzAKGuaWwT274eoFNjASIW8YYx+8mTI0MMA4ywT7hHV4pJu+6aM/GKaPvZSYoYAgxQ/uYxClvcyssVJolTwkQCqqDyXgVdkiZNjSfqnULiAbE/a8WT8KY1EcCb+3jflcLKgCoAcvkyliHRDPtoToA6AU/JxXyNSXW42ugAxa9dWiVCSe9/XdkBZvhfHcBq1LW9BHyBW7OooTgu2ZSxRwIRdXcBFnof+RAGDdvUDTju2JZ8ooGBXv+HUsi2ZRAGeXPF/HLAbf0Q9f3VE27jIKzpAEkN2uhF/TcdJYtJOz+N0z7Ysk0TNTt/BqShPRYl2HSe0s71EWLMRM7Rrzk7WiFS1bQEV2nFanrqrRErJT4dPDq0j8jO1SRcxzmNsLZFGI8NrmRlG4RkSQU7x38v2PEGlm3UZ8anEnH1Teut4KOX5LGMBs5QdF3OOUPq2OAp6eRoYqZAVJhikgIdHgSEmqWGQ4p16e9HNU4yyHuORyFn82M03GYbkUlxn1bF1SI0rdLEPitzlJetss8sPvtJgntv00vFf+A28TwB4fl1vlgAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 201 */
+/* 203 */
 /*!*******************************!*\
   !*** ./src/img/timer-off.png ***!
   \*******************************/
@@ -25064,7 +25083,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACOklEQVR4Ae2WT0sUcRyHH3ZXJdhb0XrUdiW6b1Sgl8L+3QoiamEP3tbICqTFegFaC3VuMw9lhu9ACELWUKgkSynWtxCG12xnv12+DEPN99f+BvaSPZ+L+HvgYWbQGfYJYsyT/4F9wBTTxFPgFotssktAwC6bvOImeby4jyB/JDKUeYcYW6NEGpQSVUzOILpo4gLbCO595RwAJVoI9zCpxSTGaCMdrM4YLf15Kkki4A13OMUhUvSSY5hJlmPje1yCThIzkUSdI8ajnyVAIvvJZQDfhIsizUighE3iRJYlRPeEDriIWAnjX0RPJDGKGzJsI0bCCkA2vFFfSOOkjPy2B4QQGAE4Hp5dw8l71erUYhJlAiMAc2qv4qCgUsAgOBJxDNFWexCTCVVeAzgS8TTUvYHJoiq3wZmIp6rmAiZbqpyAmMRD3Iyo9wmTXVUOgn+CfrW+YxKokgL/BH3qtDDZU6UX/BNk/h7YUSUH/glyer6DyUdVhsGZqDkf8gYmC6pMAnhfxV09m8dkXJVl8E/wVk8qmORVaVPwThxDdAM4WFNpFgPjrxue6+8aOCmpFlD0TOgXCFdwkg5fHU2y/gk+k8IN5xHdEj3eidN0wDPCRIdXMYMXB1hHdE2K3Ugcjrz6A+YYIo6jvECSJz4g4do0qDJCP31k9NNxBX1FJr9RTxHPTePJWZqIe2wxyuPkiTTXWUWMrXCVFEDihJKnwkvW+cYPWuywwTwVBlCiCdqcpDtoYpwu8ogJ/jl+AQVVXWskAfRLAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 202 */
+/* 204 */
 /*!***************************!*\
   !*** ./src/img/pause.png ***!
   \***************************/
@@ -25073,7 +25092,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LHySwk/KuAAAAFElEQVQY02NgoA7g/8D/YahT1AAAhhA3yVo4XisAAAAASUVORK5CYII="
 
 /***/ },
-/* 203 */
+/* 205 */
 /*!**************************!*\
   !*** ./src/img/play.png ***!
   \**************************/
@@ -25082,7 +25101,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LFRv8GjcZAAAAm0lEQVRYw+2WwQ3CMBAEB36UAEVQB69UkT5cSAqhBN4UQQv5bhoAgRQPUaSbe1sj2eu7g6IoNufgKx6cXEEIoy0ITy6uIIRmC8KLqysIYbIFYebmCkK49wtvPtZoCzqFN1+q2YLV4c1PNdmCMDO8O37sGOf9XpH8yM39aOfdtgq12cntWh048shUh36XQG60eMmr4x+W36IoVrMAxYYe1+9lz2UAAAAASUVORK5CYII="
 
 /***/ },
-/* 204 */
+/* 206 */
 /*!*************************!*\
   !*** ./src/img/add.png ***!
   \*************************/
@@ -25091,7 +25110,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAM0lEQVR4Ae3RoREAMBACwfTf9EekgMy8wLBHASs4dUmatwgAAAAAs9w/QPBkAAAAKEvSBTV8zzG4BEJAAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 205 */
+/* 207 */
 /*!*************************************!*\
   !*** ./~/style-loader/addStyles.js ***!
   \*************************************/
@@ -25344,6 +25363,45 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
+
+/***/ },
+/* 208 */
+/*!*****************************!*\
+  !*** ./src/js/db/config.js ***!
+  \*****************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var config = {
+	  _price: 300,
+	  _minutes: 60,
+	
+	  get PREVIEW_LENGTH() {
+	    return document.documentElement.clientWidth > 695 ? 61 : 31;
+	  },
+	
+	  get DEFAULT_PRICE_TASK() {
+	    return this._price;
+	  },
+	
+	  set DEFAULT_PRICE_TASK(newPrice) {
+	    this._price = newPrice;
+	  },
+	
+	  get DEFAULT_PRICE_MINUTES() {
+	    return this._minutes;
+	  },
+	
+	  set DEFAULT_PRICE_MINUTES(newMin) {
+	    this._minutes = newMin;
+	  }
+	};
+	
+	exports.config = config;
 
 /***/ }
 /******/ ]);

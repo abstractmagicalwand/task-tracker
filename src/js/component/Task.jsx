@@ -20,15 +20,16 @@ export default class Task extends React.Component {
     this.handleToggle        = this.handleToggle.bind(this);
     this.handleClickDescript = this.handleClickDescript.bind(this);
 
-    this.edit            = this.edit.bind(this);
-    this.content         = this.content.bind(this);
-    this.archiv          = this.archiv.bind(this);
-    this.timer           = this.timer.bind(this);
+    this.edit = this.edit.bind(this);
+    this.content = this.content.bind(this);
+    this.archiv = this.archiv.bind(this);
+    this.timer = this.timer.bind(this);
     this.getClearJournal = this.getClearJournal.bind(this);
-    this.diffArrs        = this.diffArrs.bind(this);
-    this.diffDate        = this.diffDate.bind(this);
-    this.addArrs         = this.addArrs.bind(this);
-    this.color           = this.color.bind(this);
+    this.diffArrs = this.diffArrs.bind(this);
+    this.diffDate = this.diffDate.bind(this);
+    this.addArrs = this.addArrs.bind(this);
+    this.color = this.color.bind(this);
+    this.createPreview = this.createPreview.bind(this);
   }
 
   handleDelete() {
@@ -160,11 +161,14 @@ export default class Task extends React.Component {
             <input type='checkbox'/>
             </lable>
           </div>
-            <p
-              className='task__descript'
-              onClick={this.handleClickDescript}
-            >
-            {this.props.info.preview}
+          <p
+            className='task__descript'
+            onClick={this.handleClickDescript}
+          >
+            {this.createPreview(
+              this.props.info.description, 
+              this.props.preview
+            )}
           </p>
 
           <span className='task__panel'>
@@ -215,6 +219,11 @@ export default class Task extends React.Component {
     );
   }
 
+  createPreview(str, n) {
+    if (str.length < n) return str;
+    return `${str.slice(0, n)}...`;
+  }
+
   getClearJournal(id) {
     let index;
     const tmp = this.props.journal.filter((item, i)=> {
@@ -225,7 +234,6 @@ export default class Task extends React.Component {
       }
 
       return false;
-
     });
 
     window.dispatchEvent(new CustomEvent('JOURNAL_CLEAR', {

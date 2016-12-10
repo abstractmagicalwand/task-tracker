@@ -1,5 +1,6 @@
 import React    from 'react';
 import ReactDOM from 'react-dom';
+import {config} from '../db/config.js';
 
 export default class Field extends React.Component {
   constructor(props) {
@@ -14,7 +15,9 @@ export default class Field extends React.Component {
 
   handleClickAdd() {
     function addTask() {
-      if (!ReactDOM.findDOMNode(this.refs.text).value.length) return;
+      const value = ReactDOM.findDOMNode(this.refs.text).value;
+
+      if (!~value.indexOf(' ')) return;
 
       const task = this.createTask(ReactDOM.findDOMNode(this.refs.text).value);
 
@@ -44,7 +47,10 @@ export default class Field extends React.Component {
     return (
       <div className='list__field'>
         <textarea
-          className={`list__area_${this.state.show ? 'show' : 'hidden'}`}
+          className={
+            'list__area ' + 
+            `list__area_${this.state.show ? 'show' : 'hidden'}`
+          }
           ref='text'
           placeholder='Write you task...'
         >
@@ -72,7 +78,7 @@ export default class Field extends React.Component {
             null,
           endFormatTimePrice = formatTimePrice ?
             +formatTimePrice[0] * 60 + +formatTimePrice[1] :
-            0;
+            config.DEFAULT_PRICE_MINUTES;
 
     const task = {
       stopwatch: [0, 0, 0],
@@ -82,8 +88,12 @@ export default class Field extends React.Component {
       id: Math.floor(Math.random() * Math.pow(100, 10)),
       priority: priority.test(text) ? priority.exec(text)[0].length : 0,
       project: project.test(text) ? project.exec(text)[0] : 'SANS',
-      timeDeath: death.test(text) ? death.exec(text)[0].split(/\//) : null,
-      price: money.test(text) ? money.exec(text)[0].slice(1) : 5,
+      timeDeath: death.test(text) ? 
+        death.exec(text)[0].split(/\//) : 
+        null,
+      price: money.test(text) ? 
+        money.exec(text)[0].slice(1) : 
+        config.DEFAULT_PRICE_TASK,
       timePrice: endFormatTimePrice,
       description: text
         .replace(priority, '')
@@ -94,9 +104,7 @@ export default class Field extends React.Component {
         .replace(money, '')
         .trim()
     };
-
-    task.preview = `${task.description.length > 95 ? `${task.description.slice(0, 61)}...` : task.description}`;
-
+    
     return task;
   }
 };

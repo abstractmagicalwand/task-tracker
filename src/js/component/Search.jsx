@@ -5,10 +5,10 @@ export default class Search extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleSearchReq = this.handleSearchReq.bind(this);
+    this.handleRequest = this.handleRequest.bind(this);
   }
 
-  handleSearchReq(e) {
+  handleRequest(e) {
     window.dispatchEvent(new CustomEvent('SEARCH', {
       detail: {value: e.target.value}
     }));
@@ -20,7 +20,7 @@ export default class Search extends React.Component {
         <input
           className='list__search'
           type='text'
-          onChange={this.handleSearchReq}
+          onChange={this.handleRequest}
         />
       </div>
     );

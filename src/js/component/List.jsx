@@ -32,7 +32,7 @@ export default class List extends React.Component {
         }
         {this.props.type !== 'archiv' ? <Search /> : null}
         {this.props.type !== 'archiv' ? <Field /> : null}
-          <div className='list__container-task-box'>
+          <div className='list__scroll-box'>
             <div className='list__container-task'>
             {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
             </div>
@@ -100,6 +100,7 @@ export default class List extends React.Component {
             info={task}
             key={task.id}
             stopwatch={this.props.stopwatch}
+            preview={this.props.preview}
           />
         );
       } else {
@@ -121,6 +122,7 @@ export default class List extends React.Component {
           journal={this.props.journal}
           info={task}
           stopwatch={this.props.stopwatch}
+          preview={this.props.preview}
         />
       </div>
     );

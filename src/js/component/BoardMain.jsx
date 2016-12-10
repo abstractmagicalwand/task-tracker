@@ -28,6 +28,7 @@ export default class BoardMain extends React.Component {
             journal={this.props.journal}
             type='inbox'
             db={this.props.db}
+            preview={this.props.preview}
           />
         );
     case 'project':
@@ -41,6 +42,7 @@ export default class BoardMain extends React.Component {
             type='search'
             value={this.props.value}
             db={this.props.db}
+            preview={this.props.preview}
           />
         );
     case 'note':
@@ -53,6 +55,7 @@ export default class BoardMain extends React.Component {
             journal={this.props.journal}
             projectName={this.props.view}
             db={this.props.db}
+            preview={this.props.preview}
           />
         );
     }

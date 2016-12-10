@@ -14,7 +14,4 @@ const account = {
   'wallet': 0
 };
 
-const DEFAULT_PRICE_TASK = 300;
-const DEFAULT_PRICE_MINUTES = 60;
-
-export {journal, temp, account, DEFAULT_PRICE_TASK, DEFAULT_PRICE_MINUTES};
+export {journal, temp, account};

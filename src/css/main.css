@@ -30,6 +30,7 @@
   font-weight: bold;
   font-family: 'Rajdhani', sans-serif;
   font-size: 18px;
+  min-width: 300px; /*360px*/
 }
 
 .navigation-menu__button:hover {
@@ -49,7 +50,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 3px solid #000;
+  border-bottom: 10px solid cadetblue;
   font-family: 'Rajdhani', sans-serif;
   opacity: 1;
   
@@ -59,12 +60,28 @@
   animation: invisibility .5s linear;
 }
 
-.board-extra__title {
+.board-extra__table {
+  border-collapse: collapse;
+  margin-bottom: 5px;
+}
 
+td {
+  padding-right: 65px;
+  border-left: 5px solid slategray;
+  max-padding-right: 65px;
+}
+
+.board-extra__account_cell {
+  padding-right: 110px;
+}
+
+.board-extra__title {
+  border-bottom: 2px solid black;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
 .board-extra__content {
-
 }
 
 .board-main__container {
@@ -78,9 +95,11 @@
   flex-flow: column wrap;
 }
 
-.list__container-task-box {
+.list__scroll-box {
   flex: 1;
   flex-direction: column;
+  overflow: auto;
+  max-height: 80vh;
 }
 
 .list__container-task {
@@ -104,13 +123,21 @@
 }
 
 .list__search {
-  width: 20%;
-  animation: down_width .5s linear;
+  display: flex;
+  width: 30%;
+  transition: width 0.4s ease-in;
+  border-radius: 10px;
+  border: 3px solid #000;
+  outline: none;  
+  font-size: 15px;
+  padding-left: 25px;
+  height: 20px;
+  background: url('../img/search.png') no-repeat left center;
 }
 
 .list__search:focus {
-  width: 80%;
-  animation: up_width .5s linear;
+  display: flex;
+  width: 60%;
 }
 
 .list__container-date {
@@ -137,17 +164,15 @@
 }
 
 .list__area_hidden {
-  animation: down_width_height .1s ease-in;
+  display: none;
   width: 0%;
   height: 0px;
-  visibility: hidden;
 }
 
 .list__area_show {
   display: flex;
   width: 90%;
-  height: 45px;
-  animation: up_width_height .5s ease-out;
+  height: 42px;
 }
 
 .list__input-area {
@@ -163,7 +188,9 @@
 }
 
 .collection__container {
-
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .collection__folder {
@@ -191,6 +218,7 @@
   flex-flow: row wrap;
   background: gray;
   width: 100%;
+  min-width: 300px;
 }
 
 .task__container-descript {
@@ -204,7 +232,7 @@
   margin-top: 5px;
   border-left: 5px solid slategray;
   padding-left: 10px;
-  animation: up_height .5s linear;
+  animation: invisibility .5s linear ;
 }
 
 .task__container-checkbox {
@@ -221,7 +249,8 @@
 }
 
 .task__checkbox:hover {
-  background: pink;
+  background: plum;
+  box-shadow: inset 0px 0px 0px 5px pink;
 }
 
 .task__checkbox>input {
@@ -245,7 +274,7 @@
 
 .task__field {
   flex: 1;
-  margin: 10px 0 10px 30px;
+  margin: 10px 0 10px 10px;
 }
 
 .stopwatch__scoreboard {
@@ -384,38 +413,6 @@
   margin-left: 5px;
 }
 
-@keyframes up_heightt {
-  from {
-    height: 100%;
-  } 
-
-  to {
-    height: 0%;
-  }
-}
-
-@keyframes up_height {
-  0% {
-    height: 0%;
-  }
-  50% {
-    height: 50%;
-  }
-  100% {
-    height: 70%;
-  }
-}
-
-@keyframes down_height {
-  from {
-    height: 70%;
-  }
-
-  to {
-    height: 0%;
-  }
-}
-
 @keyframes invisibility {
   from {
     opacity: 0;
@@ -426,64 +423,90 @@
   }
 }
 
-@keyframes up_width_height {
+@keyframes open_search {
   0% {
-    height: 0px;
-    width: 0%;
-  }
-
-  10% {
-    height: 10px;
-  }
-
-  25% {
-    height: 20px;
-    width: 25%;
-  }
-
-  50% {
-    height: 30px;
-    width: 50%;
-  }
-
-  100% {
-    height: 45px;
-    width: 90%;
-  }
-}
-
-@keyframes down_width_height {
-  0% {
-    height: 45px;
-    width: 90%;
-  }
-
-  10% {
-    height: 30px;
-    width: 50%;
-  }
-
-  25% {
-    height: 20px;
-    width: 25%;
-  }
-
-  50% {
-    height: 10px;
-  }
-
-  100% {
-    height: 0px;
-    width: 0%;
-  }
-}
-
-@keyframes up_width {
-  from {
     width: 20%;
   }
 
-  to {
+  50% {
+    width: 50%;
+  }
+
+  100% {
     width: 80%;
+  }
+}  
+
+@media screen and (max-width: 695px) {
+  .app__sidebar {
+    margin-right: 0;
+    align-content: center;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .navigation-menu__button {
+    min-width: 360px;
+  }
+
+  .task__container {
+    min-width: 380px;
+  }
+  
+  .task__container-descript {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  body {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .list__search {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .list__search {
+    width: 60%;
+    height: 30px;
+  }
+
+  .list__search:focus {
+    width: 90%;
+  }
+
+  .board-extra__container {
+    margin-bottom: 10px;
+  }
+
+  .list__field {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .button-add {
+    margin: 5px;  
+    background-position-y: center;
+    background-position-x: center;
+    height: 60px;
+    width: 60px;
+  }
+
+  .board-extra__container {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 10px;
+  }
+
+  .list__area {
+    margin-bottom: 10px;
+    width: 95%;
+    height: 50vh;
+  }
+
+  .note__field {
+    width: 98vw;
   }
 }

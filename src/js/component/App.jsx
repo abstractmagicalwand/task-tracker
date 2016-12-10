@@ -8,7 +8,7 @@ import NavigationMenu from './NavigationMenu.jsx';
 import {db} from '../db/index.js';
 import {journal, account}  from '../db/journal.js';
 import {load, loadJournal} from '../db/storage.js';
-
+import {config} from '../db/config.js';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,7 +17,8 @@ export default class App extends React.Component {
       db: load() || db,
       viewContent: null,
       viewLast: null,
-      viewMini: 'spell'
+      viewMini: 'spell',
+      previewLength: config.PREVIEW_LENGTH
     };
 
     this.handleNavigation   = this.handleNavigation.bind(this);
@@ -251,6 +252,7 @@ export default class App extends React.Component {
               db={this.state.db}
               journal={journal}
               value={this.state.value ? this.state.value : ''}
+              preview={config.PREVIEW_LENGTH}
             />
           </div>
         </div>
