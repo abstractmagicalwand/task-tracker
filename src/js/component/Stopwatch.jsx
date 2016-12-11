@@ -1,20 +1,21 @@
-import React    from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component} from 'react';
 
-export default class Stopwatch extends React.Component {
+import Clone from '../mixin/index';
+
+export default class Stopwatch extends Clone(Component) {
   constructor(props) {
     super(props);
     this.state = {
       interval: false
     };
 
-    this.stop   = this.stop.bind(this);
-    this.play   = this.play.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.show   = this.show.bind(this);
-    this.run    = this.run.bind(this);
-
     this.handleTick = this.handleTick.bind(this);
+
+    this.stop = this.stop.bind(this);
+    this.play = this.play.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.show = this.show.bind(this);
+    this.run = this.run.bind(this);
   }
 
   handleTick() {
@@ -39,14 +40,52 @@ export default class Stopwatch extends React.Component {
     }));
   }
 
+  show() {
+    if (!this.state.interval) return;
+
+    const s = this.props.time;
+
+    return (
+      <span className="stopwatch__scoreboard">
+        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}:</span>
+        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}:</span>
+        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
+      </span>
+    );
+  }
+
+  toggle() {
+    this.state.interval ? this.stop() : this.play();
+  }
+
+  run() {
+    this.setState(Object.assign(this.cloneDeep(this.state), {
+      interval: !this.state.interval
+    }));
+  }
+
+  play() {
+    const self = this;
+
+    this.stopwatch = setInterval(self.handleTick, 1000);
+    this.run();
+  }
+
+  stop() {
+    clearInterval(this.stopwatch);
+    this.stopwatch = null;
+    this.run();
+  }
+
   componentWillMount() {
     if (!this.state.interval) this.play();
   }
 
   render() {
     const status = this.state.interval ? 'play' : 'pause';
+
     return (
-      <span className='stopwatch'>
+      <span className="stopwatch">
         {this.show()}
         <span
           className={`button-${status}`}
@@ -64,39 +103,4 @@ export default class Stopwatch extends React.Component {
   componentWillUnmount() {
     this.stop();
   }
-
-  show() {
-    if (!this.state.interval) return;
-    const s = this.props.time;
-
-    return (
-      <span className='stopwatch__scoreboard'>
-        <span>{s[0] < 10 ? `0${s[0]}` : s[0]}:</span>
-        <span>{s[1] < 10 ? `0${s[1]}` : s[1]}:</span>
-        <span>{s[2] < 10 ? `0${s[2]}` : s[2]}</span>
-      </span>
-    )
-  }
-
-  toggle() {
-    this.state.interval ? this.stop() : this.play();
-  }
-
-  run() {
-    const newState = Object.assign({}, this.state);
-    newState.interval = !this.state.interval;
-    this.setState(newState);
-  }
-
-  play() {
-    const self = this;
-    this.stopwatch = setInterval(self.handleTick, 1000);
-    this.run();
-  }
-
-  stop() {
-    clearInterval(this.stopwatch);
-    this.stopwatch = null;
-    this.run();
-  }
-};
+}

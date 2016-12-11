@@ -1,22 +1,17 @@
 import React from 'react';
-import Spell from './Spell.jsx';
-import Account from './Account.jsx';
 
-export default class BoardExtra extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import Spell from './Spell';
+import Account from './Account';
 
-  render() {
-    return (
-      <div className='board-extra'>
-        <div className='board-extra__container'>
-          {this.props.view === 'spell' ?
-            <Spell /> :
-            <Account data={this.props.account} />
-          }
-        </div>
+export default function BoardExtra(props) {
+  return (
+    <div className="board-extra">
+      <div className="board-extra__container">
+        {props.view === 'spell'
+          ? <Spell />
+          : <Account data={props.account} />
+        }
       </div>
-    );
-  }
+    </div>
+  );
 }

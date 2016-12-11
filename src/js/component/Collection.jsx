@@ -1,20 +1,10 @@
-import React    from 'react';
-import ReactDOM from 'react-dom';
-import Folder   from './Folder.jsx';
+import React, {Component} from 'react';
 
-export default class Collection extends React.Component {
+import Folder from './Folder';
+
+export default class Collection extends Component {
   constructor(props) {
     super(props);
-  }
-
-  render() {
-    return (
-      <div className='collection'>
-        <div className='collection__container'>
-          {this.getFolders(this.props.db)}
-        </div>
-      </div>
-    );
   }
 
   getFolders(db) {
@@ -23,4 +13,14 @@ export default class Collection extends React.Component {
         return folder;
     }).map(folder => <Folder key={folder.project} info={folder} />);
   }
-};
+
+  render() {
+    return (
+      <div className="collection">
+        <div className="collection__container">
+          {this.getFolders(this.props.db)}
+        </div>
+      </div>
+    );
+  }
+}

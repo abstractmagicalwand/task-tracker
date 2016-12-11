@@ -55,20 +55,15 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 34);
 	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	var _App = __webpack_require__(/*! ./js/component/App.jsx */ 172);
+	var _App = __webpack_require__(/*! ./js/component/App */ 172);
 	
 	var _App2 = _interopRequireDefault(_App);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(/*! ./css/main.css */ 192);
+	__webpack_require__(/*! ./css/main.css */ 195);
 	
-	
-	window.localStorage.clear();
-	
-	_reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.getElementById('root'));
+	(0, _reactDom.render)(_react2.default.createElement(_App2.default, null), document.getElementById('root'));
 
 /***/ },
 /* 1 */
@@ -21969,33 +21964,41 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	var _BoardMain = __webpack_require__(/*! ./BoardMain.jsx */ 173);
+	var _BoardMain = __webpack_require__(/*! ./BoardMain */ 173);
 	
 	var _BoardMain2 = _interopRequireDefault(_BoardMain);
 	
-	var _BoardExtra = __webpack_require__(/*! ./BoardExtra.jsx */ 186);
+	var _BoardExtra = __webpack_require__(/*! ./BoardExtra */ 186);
 	
 	var _BoardExtra2 = _interopRequireDefault(_BoardExtra);
 	
-	var _NavigationMenu = __webpack_require__(/*! ./NavigationMenu.jsx */ 189);
+	var _NavigationMenu = __webpack_require__(/*! ./NavigationMenu */ 189);
 	
 	var _NavigationMenu2 = _interopRequireDefault(_NavigationMenu);
 	
-	var _index = __webpack_require__(/*! ../db/index.js */ 190);
+	var _index = __webpack_require__(/*! ../db/index */ 190);
 	
-	var _journal = __webpack_require__(/*! ../db/journal.js */ 180);
+	var _index2 = _interopRequireDefault(_index);
 	
-	var _storage = __webpack_require__(/*! ../db/storage.js */ 181);
+	var _journal = __webpack_require__(/*! ../db/journal */ 191);
 	
-	var _config = __webpack_require__(/*! ../db/config.js */ 208);
+	var _journal2 = _interopRequireDefault(_journal);
+	
+	var _account = __webpack_require__(/*! ../db/account */ 194);
+	
+	var _account2 = _interopRequireDefault(_account);
+	
+	var _storage = __webpack_require__(/*! ../db/storage */ 192);
+	
+	var _config = __webpack_require__(/*! ../db/config */ 176);
+	
+	var _config2 = _interopRequireDefault(_config);
+	
+	var _index3 = __webpack_require__(/*! ../mixin/index */ 177);
+	
+	var _index4 = _interopRequireDefault(_index3);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -22003,8 +22006,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var App = function (_React$Component) {
-	  _inherits(App, _React$Component);
+	var App = function (_Clone) {
+	  _inherits(App, _Clone);
 	
 	  function App(props) {
 	    _classCallCheck(this, App);
@@ -22012,11 +22015,11 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 	
 	    _this.state = {
-	      db: (0, _storage.load)() || _index.db,
+	      db: (0, _storage.load)() || _index2.default,
 	      viewContent: null,
 	      viewLast: null,
 	      viewMini: 'spell',
-	      previewLength: _config.config.PREVIEW_LENGTH
+	      previewLength: _config2.default.PREVIEW_LENGTH
 	    };
 	
 	    _this.handleNavigation = _this.handleNavigation.bind(_this);
@@ -22045,17 +22048,17 @@
 	  _createClass(App, [{
 	    key: 'handleDeleteFolder',
 	    value: function handleDeleteFolder(e) {
-	      e.preventDefault();
-	      var db = [].concat(_toConsumableArray(this.state.db));
+	      var db = this.cloneDeep(this.state.db);
+	
 	      db.splice(this.getFolderDB(e.detail.project), 1);
+	
 	      this.setStateDB(db);
+	      e.preventDefault();
 	    }
 	  }, {
 	    key: 'handleNavigation',
 	    value: function handleNavigation(e) {
-	      e.preventDefault();
-	
-	      var newState = Object.assign({}, this.state);
+	      var newState = this.cloneDeep(this.state);
 	
 	      if (e.detail.category === 'spell' || e.detail.category === 'account') {
 	        newState.viewMini = e.detail.category;
@@ -22065,14 +22068,13 @@
 	      }
 	
 	      this.setState(newState);
+	      e.preventDefault();
 	    }
 	  }, {
 	    key: 'handleCreateTask',
 	    value: function handleCreateTask(e) {
-	      e.preventDefault();
-	      var db = [].concat(_toConsumableArray(this.state.db));
-	
-	      var folder = this.getFolderDB(e.detail.project) || db.length;
+	      var db = this.cloneDeep(this.state.db),
+	          folder = this.getFolderDB(e.detail.project) || db.length;
 	
 	      if (folder === db.length) {
 	        db.unshift({
@@ -22085,59 +22087,63 @@
 	      }
 	
 	      this.setStateDB(db);
+	      e.preventDefault();
 	    }
 	  }, {
 	    key: 'handleSearch',
 	    value: function handleSearch(e) {
-	      e.preventDefault();
-	      this.setState({
+	      this.setState(Object.assign(this.cloneDeep(this.state), {
 	        viewContent: 'search',
 	        value: e.detail.value
-	      });
+	      }));
+	      e.preventDefault();
 	    }
 	  }, {
 	    key: 'handleDeleteTask',
 	    value: function handleDeleteTask(e) {
-	      var db = [].concat(_toConsumableArray(this.state.db)),
+	      var db = this.cloneDeep(this.state.db),
 	          task = this.searchTaskDB(e.detail.id, db);
 	
-	      ++_journal.account['late'];
+	      ++_account2.default.late;
 	      task.arr.splice(task.i, 1);
+	
 	      this.setStateDB(db);
 	    }
 	  }, {
 	    key: 'handleCompleteTask',
 	    value: function handleCompleteTask(e) {
-	      var db = [].concat(_toConsumableArray(this.state.db)),
+	      var db = this.cloneDeep(this.state.db),
 	          _task = this.searchTaskDB(e.detail.id, db),
 	          task = _task.arr[_task.i],
 	          min = task.stopwatch[0] * 60 + task.stopwatch[1];
 	
-	      ++_journal.account['completed'];
-	      _journal.account['minutes'] += min;
+	      ++_account2.default.completed;
+	      _account2.default.minutes += min;
 	
 	      var money = Math.floor(task.price / min * task.timePrice);
-	      _journal.account['wallet(usd)'] += isFinite(money) ? money : 0;
+	      _account2.default.wallet += isFinite(money) ? money : 0;
 	
 	      task.complete = true;
 	      task.project = 'ARCHIV';
 	      db[this.getFolderDB('ARCHIV')].tasks.unshift(_task.arr.splice(_task.i, 1)[0]);
+	
 	      this.setStateDB(db);
 	    }
 	  }, {
 	    key: 'handleSaveEdit',
 	    value: function handleSaveEdit(e) {
-	      var db = [].concat(_toConsumableArray(this.state.db));
+	      var db = this.cloneDeep(this.state.db);
 	
 	      if (e.detail.project) {
 	        var folder = db[this.getFolderDB(e.detail.project)];
-	        folder.project = e.detail.value;
 	
+	        folder.project = e.detail.value;
 	        folder.tasks.forEach(function (item) {
 	          return item.project = e.detail.value;
 	        });
 	      } else if (e.detail.id) {
 	        var task = this.searchTaskDB(e.detail.id, db);
+	
 	        task.arr[task.i].description = e.detail.value;
 	      }
 	
@@ -22149,55 +22155,60 @@
 	      var _this2 = this;
 	
 	      return function (a) {
-	        var db = [].concat(_toConsumableArray(_this2.state.db));
+	        var db = _this2.cloneDeep(_this2.state.db);
+	
 	        func(a, db);
+	
 	        _this2.setStateDB(db);
 	      };
 	    }
 	  }, {
 	    key: 'handleOpenNote',
 	    value: function handleOpenNote(e) {
-	      console.log(e);
-	      this.setState({
+	      var newState = Object.assign(this.cloneDeep(this.state), {
 	        viewContent: 'note',
 	        value: e.detail.value,
 	        edit: e.detail.project || e.detail.id,
 	        viewLast: this.state.viewContent || 'inbox'
 	      });
+	
+	      this.setState(newState);
 	    }
 	  }, {
 	    key: 'handleSaveNote',
 	    value: function handleSaveNote(e) {
-	      var db = [].concat(_toConsumableArray(this.state.db));
+	      var db = this.cloneDeep(this.state.db);
 	
 	      if (typeof this.state.edit === 'number') {
 	        var task = this.searchTaskDB(this.state.edit, db);
+	
 	        task.arr[task.i].note = e.detail.value;
 	      } else if (typeof this.state.edit === 'string') {
 	        this.state.db[this.getFolderDB(this.state.edit)].note = e.detail.value;
 	      }
 	
-	      this.setState({
+	      this.setState(Object.assign({}, this.state, {
 	        viewContent: this.state.viewLast,
 	        edit: null,
 	        db: db,
 	        value: null
-	      });
+	      }));
 	      (0, _storage.load)(db);
 	    }
 	  }, {
 	    key: 'handleBackContent',
-	    value: function handleBackContent(e) {
+	    value: function handleBackContent() {
 	      if (!this.state.viewLast) return;
-	      this.setState({
+	
+	      this.setState(Object.assign(this.cloneDeep(this.state), {
 	        viewContent: this.state.viewLast,
 	        viewLast: this.state.viewContent
-	      });
+	      }));
 	    }
 	  }, {
 	    key: 'handleTick',
 	    value: function handleTick(e) {
-	      var db = [].concat(_toConsumableArray(this.state.db)),
+	      var db = this.cloneDeep(this.state.db),
 	          task = this.searchTaskDB(e.detail.id, db);
 	
 	      switch (e.detail.type) {
@@ -22214,12 +22225,11 @@
 	  }, {
 	    key: 'handleCancelTimer',
 	    value: function handleCancelTimer(e) {
-	      var db = this.state.db.slice();
+	      var db = this.cloneDeep(this.state.db);
+	
 	      db.forEach(function (item) {
-	        item.tasks.forEach(function (item, i, arr) {
-	          if (e.detail.id === item.id) {
-	            item.timeDeath = null;
-	          }
+	        item.tasks.forEach(function (item) {
+	          if (e.detail.id === item.id) item.timeDeath = null;
 	        });
 	      });
 	
@@ -22228,14 +22238,14 @@
 	  }, {
 	    key: 'handleSetJournal',
 	    value: function handleSetJournal(e) {
-	      _journal.journal.push(e.detail);
-	      (0, _storage.loadJournal)(_journal.journal);
+	      _journal2.default.push(e.detail);
+	      (0, _storage.loadJournal)(_journal2.default);
 	    }
 	  }, {
 	    key: 'handleClearJournal',
 	    value: function handleClearJournal(e) {
-	      _journal.journal.splice(e.detail.index, 1);
-	      (0, _storage.loadJournal)(_journal.journal);
+	      _journal2.default.splice(e.detail.index, 1);
+	      (0, _storage.loadJournal)(_journal2.default);
 	    }
 	  }, {
 	    key: 'componentWillMount',
@@ -22268,19 +22278,17 @@
 	            'div',
 	            { className: 'app__sidebar' },
 	            _react2.default.createElement(_NavigationMenu2.default, null),
-	            _react2.default.createElement(_BoardExtra2.default, { account: _journal.account, view: this.state.viewMini })
+	            _react2.default.createElement(_BoardExtra2.default, { account: _account2.default, view: this.state.viewMini })
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            {
-	              className: 'app__content'
-	            },
+	            { className: 'app__content' },
 	            _react2.default.createElement(_BoardMain2.default, {
 	              view: this.state.viewContent ? this.state.viewContent : 'inbox',
 	              db: this.state.db,
-	              journal: _journal.journal,
+	              journal: _journal2.default,
 	              value: this.state.value ? this.state.value : '',
-	              preview: _config.config.PREVIEW_LENGTH
+	              preview: _config2.default.PREVIEW_LENGTH
 	            })
 	          )
 	        )
@@ -22307,8 +22315,8 @@
 	  }, {
 	    key: 'searchTaskDB',
 	    value: function searchTaskDB(id, DB) {
-	      var task = {};
-	      var db = DB;
+	      var task = {},
+	          db = DB;
 	
 	      db.forEach(function (item) {
 	        item.tasks.forEach(function (item, i, arr) {
@@ -22324,13 +22332,14 @@
 	  }, {
 	    key: 'setStateDB',
 	    value: function setStateDB(DB) {
-	      this.setState({ db: DB });
+	      this.setState(Object.assign({}, this.state, { db: DB }));
 	      (0, _storage.load)(DB);
 	    }
 	  }, {
 	    key: 'getFolderDB',
 	    value: function getFolderDB(project) {
 	      var index = null;
+	
 	      this.state.db.forEach(function (folder, i) {
 	        if (folder.project === project) index = i;
 	      });
@@ -22340,10 +22349,9 @@
 	  }]);
 	
 	  return App;
-	}(_react2.default.Component);
+	}((0, _index4.default)(_react.Component));
 	
 	exports.default = App;
-	;
 
 /***/ },
 /* 173 */
@@ -22364,19 +22372,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	var _List = __webpack_require__(/*! ./List.jsx */ 174);
+	var _List = __webpack_require__(/*! ./List */ 174);
 	
 	var _List2 = _interopRequireDefault(_List);
 	
-	var _Collection = __webpack_require__(/*! ./Collection.jsx */ 183);
+	var _Collection = __webpack_require__(/*! ./Collection */ 183);
 	
 	var _Collection2 = _interopRequireDefault(_Collection);
 	
-	var _Note = __webpack_require__(/*! ./Note.jsx */ 185);
+	var _Note = __webpack_require__(/*! ./Note */ 185);
 	
 	var _Note2 = _interopRequireDefault(_Note);
 	
@@ -22388,8 +22392,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var BoardMain = function (_React$Component) {
-	  _inherits(BoardMain, _React$Component);
+	var BoardMain = function (_Component) {
+	  _inherits(BoardMain, _Component);
 	
 	  function BoardMain(props) {
 	    _classCallCheck(this, BoardMain);
@@ -22401,19 +22405,6 @@
 	  }
 	
 	  _createClass(BoardMain, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'board-main' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'board-main__container' },
-	          this.getView()
-	        )
-	      );
-	    }
-	  }, {
 	    key: 'getView',
 	    value: function getView() {
 	      switch (this.props.view) {
@@ -22449,13 +22440,25 @@
 	          });
 	      }
 	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'board-main' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'board-main__container' },
+	          this.getView()
+	        )
+	      );
+	    }
 	  }]);
 	
 	  return BoardMain;
-	}(_react2.default.Component);
+	}(_react.Component);
 	
 	exports.default = BoardMain;
-	;
 
 /***/ },
 /* 174 */
@@ -22470,31 +22473,27 @@
 	  value: true
 	});
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	var _Field = __webpack_require__(/*! ./Field.jsx */ 175);
+	var _Field = __webpack_require__(/*! ./Field */ 175);
 	
 	var _Field2 = _interopRequireDefault(_Field);
 	
-	var _Search = __webpack_require__(/*! ./Search.jsx */ 176);
+	var _Search = __webpack_require__(/*! ./Search */ 178);
 	
 	var _Search2 = _interopRequireDefault(_Search);
 	
-	var _Task = __webpack_require__(/*! ./Task.jsx */ 177);
+	var _Task = __webpack_require__(/*! ./Task */ 179);
 	
 	var _Task2 = _interopRequireDefault(_Task);
 	
-	var _journal = __webpack_require__(/*! ../db/journal.js */ 180);
+	var _temp = __webpack_require__(/*! ../db/temp */ 182);
+	
+	var _temp2 = _interopRequireDefault(_temp);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22504,8 +22503,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var List = function (_React$Component) {
-	  _inherits(List, _React$Component);
+	var List = function (_Component) {
+	  _inherits(List, _Component);
 	
 	  function List(props) {
 	    _classCallCheck(this, List);
@@ -22513,78 +22512,35 @@
 	    var _this = _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, props));
 	
 	    _this.handleClickBack = _this.handleClickBack.bind(_this);
+	
 	    _this.getDate = _this.getDate.bind(_this);
 	    _this.getCompTasks = _this.getCompTasks.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(List, [{
-	    key: 'handleClickBack',
-	    value: function handleClickBack(e) {
-	      window.dispatchEvent(new CustomEvent('BACK'));
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'list' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'list__container' },
-	          this.props.type !== 'archiv' ? _react2.default.createElement(_Search2.default, null) : null,
-	          this.props.type === 'project' ? _react2.default.createElement('span', {
-	            className: 'list__button-back',
-	            onClick: this.handleClickBack }) : null,
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              className: 'list__scroll-box' + (this.props.type === 'project' ? ' list__scroll-box_height_small' : '') },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'list__container-task' },
-	              this.getCompTasks(this.getTasks(this.props.type, this.props.db))
-	            )
-	          ),
-	          this.props.type !== 'archiv' ? _react2.default.createElement(_Field2.default, null) : null
-	        )
-	      );
-	    }
-	  }, {
 	    key: 'getTasks',
 	    value: function getTasks(type, db) {
 	      var _this2 = this;
 	
-	      var _ret = function () {
+	      var val = this.props.value;
 	
-	        switch (type) {
-	          case 'inbox':
-	            return {
-	              v: _this2.getInboxTasks(db)
-	            };
-	          case 'archiv':
-	            return {
-	              v: db.filter(function (item) {
-	                if (item.project === 'ARCHIV') return item;
-	              })[0].tasks
-	            };
-	          case 'project':
-	            return {
-	              v: db.filter(function (item) {
-	                if (item.project === _this2.props.projectName) return item;
-	              })[0].tasks
-	            };
-	          case 'search':
-	            var val = _this2.props.value;
-	            return {
-	              v: _this2.getInboxTasks(db).filter(function (item, d, array) {
-	                if (~item.description.search(new RegExp('' + val, 'i'))) return item;
-	              })
-	            };
-	        }
-	      }();
-	
-	      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	      switch (type) {
+	        case 'inbox':
+	          return this.getInboxTasks(db);
+	        case 'archiv':
+	          return db.filter(function (item) {
+	            if (item.project === 'ARCHIV') return item;
+	          })[0].tasks;
+	        case 'project':
+	          return db.filter(function (item) {
+	            if (item.project === _this2.props.projectName) return item;
+	          })[0].tasks;
+	        case 'search':
+	          return this.getInboxTasks(db).filter(function (item) {
+	            if (~item.description.search(new RegExp('' + val, 'i'))) return item;
+	          });
+	      }
 	    }
 	  }, {
 	    key: 'getInboxTasks',
@@ -22600,11 +22556,8 @@
 	    value: function getCompTasks(tasks) {
 	      var _this3 = this;
 	
-	      var exceptions = ['project', 'archiv', 'search'];
-	
 	      function compareDateYMD(date1, date2) {
 	        if (!date1 || !date2) return false;
-	
 	        // short name string to date, param string, return create date
 	        var std = function std(s) {
 	          return new Date(s);
@@ -22619,9 +22572,10 @@
 	        return true;
 	      }
 	
-	      return tasks.map(function (task, i) {
+	      var exceptions = ['project', 'archiv', 'search'];
 	
-	        if (compareDateYMD(_journal.temp.date, task.date) || ~exceptions.indexOf(_this3.props.type)) {
+	      return tasks.map(function (task) {
+	        if (compareDateYMD(_temp2.default.date, task.date) || ~exceptions.indexOf(_this3.props.type)) {
 	          return _react2.default.createElement(_Task2.default, {
 	            journal: _this3.props.journal,
 	            info: task,
@@ -22630,7 +22584,8 @@
 	            preview: _this3.props.preview
 	          });
 	        } else {
-	          _journal.temp.date = task.date;
+	          _temp2.default.date = task.date;
+	
 	          return _this3.getDate(task, task.date);
 	        }
 	      });
@@ -22641,13 +22596,13 @@
 	      return _react2.default.createElement(
 	        'div',
 	        {
-	          className: 'list__container-date list__container-date_vertical',
+	          className: 'list__container-date',
 	          key: task.id
 	        },
 	        _react2.default.createElement(
 	          'p',
 	          { className: 'list__date' },
-	          this.getFormatDate(task.date)
+	          this.getFormatDate(date)
 	        ),
 	        _react2.default.createElement(_Task2.default, {
 	          journal: this.props.journal,
@@ -22690,15 +22645,49 @@
 	      }
 	      // d - short name date
 	      var d = new Date(date);
+	
 	      return d.getDate() + ', ' + getNameMonth(d.getMonth()) + ' ' + d.getFullYear();
+	    }
+	  }, {
+	    key: 'handleClickBack',
+	    value: function handleClickBack() {
+	      window.dispatchEvent(new CustomEvent('BACK'));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'list' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'list__container' },
+	          this.props.type !== 'archiv' ? _react2.default.createElement(_Search2.default, null) : null,
+	          this.props.type === 'project' ? _react2.default.createElement('span', {
+	            className: 'list__button-back',
+	            onClick: this.handleClickBack
+	          }) : null,
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              className: 'list__scroll-box' + ('' + (this.props.type === 'project' ? ' list__scroll-box_height_small' : ''))
+	            },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'list__container-task' },
+	              this.getCompTasks(this.getTasks(this.props.type, this.props.db))
+	            )
+	          ),
+	          this.props.type !== 'archiv' ? _react2.default.createElement(_Field2.default, null) : null
+	        )
+	      );
 	    }
 	  }]);
 	
 	  return List;
-	}(_react2.default.Component);
+	}(_react.Component);
 	
 	exports.default = List;
-	;
 
 /***/ },
 /* 175 */
@@ -22719,11 +22708,13 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	var _config = __webpack_require__(/*! ../db/config */ 176);
 	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
+	var _config2 = _interopRequireDefault(_config);
 	
-	var _config = __webpack_require__(/*! ../db/config.js */ 208);
+	var _index = __webpack_require__(/*! ../mixin/index */ 177);
+	
+	var _index2 = _interopRequireDefault(_index);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22733,8 +22724,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Field = function (_React$Component) {
-	  _inherits(Field, _React$Component);
+	var Field = function (_Clone) {
+	  _inherits(Field, _Clone);
 	
 	  function Field(props) {
 	    _classCallCheck(this, Field);
@@ -22746,6 +22737,7 @@
 	    };
 	
 	    _this.handleClickAdd = _this.handleClickAdd.bind(_this);
+	
 	    _this.createTask = _this.createTask.bind(_this);
 	    return _this;
 	  }
@@ -22754,36 +22746,66 @@
 	    key: 'handleClickAdd',
 	    value: function handleClickAdd() {
 	      function addTask() {
-	        var value = _reactDom2.default.findDOMNode(this.refs.text).value;
+	        var value = this.text.value;
 	
 	        if (!~value.indexOf(' ')) return;
 	
-	        var task = this.createTask(_reactDom2.default.findDOMNode(this.refs.text).value);
+	        var task = this.createTask(this.text.value);
 	
 	        if (!task.description.length) return;
 	
 	        window.dispatchEvent(new CustomEvent('TASK_CREATE', {
 	          detail: task
 	        }));
-	        _reactDom2.default.findDOMNode(this.refs.text).value = '';
+	        this.text.value = '';
 	      }
 	
-	      var newState = Object.assign({}, this.state);
+	      var newState = this.cloneDeep(this.state);
 	
 	      if (!this.state.show) {
-	        newState.show = true;
-	        this.setState(newState);
+	        this.setState(Object.assign(newState, {
+	          show: true
+	        }));
 	        return;
 	      }
 	
 	      addTask.bind(this)();
 	
-	      newState.show = false;
-	      this.setState(newState);
+	      this.setState(Object.assign(newState, {
+	        show: false
+	      }));
+	    }
+	  }, {
+	    key: 'createTask',
+	    value: function createTask(text) {
+	      var priority = /\*+/,
+	          project = /@[\wа-яё]+/i,
+	          death = /\d\d\/\d\d\/\d\d/,
+	          money = /(?:\$)\d+/,
+	          timePrice = /\d\d:\d\d:\d\d/,
+	          formatTimePrice = timePrice.test(text) ? timePrice.exec(text)[0].split(':') : null,
+	          endFormatTimePrice = formatTimePrice ? +formatTimePrice[0] * 60 + +formatTimePrice[1] : _config2.default.DEFAULT_PRICE_MINUTES;
+	
+	      return {
+	        stopwatch: [0, 0, 0],
+	        date: new Date(),
+	        complete: false,
+	        id: Math.floor(Math.random() * Math.pow(100, 10)),
+	        priority: priority.test(text) ? priority.exec(text)[0].length : 0,
+	        project: project.test(text) ? project.exec(text)[0] : 'SANS',
+	        timeDeath: death.test(text) ? death.exec(text)[0].split('/').map(function (item) {
+	          return +item;
+	        }) : null,
+	        price: money.test(text) ? money.exec(text)[0].slice(1) : _config2.default.DEFAULT_PRICE_TASK,
+	        timePrice: endFormatTimePrice,
+	        description: text.replace(priority, '').replace(project, '').replace(death, '').replace(timePrice, '').replace(money, '').trim()
+	      };
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+	
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'list__field' },
@@ -22793,55 +22815,163 @@
 	          _react2.default.createElement('span', { className: 'button-add', onClick: this.handleClickAdd })
 	        ),
 	        _react2.default.createElement('textarea', {
-	          className: 'list__area ' + ('list__area_' + (this.state.show ? 'show' : 'hidden')),
-	          ref: 'text',
-	          placeholder: 'Write you task...'
+	          className: 'list__area list__area_' + ('' + (this.state.show ? 'show' : 'hidden')),
+	          ref: function ref(node) {
+	            return _this2.text = node;
+	          },
+	          placeholder: 'Write your task...'
 	        })
 	      );
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
-	      this.state.show ? _reactDom2.default.findDOMNode(this.refs.text).focus() : null;
-	    }
-	  }, {
-	    key: 'createTask',
-	    value: function createTask(text) {
-	      var priority = /\*+/,
-	          project = /@[\wа-яё]+/i,
-	          tags = /#[\wа-яё]+/ig,
-	          death = /\d\d\/\d\d\/\d\d/,
-	          money = /(?:\$)\d+/,
-	          timePrice = /\d\d:\d\d:\d\d/,
-	          formatTimePrice = timePrice.test(text) ? timePrice.exec(text)[0].split(':') : null,
-	          endFormatTimePrice = formatTimePrice ? +formatTimePrice[0] * 60 + +formatTimePrice[1] : _config.config.DEFAULT_PRICE_MINUTES;
-	
-	      var task = {
-	        stopwatch: [0, 0, 0],
-	        date: new Date(),
-	        complete: false,
-	        tags: text.match(tags),
-	        id: Math.floor(Math.random() * Math.pow(100, 10)),
-	        priority: priority.test(text) ? priority.exec(text)[0].length : 0,
-	        project: project.test(text) ? project.exec(text)[0] : 'SANS',
-	        timeDeath: death.test(text) ? death.exec(text)[0].split(/\//) : null,
-	        price: money.test(text) ? money.exec(text)[0].slice(1) : _config.config.DEFAULT_PRICE_TASK,
-	        timePrice: endFormatTimePrice,
-	        description: text.replace(priority, '').replace(project, '').replace(tags, '').replace(death, '').replace(timePrice, '').replace(money, '').trim()
-	      };
-	
-	      return task;
+	      this.state.show ? this.text.focus() : null;
 	    }
 	  }]);
 	
 	  return Field;
-	}(_react2.default.Component);
+	}((0, _index2.default)(_react.Component));
 	
 	exports.default = Field;
-	;
 
 /***/ },
 /* 176 */
+/*!*****************************!*\
+  !*** ./src/js/db/config.js ***!
+  \*****************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var config = {
+	  price: 300,
+	  minutes: 60,
+	
+	  get PREVIEW_LENGTH() {
+	    return document.documentElement.clientWidth > 695 ? 61 : 31;
+	  },
+	
+	  get DEFAULT_PRICE_TASK() {
+	    return this.price;
+	  },
+	
+	  set DEFAULT_PRICE_TASK(newPrice) {
+	    this.price = newPrice;
+	  },
+	
+	  get DEFAULT_PRICE_MINUTES() {
+	    return this.minutes;
+	  },
+	
+	  set DEFAULT_PRICE_MINUTES(newMin) {
+	    this.minutes = newMin;
+	  }
+	};
+	
+	exports.default = config;
+
+/***/ },
+/* 177 */
+/*!*******************************!*\
+  !*** ./src/js/mixin/index.js ***!
+  \*******************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Clone = function Clone(SuperClass) {
+	  return function (_SuperClass) {
+	    _inherits(_class, _SuperClass);
+	
+	    function _class() {
+	      _classCallCheck(this, _class);
+	
+	      return _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+	    }
+	
+	    _createClass(_class, [{
+	      key: 'cloneDeep',
+	      value: function cloneDeep(orig) {
+	        function cloneObj(obj) {
+	          var o = {},
+	              switchCaseObj = switchCase.bind(null, o, obj);
+	
+	          for (var key in obj) {
+	
+	            if (obj.hasOwnProperty(key)) switchCaseObj(key);
+	          }
+	
+	          return o;
+	        }
+	
+	        function cloneArr(arr) {
+	          var a = [],
+	              switchCaseArr = switchCase.bind(null, a, arr);
+	
+	          for (var i = 0; i < arr.length; i += 1) {
+	            switchCaseArr(i);
+	          }return a;
+	        }
+	
+	        function switchCase(copy, orig, prop) {
+	          switch (checkType(orig[prop])) {
+	            case 1:
+	              copy[prop] = orig[prop];
+	              break;
+	            case 2:
+	              copy[prop] = cloneArr(orig[prop]);
+	              break;
+	            case 3:
+	              copy[prop] = cloneObj(orig[prop]);
+	              break;
+	          }
+	        }
+	
+	        function checkType(orig) {
+	          if ((typeof orig === 'undefined' ? 'undefined' : _typeof(orig)) !== 'object' || orig === null || orig instanceof Date) {
+	            return 1;
+	          }
+	
+	          if (Array.isArray(orig)) return 2;else return 3;
+	        }
+	
+	        switch (checkType(orig)) {
+	          case 1:
+	            return orig;
+	          case 2:
+	            return cloneArr(orig);
+	          case 3:
+	            return cloneObj(orig);
+	        }
+	      }
+	    }]);
+	
+	    return _class;
+	  }(SuperClass);
+	};
+	
+	exports.default = Clone;
+
+/***/ },
+/* 178 */
 /*!*************************************!*\
   !*** ./src/js/component/Search.jsx ***!
   \*************************************/
@@ -22859,10 +22989,6 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22871,13 +22997,13 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Search = function (_React$Component) {
-	  _inherits(Search, _React$Component);
+	var Search = function (_Component) {
+	  _inherits(Search, _Component);
 	
-	  function Search(props) {
+	  function Search() {
 	    _classCallCheck(this, Search);
 	
-	    var _this = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this));
 	
 	    _this.handleRequest = _this.handleRequest.bind(_this);
 	    return _this;
@@ -22887,7 +23013,9 @@
 	    key: 'handleRequest',
 	    value: function handleRequest(e) {
 	      window.dispatchEvent(new CustomEvent('SEARCH', {
-	        detail: { value: e.target.value }
+	        detail: {
+	          value: e.target.value
+	        }
 	      }));
 	    }
 	  }, {
@@ -22906,13 +23034,12 @@
 	  }]);
 	
 	  return Search;
-	}(_react2.default.Component);
+	}(_react.Component);
 	
 	exports.default = Search;
-	;
 
 /***/ },
-/* 177 */
+/* 179 */
 /*!***********************************!*\
   !*** ./src/js/component/Task.jsx ***!
   \***********************************/
@@ -22930,17 +23057,17 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	var _Stopwatch = __webpack_require__(/*! ./Stopwatch.jsx */ 178);
+	var _Stopwatch = __webpack_require__(/*! ./Stopwatch */ 180);
 	
 	var _Stopwatch2 = _interopRequireDefault(_Stopwatch);
 	
-	var _Timer = __webpack_require__(/*! ./Timer.jsx */ 179);
+	var _Timer = __webpack_require__(/*! ./Timer */ 181);
 	
 	var _Timer2 = _interopRequireDefault(_Timer);
+	
+	var _index = __webpack_require__(/*! ../mixin/index */ 177);
+	
+	var _index2 = _interopRequireDefault(_index);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22952,8 +23079,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Task = function (_React$Component) {
-	  _inherits(Task, _React$Component);
+	var Task = function (_Clone) {
+	  _inherits(Task, _Clone);
 	
 	  function Task(props) {
 	    _classCallCheck(this, Task);
@@ -22987,123 +23114,43 @@
 	  }
 	
 	  _createClass(Task, [{
-	    key: 'handleDelete',
-	    value: function handleDelete() {
-	      window.dispatchEvent(new CustomEvent('TASK_DELETE', {
-	        detail: { id: this.props.info.id }
-	      }));
-	    }
-	  }, {
-	    key: 'handleCompleted',
-	    value: function handleCompleted(e) {
-	      console.log(e);
-	      window.dispatchEvent(new CustomEvent('COMPLETED', {
-	        detail: { id: this.props.info.id }
-	      }));
-	      e.target.checked = false;
-	    }
-	  }, {
-	    key: 'handleExit',
-	    value: function handleExit() {
-	      this.handleToggle();
-	    }
-	  }, {
-	    key: 'handleSave',
-	    value: function handleSave(e) {
-	      this.handleToggle();
-	      window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
-	        detail: {
-	          value: _reactDom2.default.findDOMNode(this.refs.value).value,
-	          id: this.props.info.id
+	    key: 'getClearJournal',
+	    value: function getClearJournal(id) {
+	      var index = void 0;
+	      var tmp = this.props.journal.filter(function (item, i) {
+	
+	        if (item.id === id) {
+	          index = i;
+	          return true;
 	        }
-	      }));
-	    }
-	  }, {
-	    key: 'handleNote',
-	    value: function handleNote(e) {
-	      if (!e.target.classList.contains('button-note')) return;
-	      console.log('!!!');
-	      window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
-	        detail: {
-	          id: this.props.info.id,
-	          value: this.props.info.note
-	        }
-	      }));
-	    }
-	  }, {
-	    key: 'handleToggle',
-	    value: function handleToggle() {
-	      var newState = Object.assign({}, this.state);
-	      newState.edit = !this.state.edit;
-	      this.setState(newState);
-	    }
-	  }, {
-	    key: 'handleClickDescript',
-	    value: function handleClickDescript(e) {
-	      if (!(e.target.classList.contains('task__container') || e.target.classList.contains('task__descript'))) return;
 	
-	      var newState = Object.assign({}, this.state);
-	      newState.descript = !this.state.descript;
-	      this.setState(newState);
-	      console.log(this.state.descript);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var time = this.diffDate(this.props.info.project === 'ARCHIV' ? [] : this.getClearJournal(this.props.info.id));
-	
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'task' },
-	        this.edit(),
-	        this.content(time.stopwatch, time.timer, time.lable),
-	        this.archiv()
-	      );
-	    }
-	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      if (this.state.edit) document.querySelector('.edit-field').focus();
-	    }
-	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      if (!(this.props.info.project === 'ARCHIV')) {
-	        window.dispatchEvent(new CustomEvent('JOURNAL_SET', {
-	          detail: {
-	            id: this.props.info.id,
-	            date: new Date()
-	          }
-	        }));
-	      }
-	    }
-	  }, {
-	    key: 'timer',
-	    value: function timer(time) {
-	      var t = this.props.info.timeDeath;
-	
-	      if (!t) return;
-	
-	      return _react2.default.createElement(_Timer2.default, {
-	        'delete': this.handleDelete,
-	        id: this.props.info.id,
-	        time: time
+	        return false;
 	      });
+	
+	      window.dispatchEvent(new CustomEvent('JOURNAL_CLEAR', {
+	        detail: { index: index }
+	      }));
+	
+	      return tmp;
 	    }
 	  }, {
 	    key: 'edit',
 	    value: function edit() {
+	      var _this2 = this;
+	
 	      if (!this.state.edit) return;
 	
 	      return _react2.default.createElement(
 	        'span',
 	        {
-	          className: 'task__container-descript  task__container task__container_level_' + this.color()
+	          className: 'task__container-descript task__container' + (' task__container_level_' + this.color())
 	        },
 	        _react2.default.createElement('input', {
 	          className: 'task__field',
 	          type: 'text',
-	          ref: 'value',
+	          ref: function ref(node) {
+	            return _this2.value = node;
+	          },
 	          defaultValue: '' + this.props.info.description
 	        }),
 	        _react2.default.createElement(
@@ -23123,10 +23170,13 @@
 	        'span',
 	        {
 	          onClick: this.handleClickDescript,
-	          className: 'task__container-descript' + (this.state.descript ? ' task__container-descript_full' : '') },
+	          className: 'task__container-descript' + (this.state.descript ? ' task__container-descript_full' : '')
+	        },
 	        _react2.default.createElement(
 	          'span',
-	          { className: 'task__container task__container_level' + this.color() },
+	          {
+	            className: 'task__container task__container_level' + this.color()
+	          },
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'task__container-checkbox' },
@@ -23183,7 +23233,7 @@
 	              { className: 'task__attribute' },
 	              'Description:'
 	            ),
-	            this.props.info.description
+	            ' ' + this.props.info.description
 	          ),
 	          _react2.default.createElement(
 	            'p',
@@ -23193,8 +23243,7 @@
 	              { className: 'task__attribute' },
 	              'Price:'
 	            ),
-	            this.props.info.price,
-	            '\\sUSD'
+	            ' ' + this.props.info.price + ' USD'
 	          ),
 	          _react2.default.createElement(
 	            'p',
@@ -23204,8 +23253,7 @@
 	              { className: 'task__attribute' },
 	              'Time on complete:'
 	            ),
-	            this.props.info.timePrice,
-	            'minutes'
+	            ' ' + this.props.info.timePrice + ' minutes'
 	          )
 	        )
 	      );
@@ -23214,6 +23262,7 @@
 	    key: 'archiv',
 	    value: function archiv() {
 	      if (this.props.info.project !== 'ARCHIV') return;
+	
 	      return _react2.default.createElement(
 	        'span',
 	        { className: 'task__container task__container_level_one' },
@@ -23233,27 +23282,84 @@
 	    key: 'createPreview',
 	    value: function createPreview(str, n) {
 	      if (str.length < n) return str;
+	
 	      return str.slice(0, n) + '...';
 	    }
 	  }, {
-	    key: 'getClearJournal',
-	    value: function getClearJournal(id) {
-	      var index = void 0;
-	      var tmp = this.props.journal.filter(function (item, i) {
+	    key: 'timer',
+	    value: function timer(time) {
+	      var t = this.props.info.timeDeath;
 	
-	        if (item.id === id) {
-	          index = i;
-	          return true;
-	        }
+	      if (!t) return;
 	
-	        return false;
+	      return _react2.default.createElement(_Timer2.default, {
+	        'delete': this.handleDelete,
+	        id: this.props.info.id,
+	        time: time
 	      });
+	    }
+	  }, {
+	    key: 'handleExit',
+	    value: function handleExit() {
+	      this.handleToggle();
+	    }
+	  }, {
+	    key: 'handleSave',
+	    value: function handleSave() {
+	      this.handleToggle();
 	
-	      window.dispatchEvent(new CustomEvent('JOURNAL_CLEAR', {
-	        detail: { index: index }
+	      window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
+	        detail: {
+	          value: this.value.value,
+	          id: this.props.info.id
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'handleNote',
+	    value: function handleNote(e) {
+	      if (!e.target.classList.contains('button-note')) return;
+	
+	      window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
+	        detail: {
+	          id: this.props.info.id,
+	          value: this.props.info.note
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'handleToggle',
+	    value: function handleToggle() {
+	      this.setState(Object.assign(this.cloneDeep(this.state), {
+	        edit: !this.state.edit
+	      }));
+	    }
+	  }, {
+	    key: 'handleClickDescript',
+	    value: function handleClickDescript(e) {
+	      if (!(e.target.classList.contains('task__container') || e.target.classList.contains('task__descript'))) return;
+	
+	      this.setState(Object.assign(this.cloneDeep(this.state), {
+	        descript: !this.state.descript
+	      }));
+	    }
+	  }, {
+	    key: 'handleCompleted',
+	    value: function handleCompleted(e) {
+	      window.dispatchEvent(new CustomEvent('COMPLETED', {
+	        detail: { id: this.props.info.id }
 	      }));
 	
-	      return tmp; // timer, stopwatch ...
+	      e.target.checked = false;
+	    }
+	  }, {
+	    key: 'handleDelete',
+	    value: function handleDelete() {
+	      window.dispatchEvent(new CustomEvent('TASK_DELETE', {
+	        detail: {
+	          id: this.props.info.id
+	        }
+	      }));
 	    }
 	  }, {
 	    key: 'diffDate',
@@ -23266,9 +23372,7 @@
 	        lable: false
 	      };
 	
-	      if (!journal.length) {
-	        return result;
-	      }
+	      if (!journal.length) return result;
 	
 	      // j - short name from journal
 	      var j = typeof journal[0].date === 'string' ? new Date(journal[0].date) : journal[0].date;
@@ -23313,7 +23417,6 @@
 	  }, {
 	    key: 'formatTimer',
 	    value: function formatTimer(arr) {
-	
 	      for (var i = arr.length; --i >= 0;) {
 	
 	        while (arr[i] < 0) {
@@ -23335,7 +23438,6 @@
 	  }, {
 	    key: 'formatStopwatch',
 	    value: function formatStopwatch(arr) {
-	
 	      for (var i = arr.length; --i >= 0;) {
 	
 	        while (arr[i] > 59) {
@@ -23352,7 +23454,6 @@
 	  }, {
 	    key: 'color',
 	    value: function color() {
-	
 	      switch (this.props.info.priority) {
 	        case 0:
 	          return '_one';
@@ -23366,16 +23467,45 @@
 	          return '_five';
 	      }
 	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      if (!(this.props.info.project === 'ARCHIV')) {
+	        window.dispatchEvent(new CustomEvent('JOURNAL_SET', {
+	          detail: {
+	            id: this.props.info.id,
+	            date: new Date()
+	          }
+	        }));
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var time = this.diffDate(this.props.info.project === 'ARCHIV' ? [] : this.getClearJournal(this.props.info.id));
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'task' },
+	        this.edit(),
+	        this.content(time.stopwatch, time.timer, time.lable),
+	        this.archiv()
+	      );
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.state.edit) document.querySelector('.edit-field').focus();
+	    }
 	  }]);
 	
 	  return Task;
-	}(_react2.default.Component);
+	}((0, _index2.default)(_react.Component));
 	
 	exports.default = Task;
-	;
 
 /***/ },
-/* 178 */
+/* 180 */
 /*!****************************************!*\
   !*** ./src/js/component/Stopwatch.jsx ***!
   \****************************************/
@@ -23395,9 +23525,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	var _index = __webpack_require__(/*! ../mixin/index */ 177);
 	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
+	var _index2 = _interopRequireDefault(_index);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -23407,8 +23537,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Stopwatch = function (_React$Component) {
-	  _inherits(Stopwatch, _React$Component);
+	var Stopwatch = function (_Clone) {
+	  _inherits(Stopwatch, _Clone);
 	
 	  function Stopwatch(props) {
 	    _classCallCheck(this, Stopwatch);
@@ -23419,13 +23549,13 @@
 	      interval: false
 	    };
 	
+	    _this.handleTick = _this.handleTick.bind(_this);
+	
 	    _this.stop = _this.stop.bind(_this);
 	    _this.play = _this.play.bind(_this);
 	    _this.toggle = _this.toggle.bind(_this);
 	    _this.show = _this.show.bind(_this);
 	    _this.run = _this.run.bind(_this);
-	
-	    _this.handleTick = _this.handleTick.bind(_this);
 	    return _this;
 	  }
 	
@@ -23456,39 +23586,10 @@
 	      }));
 	    }
 	  }, {
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      if (!this.state.interval) this.play();
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var status = this.state.interval ? 'play' : 'pause';
-	      return _react2.default.createElement(
-	        'span',
-	        { className: 'stopwatch' },
-	        this.show(),
-	        _react2.default.createElement('span', {
-	          className: 'button-' + status,
-	          title: status,
-	          onClick: this.toggle
-	        })
-	      );
-	    }
-	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      if (this.state.interval) this.stop();
-	    }
-	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      this.stop();
-	    }
-	  }, {
 	    key: 'show',
 	    value: function show() {
 	      if (!this.state.interval) return;
+	
 	      var s = this.props.time;
 	
 	      return _react2.default.createElement(
@@ -23521,14 +23622,15 @@
 	  }, {
 	    key: 'run',
 	    value: function run() {
-	      var newState = Object.assign({}, this.state);
-	      newState.interval = !this.state.interval;
-	      this.setState(newState);
+	      this.setState(Object.assign(this.cloneDeep(this.state), {
+	        interval: !this.state.interval
+	      }));
 	    }
 	  }, {
 	    key: 'play',
 	    value: function play() {
 	      var self = this;
+	
 	      this.stopwatch = setInterval(self.handleTick, 1000);
 	      this.run();
 	    }
@@ -23539,16 +23641,46 @@
 	      this.stopwatch = null;
 	      this.run();
 	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      if (!this.state.interval) this.play();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var status = this.state.interval ? 'play' : 'pause';
+	
+	      return _react2.default.createElement(
+	        'span',
+	        { className: 'stopwatch' },
+	        this.show(),
+	        _react2.default.createElement('span', {
+	          className: 'button-' + status,
+	          title: status,
+	          onClick: this.toggle
+	        })
+	      );
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.state.interval) this.stop();
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.stop();
+	    }
 	  }]);
 	
 	  return Stopwatch;
-	}(_react2.default.Component);
+	}((0, _index2.default)(_react.Component));
 	
 	exports.default = Stopwatch;
-	;
 
 /***/ },
-/* 179 */
+/* 181 */
 /*!************************************!*\
   !*** ./src/js/component/Timer.jsx ***!
   \************************************/
@@ -23568,9 +23700,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	var _index = __webpack_require__(/*! ../mixin/index */ 177);
 	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
+	var _index2 = _interopRequireDefault(_index);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -23582,8 +23714,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Timer = function (_React$Component) {
-	  _inherits(Timer, _React$Component);
+	var Timer = function (_Clone) {
+	  _inherits(Timer, _Clone);
 	
 	  function Timer(props) {
 	    _classCallCheck(this, Timer);
@@ -23593,8 +23725,10 @@
 	    _this.state = {
 	      spoiler: true
 	    };
-	    _this.timer = null;
+	
 	    _this.handleTickTimer = _this.handleTickTimer.bind(_this);
+	
+	    _this.timer = null;
 	    _this.cancel = _this.cancel.bind(_this);
 	    _this.spoiler = _this.spoiler.bind(_this);
 	    _this.show = _this.show.bind(_this);
@@ -23632,42 +23766,25 @@
 	      }));
 	    }
 	  }, {
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
+	    key: 'cancel',
+	    value: function cancel() {
 	      clearInterval(this.timer);
 	      this.timer = null;
-	      this.deleteTask();
-	    }
-	  }, {
-	    key: 'componentWillUpdate',
-	    value: function componentWillUpdate() {
-	      this.deleteTask();
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'span',
-	        { className: 'timer' },
-	        this.show(),
-	        this.hidden()
-	      );
+	      this.delete();
 	    }
 	  }, {
 	    key: 'hidden',
 	    value: function hidden() {
 	      if (!this.state.spoiler) return;
-	      return _react2.default.createElement('span', {
-	        className: 'button-close',
-	        onClick: this.spoiler,
-	        title: 'show'
-	      });
+	
+	      return _react2.default.createElement('span', { className: 'button-close', onClick: this.spoiler, title: 'show' });
 	    }
 	  }, {
 	    key: 'show',
 	    value: function show() {
-	      if (this.state.spoiler) return;
 	      var t = this.props.time;
+	
+	      if (this.state.spoiler) return;
 	
 	      return _react2.default.createElement(
 	        'span',
@@ -23704,13 +23821,42 @@
 	  }, {
 	    key: 'spoiler',
 	    value: function spoiler() {
-	      this.setState({ spoiler: !this.state.spoiler });
+	      this.setState(Object.assign(this.cloneDeep(this.state), {
+	        spoiler: !this.state.spoiler
+	      }));
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete() {
+	      window.dispatchEvent(new CustomEvent('TIMER_DELETE', {
+	        detail: {
+	          id: this.props.id
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'deleteTask',
+	    value: function deleteTask() {
+	      if (!Math.max.apply(Math, _toConsumableArray(this.props.time)) || Math.min.apply(Math, _toConsumableArray(this.props.time)) < 0) this.props.delete();
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      clearInterval(this.timer);
+	      this.timer = null;
+	      this.deleteTask();
 	    }
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var self = this;
+	
 	      this.timer = setInterval(self.handleTickTimer, 1000);
+	    }
+	  }, {
+	    key: 'componentWillUpdate',
+	    value: function componentWillUpdate() {
+	      this.deleteTask();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -23719,34 +23865,854 @@
 	      this.timer = null;
 	    }
 	  }, {
-	    key: 'cancel',
-	    value: function cancel() {
-	      clearInterval(this.timer);
-	      this.timer = null;
-	      this.delete();
-	    }
-	  }, {
-	    key: 'delete',
-	    value: function _delete() {
-	      window.dispatchEvent(new CustomEvent('TIMER_DELETE', {
-	        detail: { id: this.props.id }
-	      }));
-	    }
-	  }, {
-	    key: 'deleteTask',
-	    value: function deleteTask() {
-	      if (!Math.max.apply(Math, _toConsumableArray(this.props.time)) || Math.min.apply(Math, _toConsumableArray(this.props.time)) < 0) this.props.delete();
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'span',
+	        { className: 'timer' },
+	        this.show(),
+	        this.hidden()
+	      );
 	    }
 	  }]);
 	
 	  return Timer;
-	}(_react2.default.Component);
+	}((0, _index2.default)(_react.Component));
 	
 	exports.default = Timer;
-	;
 
 /***/ },
-/* 180 */
+/* 182 */
+/*!***************************!*\
+  !*** ./src/js/db/temp.js ***!
+  \***************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var temp = {
+	  date: null,
+	  old: null
+	};
+	
+	exports.default = temp;
+
+/***/ },
+/* 183 */
+/*!*****************************************!*\
+  !*** ./src/js/component/Collection.jsx ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Folder = __webpack_require__(/*! ./Folder */ 184);
+	
+	var _Folder2 = _interopRequireDefault(_Folder);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Collection = function (_Component) {
+	  _inherits(Collection, _Component);
+	
+	  function Collection(props) {
+	    _classCallCheck(this, Collection);
+	
+	    return _possibleConstructorReturn(this, (Collection.__proto__ || Object.getPrototypeOf(Collection)).call(this, props));
+	  }
+	
+	  _createClass(Collection, [{
+	    key: 'getFolders',
+	    value: function getFolders(db) {
+	      return db.filter(function (folder) {
+	        if (folder.project !== 'ARCHIV' && folder.project !== 'SANS') return folder;
+	      }).map(function (folder) {
+	        return _react2.default.createElement(_Folder2.default, { key: folder.project, info: folder });
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'collection' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'collection__container' },
+	          this.getFolders(this.props.db)
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Collection;
+	}(_react.Component);
+	
+	exports.default = Collection;
+
+/***/ },
+/* 184 */
+/*!*************************************!*\
+  !*** ./src/js/component/Folder.jsx ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _index = __webpack_require__(/*! ../mixin/index */ 177);
+	
+	var _index2 = _interopRequireDefault(_index);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Folder = function (_Clone) {
+	  _inherits(Folder, _Clone);
+	
+	  function Folder(props) {
+	    _classCallCheck(this, Folder);
+	
+	    var _this = _possibleConstructorReturn(this, (Folder.__proto__ || Object.getPrototypeOf(Folder)).call(this, props));
+	
+	    _this.state = {
+	      edit: false
+	    };
+	
+	    _this.handleDelete = _this.handleDelete.bind(_this);
+	    _this.handleEdit = _this.handleEdit.bind(_this);
+	    _this.handleNote = _this.handleNote.bind(_this);
+	    _this.handleClick = _this.handleClick.bind(_this);
+	    _this.handleSaveEdit = _this.handleSaveEdit.bind(_this);
+	    _this.handleBackEdit = _this.handleBackEdit.bind(_this);
+	
+	    _this.setStateToggleEdit = _this.setStateToggleEdit.bind(_this);
+	    _this.edit = _this.edit.bind(_this);
+	    _this.content = _this.content.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(Folder, [{
+	    key: 'setStateToggleEdit',
+	    value: function setStateToggleEdit() {
+	      this.setState(Object.assign(this.cloneDeep(this.state), {
+	        edit: !this.state.edit
+	      }));
+	    }
+	  }, {
+	    key: 'content',
+	    value: function content() {
+	      if (this.state.edit) return;
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'folder__container folder__container_level_one' },
+	        _react2.default.createElement(
+	          'p',
+	          {
+	            className: 'folder__name',
+	            onClick: this.handleClick
+	          },
+	          '' + this.props.info.project
+	        ),
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'folder__panel' },
+	          _react2.default.createElement('span', { className: 'button-delete', onClick: this.handleDelete }),
+	          _react2.default.createElement('span', { className: 'button-edit', onClick: this.handleEdit }),
+	          _react2.default.createElement('span', { className: 'button-note', onClick: this.handleNote })
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'edit',
+	    value: function edit() {
+	      var _this2 = this;
+	
+	      if (!this.state.edit) return;
+	
+	      return _react2.default.createElement(
+	        'span',
+	        { className: 'folder__container folder__container_level_one' },
+	        _react2.default.createElement('input', {
+	          className: 'folder__field',
+	          type: 'text',
+	          ref: function ref(node) {
+	            return _this2.value = node;
+	          },
+	          defaultValue: '' + this.props.info.project
+	        }),
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'folder__edit-panel' },
+	          _react2.default.createElement('span', {
+	            className: 'button-save',
+	            onClick: this.handleSaveEdit
+	          }),
+	          _react2.default.createElement('span', {
+	            className: 'button-exit',
+	            onClick: this.handleBackEdit
+	          })
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick(e) {
+	      var tag = e.target.tagName;
+	
+	      if (e.target.className !== 'wrap' && tag !== 'DIV' && tag !== 'P') return;
+	
+	      window.dispatchEvent(new CustomEvent('RELOCATE', {
+	        detail: {
+	          category: this.props.info.project
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'handleDelete',
+	    value: function handleDelete(e) {
+	      if (!e.target.classList.contains('button-delete')) return;
+	
+	      window.dispatchEvent(new CustomEvent('FOLDER_DELETE', {
+	        detail: {
+	          project: this.props.info.project
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'handleEdit',
+	    value: function handleEdit(e) {
+	      if (!e.target.classList.contains('button-edit')) return;
+	
+	      this.setStateToggleEdit();
+	    }
+	  }, {
+	    key: 'handleSaveEdit',
+	    value: function handleSaveEdit() {
+	      this.setStateToggleEdit();
+	
+	      window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
+	        detail: {
+	          value: this.value.value.slice(0, 21),
+	          project: this.props.info.project
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'handleBackEdit',
+	    value: function handleBackEdit() {
+	      this.setStateToggleEdit();
+	    }
+	  }, {
+	    key: 'handleNote',
+	    value: function handleNote(e) {
+	      if (!e.target.classList.contains('button-note')) return;
+	
+	      window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
+	        detail: {
+	          value: this.props.info.note,
+	          project: this.props.info.project
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        {
+	          className: 'folder',
+	          onClick: this.handleClick
+	        },
+	        this.content(),
+	        this.edit()
+	      );
+	    }
+	  }]);
+	
+	  return Folder;
+	}((0, _index2.default)(_react.Component));
+	
+	exports.default = Folder;
+
+/***/ },
+/* 185 */
+/*!***********************************!*\
+  !*** ./src/js/component/Note.jsx ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Note = function (_Component) {
+	  _inherits(Note, _Component);
+	
+	  function Note(props) {
+	    _classCallCheck(this, Note);
+	
+	    var _this = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
+	
+	    _this.handleClickBack = _this.handleClickBack.bind(_this);
+	    _this.handleClickSave = _this.handleClickSave.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(Note, [{
+	    key: 'handleClickBack',
+	    value: function handleClickBack() {
+	      window.dispatchEvent(new CustomEvent('BACK'));
+	    }
+	  }, {
+	    key: 'handleClickSave',
+	    value: function handleClickSave() {
+	      window.dispatchEvent(new CustomEvent('NOTE_SAVE', {
+	        detail: {
+	          value: this.text.value
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'note' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'note__container' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'note__panel' },
+	            _react2.default.createElement('span', { className: 'button-exit', onClick: this.handleClickBack }),
+	            _react2.default.createElement('span', { className: 'button-save', onClick: this.handleClickSave })
+	          ),
+	          _react2.default.createElement('textarea', {
+	            className: 'note__field',
+	            defaultValue: '' + this.props.value,
+	            ref: function ref(node) {
+	              return _this2.text = node;
+	            },
+	            placeholder: 'Write you note...'
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Note;
+	}(_react.Component);
+	
+	exports.default = Note;
+
+/***/ },
+/* 186 */
+/*!*****************************************!*\
+  !*** ./src/js/component/BoardExtra.jsx ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = BoardExtra;
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Spell = __webpack_require__(/*! ./Spell */ 187);
+	
+	var _Spell2 = _interopRequireDefault(_Spell);
+	
+	var _Account = __webpack_require__(/*! ./Account */ 188);
+	
+	var _Account2 = _interopRequireDefault(_Account);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function BoardExtra(props) {
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'board-extra' },
+	    _react2.default.createElement(
+	      'div',
+	      { className: 'board-extra__container' },
+	      props.view === 'spell' ? _react2.default.createElement(_Spell2.default, null) : _react2.default.createElement(_Account2.default, { data: props.account })
+	    )
+	  );
+	}
+
+/***/ },
+/* 187 */
+/*!************************************!*\
+  !*** ./src/js/component/Spell.jsx ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = Spell;
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function Spell() {
+	  return _react2.default.createElement(
+	    "div",
+	    { className: "board-extra" },
+	    _react2.default.createElement(
+	      "table",
+	      { className: "board-extra__table" },
+	      _react2.default.createElement(
+	        "caption",
+	        { className: "board-extra__title" },
+	        "spell"
+	      ),
+	      _react2.default.createElement(
+	        "tbody",
+	        { className: "board-extra__content" },
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "timer death"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "hh/mm/ss"
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "priority"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "*"
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "project"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "@name-project"
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "price"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "$money"
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "time price"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__spell-cell" },
+	            "hh:mm:ss"
+	          )
+	        )
+	      )
+	    )
+	  );
+	}
+
+/***/ },
+/* 188 */
+/*!**************************************!*\
+  !*** ./src/js/component/Account.jsx ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = Account;
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function Account(props) {
+	  return _react2.default.createElement(
+	    "div",
+	    { className: "board-extra" },
+	    _react2.default.createElement(
+	      "table",
+	      { className: "board-extra__table" },
+	      _react2.default.createElement(
+	        "caption",
+	        { className: "board-extra__title" },
+	        "account"
+	      ),
+	      _react2.default.createElement(
+	        "tbody",
+	        { className: "board-extra__content" },
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            "completed"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            "" + props.data.completed
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            "late"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            "" + props.data.late
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            "minutes"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            "" + props.data.minutes
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "tr",
+	          null,
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            "wallet"
+	          ),
+	          _react2.default.createElement(
+	            "td",
+	            { className: "board-extra__account-cell" },
+	            props.data.wallet + "$"
+	          )
+	        )
+	      )
+	    )
+	  );
+	}
+
+/***/ },
+/* 189 */
+/*!*********************************************!*\
+  !*** ./src/js/component/NavigationMenu.jsx ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var NavigationMenu = function (_Component) {
+	  _inherits(NavigationMenu, _Component);
+	
+	  function NavigationMenu(props) {
+	    _classCallCheck(this, NavigationMenu);
+	
+	    var _this = _possibleConstructorReturn(this, (NavigationMenu.__proto__ || Object.getPrototypeOf(NavigationMenu)).call(this, props));
+	
+	    _this.handleClickButton = _this.handleClickButton.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(NavigationMenu, [{
+	    key: 'handleClickButton',
+	    value: function handleClickButton(e) {
+	      window.dispatchEvent(new CustomEvent('RELOCATE', {
+	        detail: {
+	          category: e.target.getAttribute('name')
+	        }
+	      }));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'navigation-menu' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'navigation-menu__container' },
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              className: 'navigation-menu__button',
+	              name: 'inbox',
+	              onClick: this.handleClickButton
+	            },
+	            'inbox'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              className: 'navigation-menu__button',
+	              name: 'project',
+	              onClick: this.handleClickButton
+	            },
+	            'project'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              className: 'navigation-menu__button',
+	              name: 'archiv',
+	              onClick: this.handleClickButton
+	            },
+	            'archiv'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              className: 'navigation-menu__button',
+	              name: 'account',
+	              onClick: this.handleClickButton
+	            },
+	            'account'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              className: 'navigation-menu__button',
+	              name: 'spell',
+	              onClick: this.handleClickButton
+	            },
+	            'spell'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return NavigationMenu;
+	}(_react.Component);
+	
+	exports.default = NavigationMenu;
+
+/***/ },
+/* 190 */
+/*!****************************!*\
+  !*** ./src/js/db/index.js ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var db = [{
+	  project: 'ARCHIV',
+	  note: '',
+	  tasks: [{
+	    description: 'Me very old task. Mb completed?',
+	    id: 2,
+	    complete: false,
+	    project: 'ARCHIV',
+	    priority: 0,
+	    timeDeath: null,
+	    note: '',
+	    stopwatch: null,
+	    price: 300,
+	    timePrice: 60
+	  }]
+	}, {
+	  project: 'SANS',
+	  note: '',
+	  tasks: [{
+	    description: 'Drink milk.',
+	    id: 232,
+	    complete: false,
+	    project: '',
+	    priority: 0,
+	    timeDeath: null,
+	    note: '',
+	    stopwatch: [0, 0, 0],
+	    date: new Date(),
+	    price: 300,
+	    timePrice: 60
+	  }]
+	}, {
+	  project: '@shop',
+	  note: '',
+	  tasks: [{
+	    description: 'Buy milk.',
+	    id: 1,
+	    note: '',
+	    complete: false,
+	    project: '@shop',
+	    priority: 2,
+	    timeDeath: null,
+	    stopwatch: [0, 0, 0],
+	    date: new Date(2012, 10, 10),
+	    price: 300,
+	    timePrice: 60
+	  }]
+	}, {
+	  project: '@social',
+	  note: '',
+	  tasks: [{
+	    description: 'Will meet with girl.',
+	    id: 3,
+	    note: '',
+	    complete: false,
+	    project: '@social',
+	    priority: 3,
+	    timeDeath: [0, 0, 10],
+	    stopwatch: [0, 0, 0],
+	    date: new Date(2012, 10, 10),
+	    price: 300,
+	    timePrice: 60
+	  }]
+	}, {
+	  project: '@sport',
+	  note: '',
+	  tasks: [{
+	    description: 'Scamper.',
+	    id: 1322,
+	    complete: false,
+	    project: '@sport',
+	    priority: 4,
+	    timeDeath: null,
+	    note: '',
+	    stopwatch: [0, 0, 0],
+	    date: new Date(2013, 3, 1),
+	    price: 300,
+	    timePrice: 60
+	  }]
+	}];
+	
+	exports.default = db;
+
+/***/ },
+/* 191 */
 /*!******************************!*\
   !*** ./src/js/db/journal.js ***!
   \******************************/
@@ -23757,30 +24723,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.account = exports.temp = exports.journal = undefined;
 	
-	var _storage = __webpack_require__(/*! ./storage */ 181);
+	var _storage = __webpack_require__(/*! ./storage */ 192);
 	
 	var journal = (0, _storage.loadJournal)() || [];
 	
-	var temp = {
-	  date: null,
-	  old: null
-	};
-	
-	var account = {
-	  'completed': 0,
-	  'late': 0,
-	  'minutes': 0,
-	  'wallet': 0
-	};
-	
-	exports.journal = journal;
-	exports.temp = temp;
-	exports.account = account;
+	exports.default = journal;
 
 /***/ },
-/* 181 */
+/* 192 */
 /*!******************************!*\
   !*** ./src/js/db/storage.js ***!
   \******************************/
@@ -23793,7 +24744,7 @@
 	});
 	exports.loadJournal = exports.load = undefined;
 	
-	var _lockr = __webpack_require__(/*! lockr */ 182);
+	var _lockr = __webpack_require__(/*! lockr */ 193);
 	
 	var _lockr2 = _interopRequireDefault(_lockr);
 	
@@ -23815,7 +24766,7 @@
 	exports.loadJournal = loadJournal;
 
 /***/ },
-/* 182 */
+/* 193 */
 /*!**************************!*\
   !*** ./~/lockr/lockr.js ***!
   \**************************/
@@ -23993,908 +24944,28 @@
 
 
 /***/ },
-/* 183 */
-/*!*****************************************!*\
-  !*** ./src/js/component/Collection.jsx ***!
-  \*****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	var _Folder = __webpack_require__(/*! ./Folder.jsx */ 184);
-	
-	var _Folder2 = _interopRequireDefault(_Folder);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Collection = function (_React$Component) {
-	  _inherits(Collection, _React$Component);
-	
-	  function Collection(props) {
-	    _classCallCheck(this, Collection);
-	
-	    return _possibleConstructorReturn(this, (Collection.__proto__ || Object.getPrototypeOf(Collection)).call(this, props));
-	  }
-	
-	  _createClass(Collection, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'collection' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'collection__container' },
-	          this.getFolders(this.props.db)
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'getFolders',
-	    value: function getFolders(db) {
-	      return db.filter(function (folder) {
-	        if (folder.project !== 'ARCHIV' && folder.project !== 'SANS') return folder;
-	      }).map(function (folder) {
-	        return _react2.default.createElement(_Folder2.default, { key: folder.project, info: folder });
-	      });
-	    }
-	  }]);
-	
-	  return Collection;
-	}(_react2.default.Component);
-	
-	exports.default = Collection;
-	;
-
-/***/ },
-/* 184 */
-/*!*************************************!*\
-  !*** ./src/js/component/Folder.jsx ***!
-  \*************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Folder = function (_React$Component) {
-	  _inherits(Folder, _React$Component);
-	
-	  function Folder(props) {
-	    _classCallCheck(this, Folder);
-	
-	    var _this = _possibleConstructorReturn(this, (Folder.__proto__ || Object.getPrototypeOf(Folder)).call(this, props));
-	
-	    _this.state = {
-	      edit: false
-	    };
-	
-	    _this.handleDeleteFolder = _this.handleDeleteFolder.bind(_this);
-	    _this.handleEditFolder = _this.handleEditFolder.bind(_this);
-	    _this.handleNoteFolder = _this.handleNoteFolder.bind(_this);
-	    _this.handleClickFolder = _this.handleClickFolder.bind(_this);
-	    _this.handleSaveEditFolder = _this.handleSaveEditFolder.bind(_this);
-	    _this.handleBackEditFolder = _this.handleBackEditFolder.bind(_this);
-	
-	    _this.setStateToggleEdit = _this.setStateToggleEdit.bind(_this);
-	    _this.edit = _this.edit.bind(_this);
-	    _this.content = _this.content.bind(_this);
-	    return _this;
-	  }
-	
-	  _createClass(Folder, [{
-	    key: 'handleClickFolder',
-	    value: function handleClickFolder(e) {
-	      var tag = e.target.tagName;
-	      if (e.target.className !== 'wrap' && tag !== 'DIV' && tag !== 'P') return;
-	
-	      window.dispatchEvent(new CustomEvent('RELOCATE', {
-	        detail: { category: this.props.info.project }
-	      }));
-	    }
-	  }, {
-	    key: 'handleDeleteFolder',
-	    value: function handleDeleteFolder(e) {
-	
-	      if (!e.target.classList.contains('button-delete')) return;
-	
-	      window.dispatchEvent(new CustomEvent('FOLDER_DELETE', {
-	        detail: { project: this.props.info.project }
-	      }));
-	    }
-	  }, {
-	    key: 'handleEditFolder',
-	    value: function handleEditFolder(e) {
-	      if (!e.target.classList.contains('button-edit')) return;
-	      this.setStateToggleEdit();
-	    }
-	  }, {
-	    key: 'handleSaveEditFolder',
-	    value: function handleSaveEditFolder(e) {
-	      this.setStateToggleEdit();
-	
-	      window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
-	        detail: {
-	          value: _reactDom2.default.findDOMNode(this.refs.value).value.slice(0, 21),
-	          project: this.props.info.project
-	        }
-	      }));
-	    }
-	  }, {
-	    key: 'handleBackEditFolder',
-	    value: function handleBackEditFolder(e) {
-	      this.setStateToggleEdit();
-	    }
-	  }, {
-	    key: 'handleNoteFolder',
-	    value: function handleNoteFolder(e) {
-	      if (!e.target.classList.contains('button-note')) return;
-	      window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
-	        detail: {
-	          value: this.props.info.note,
-	          project: this.props.info.project
-	        }
-	      }));
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        {
-	          className: 'folder',
-	          onClick: this.handleClickFolder
-	        },
-	        this.content(),
-	        this.edit()
-	      );
-	    }
-	  }, {
-	    key: 'content',
-	    value: function content() {
-	      if (this.state.edit) return;
-	
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'folder__container folder__container_level_one' },
-	        _react2.default.createElement(
-	          'p',
-	          {
-	            className: 'folder__name',
-	            onClick: this.handleClickFolder
-	          },
-	          '' + this.props.info.project
-	        ),
-	        _react2.default.createElement(
-	          'span',
-	          { className: 'folder__panel' },
-	          _react2.default.createElement('span', { className: 'button-delete', onClick: this.handleDeleteFolder }),
-	          _react2.default.createElement('span', { className: 'button-edit', onClick: this.handleEditFolder }),
-	          _react2.default.createElement('span', { className: 'button-note', onClick: this.handleNoteFolder })
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'edit',
-	    value: function edit() {
-	      if (!this.state.edit) return;
-	
-	      return _react2.default.createElement(
-	        'span',
-	        { className: 'folder__container folder__container_level_one' },
-	        _react2.default.createElement('input', {
-	          className: 'folder__field',
-	          type: 'text',
-	          ref: 'value',
-	          defaultValue: '' + this.props.info.project
-	        }),
-	        _react2.default.createElement(
-	          'span',
-	          { className: 'folder__edit-panel' },
-	          _react2.default.createElement('span', {
-	            className: 'button-save',
-	            onClick: this.handleSaveEditFolder
-	          }),
-	          _react2.default.createElement('span', {
-	            className: 'button-exit',
-	            onClick: this.handleBackEditFolder
-	          })
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'setStateToggleEdit',
-	    value: function setStateToggleEdit() {
-	      this.setState({ edit: !this.state.edit });
-	    }
-	  }]);
-	
-	  return Folder;
-	}(_react2.default.Component);
-	
-	exports.default = Folder;
-	;
-
-/***/ },
-/* 185 */
-/*!***********************************!*\
-  !*** ./src/js/component/Note.jsx ***!
-  \***********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Note = function (_React$Component) {
-	  _inherits(Note, _React$Component);
-	
-	  function Note(props) {
-	    _classCallCheck(this, Note);
-	
-	    var _this = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
-	
-	    _this.handleClickBack = _this.handleClickBack.bind(_this);
-	    _this.handleClickSave = _this.handleClickSave.bind(_this);
-	    return _this;
-	  }
-	
-	  _createClass(Note, [{
-	    key: 'handleClickBack',
-	    value: function handleClickBack(e) {
-	      window.dispatchEvent(new CustomEvent('BACK'));
-	    }
-	  }, {
-	    key: 'handleClickSave',
-	    value: function handleClickSave(e) {
-	      window.dispatchEvent(new CustomEvent('NOTE_SAVE', {
-	        detail: {
-	          value: _reactDom2.default.findDOMNode(this.refs.text).value
-	        }
-	      }));
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'note' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'note__container' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'note__panel' },
-	            _react2.default.createElement('span', { className: 'button-exit', onClick: this.handleClickBack }),
-	            _react2.default.createElement('span', { className: 'button-save', onClick: this.handleClickSave })
-	          ),
-	          _react2.default.createElement('textarea', {
-	            className: 'note__field',
-	            defaultValue: '' + this.props.value,
-	            ref: 'text',
-	            placeholder: 'Write you note...' })
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return Note;
-	}(_react2.default.Component);
-	
-	exports.default = Note;
-	;
-
-/***/ },
-/* 186 */
-/*!*****************************************!*\
-  !*** ./src/js/component/BoardExtra.jsx ***!
-  \*****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _Spell = __webpack_require__(/*! ./Spell.jsx */ 187);
-	
-	var _Spell2 = _interopRequireDefault(_Spell);
-	
-	var _Account = __webpack_require__(/*! ./Account.jsx */ 188);
-	
-	var _Account2 = _interopRequireDefault(_Account);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var BoardExtra = function (_React$Component) {
-	  _inherits(BoardExtra, _React$Component);
-	
-	  function BoardExtra(props) {
-	    _classCallCheck(this, BoardExtra);
-	
-	    return _possibleConstructorReturn(this, (BoardExtra.__proto__ || Object.getPrototypeOf(BoardExtra)).call(this, props));
-	  }
-	
-	  _createClass(BoardExtra, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'board-extra' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'board-extra__container' },
-	          this.props.view === 'spell' ? _react2.default.createElement(_Spell2.default, null) : _react2.default.createElement(_Account2.default, { data: this.props.account })
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return BoardExtra;
-	}(_react2.default.Component);
-	
-	exports.default = BoardExtra;
-
-/***/ },
-/* 187 */
-/*!************************************!*\
-  !*** ./src/js/component/Spell.jsx ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Spell = function (_React$Component) {
-	  _inherits(Spell, _React$Component);
-	
-	  function Spell() {
-	    _classCallCheck(this, Spell);
-	
-	    return _possibleConstructorReturn(this, (Spell.__proto__ || Object.getPrototypeOf(Spell)).apply(this, arguments));
-	  }
-	
-	  _createClass(Spell, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'board-extra' },
-	        _react2.default.createElement(
-	          'table',
-	          { className: 'board-extra__table' },
-	          _react2.default.createElement(
-	            'caption',
-	            { className: 'board-extra__title' },
-	            'spells'
-	          ),
-	          _react2.default.createElement(
-	            'tbody',
-	            { className: 'board-extra__content' },
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'timer death'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'hh/mm/ss'
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'priority'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                '*'
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'project'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                '@name-project'
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'tags'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                '#nameTag'
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'price'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                '$money'
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'time price'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                'hh:mm:ss'
-	              )
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return Spell;
-	}(_react2.default.Component);
-	
-	exports.default = Spell;
-
-/***/ },
-/* 188 */
-/*!**************************************!*\
-  !*** ./src/js/component/Account.jsx ***!
-  \**************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Account = function (_React$Component) {
-	  _inherits(Account, _React$Component);
-	
-	  function Account(props) {
-	    _classCallCheck(this, Account);
-	
-	    return _possibleConstructorReturn(this, (Account.__proto__ || Object.getPrototypeOf(Account)).call(this, props));
-	  }
-	
-	  _createClass(Account, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'board-extra' },
-	        _react2.default.createElement(
-	          'table',
-	          { className: 'board-extra__table' },
-	          _react2.default.createElement(
-	            'caption',
-	            { className: 'board-extra__title' },
-	            'account'
-	          ),
-	          _react2.default.createElement(
-	            'tbody',
-	            { className: 'board-extra__content' },
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                'completed'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                '' + this.props.data.completed
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                'late'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                '' + this.props.data.late
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                'minutes'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                '' + this.props.data.minutes
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                'wallet'
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                { className: 'board-extra__account_cell' },
-	                this.props.data.wallet + '$'
-	              )
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return Account;
-	}(_react2.default.Component);
-	
-	exports.default = Account;
-	;
-
-/***/ },
-/* 189 */
-/*!*********************************************!*\
-  !*** ./src/js/component/NavigationMenu.jsx ***!
-  \*********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var NavigationMenu = function (_React$Component) {
-	  _inherits(NavigationMenu, _React$Component);
-	
-	  function NavigationMenu(props) {
-	    _classCallCheck(this, NavigationMenu);
-	
-	    var _this = _possibleConstructorReturn(this, (NavigationMenu.__proto__ || Object.getPrototypeOf(NavigationMenu)).call(this, props));
-	
-	    _this.handleClickButton = _this.handleClickButton.bind(_this);
-	    return _this;
-	  }
-	
-	  _createClass(NavigationMenu, [{
-	    key: 'handleClickButton',
-	    value: function handleClickButton(e) {
-	      var event = new CustomEvent('RELOCATE', {
-	        detail: { category: e.target.getAttribute('name') }
-	      });
-	      window.dispatchEvent(event);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'navigation-menu' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'navigation-menu__container' },
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              className: 'navigation-menu__button',
-	              name: 'inbox',
-	              onClick: this.handleClickButton },
-	            'inbox'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              className: 'navigation-menu__button',
-	              name: 'project',
-	              onClick: this.handleClickButton },
-	            'project'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              className: 'navigation-menu__button',
-	              name: 'archiv',
-	              onClick: this.handleClickButton },
-	            'archiv'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              className: 'navigation-menu__button',
-	              name: 'account',
-	              onClick: this.handleClickButton },
-	            'account'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              className: 'navigation-menu__button',
-	              name: 'spell',
-	              onClick: this.handleClickButton },
-	            'spell'
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return NavigationMenu;
-	}(_react2.default.Component);
-	
-	exports.default = NavigationMenu;
-	;
-
-/***/ },
-/* 190 */
-/*!****************************!*\
-  !*** ./src/js/db/index.js ***!
-  \****************************/
+/* 194 */
+/*!******************************!*\
+  !*** ./src/js/db/account.js ***!
+  \******************************/
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var db = [{
-	  project: 'ARCHIV',
-	  note: '',
-	  tasks: [{
-	    description: 'Me very old task. Mb completed?',
-	    id: 2,
-	    complete: false,
-	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
-	    project: 'ARCHIV',
-	    priority: 0,
-	    timeDeath: null,
-	    note: '',
-	    stopwatch: null,
-	    price: 300,
-	    timePrice: 60
-	  }]
-	}, {
-	  project: 'SANS',
-	  note: '',
-	  tasks: [{
-	    description: 'Drink milk.',
-	    id: 232,
-	    complete: false,
-	    tags: ['#insects', '#insect', '#bug', '#bugs', '#TagsForLikes', '#TagsForLikesApp', '#bugslife', '#macro', '#closeup', '#nature', '#animals', '#animals', '#instanature', '#instagood', '#macrogardener', '#macrophotography', '#creature', '#creatures', '#macro_creature_feature', '#photooftheday', '#wildlife', '#nature_shooters', '#earth', '#naturelover', '#lovenature'],
-	    project: '',
-	    priority: 0,
-	    timeDeath: null,
-	    note: '',
-	    stopwatch: [0, 0, 0],
-	    date: new Date(),
-	    price: 300,
-	    timePrice: 60
-	  }]
-	}, {
-	  project: '@shop',
-	  note: '',
-	  tasks: [{
-	    description: 'Buy milk',
-	    id: 1,
-	    note: '',
-	    complete: false,
-	    tags: ['#horses', '#horse', '#horsesofinstagram', '#TagsForLikes', '#TagsForLikesApp', '#horseshow', '#horseshoe', '#horses_of_instagram', '#horsestagram', '#instahorses', '#wild', '#mane', '#instagood', '#grass', '#field', '#farm', '#nature', '#pony', '#ponies', '#ilovemyhorse', '#babyhorse', '#beautiful', '#pretty', '#photooftheday', '#gallop', '#jockey', '#rider', '#riders', '#riding'],
-	    project: '@shop',
-	    priority: 2,
-	    timeDeath: null,
-	    stopwatch: [0, 0, 0],
-	    date: new Date(2012, 10, 10),
-	    price: 300,
-	    timePrice: 60
-	  }]
-	}, {
-	  project: '@social',
-	  note: '',
-	  tasks: [{
-	    description: 'Will meet with girl.',
-	    id: 3,
-	    note: '',
-	    complete: false,
-	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
-	    project: '@social',
-	    priority: 3,
-	    timeDeath: [0, 0, 10],
-	    stopwatch: [0, 0, 0],
-	    date: new Date(2012, 10, 10),
-	    price: 300,
-	    timePrice: 60
-	  }]
-	}, {
-	  project: '@sport',
-	  note: '',
-	  tasks: [{
-	    description: 'Scamper.',
-	    id: 1322131231231232,
-	    complete: false,
-	    tags: ['#onedirection', '#TagsForLikesApp', '#harrystyles', '#niallhoran', '#zaynmalik', '#louistomlinson', '#liampayne', '#TagsForLikes', '#1d', '#directioner', '#1direction', '#niall', '#harry', '#zayn', '#liam', '#louis', '#leeyum', '#zjmalik', '#iphonesia', '#hot', '#love', '#cute', '#happy', '#beautiful', '#boys', '#guys', '#instagood', '#photooftheday'],
-	    project: '@sport',
-	    priority: 4,
-	    timeDeath: null,
-	    note: '',
-	    stopwatch: [0, 0, 0],
-	    date: new Date(2013, 3, 1),
-	    price: 300,
-	    timePrice: 60
-	  }]
-	}];
+	var account = {
+	  completed: 0,
+	  late: 0,
+	  minutes: 0,
+	  wallet: 0
+	};
 	
-	exports.db = db;
+	exports.default = account;
 
 /***/ },
-/* 191 */,
-/* 192 */
+/* 195 */
 /*!**************************!*\
   !*** ./src/css/main.css ***!
   \**************************/
@@ -24903,10 +24974,10 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 193);
+	var content = __webpack_require__(/*! !./../../~/css-loader!./main.css */ 196);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 207)(content, {});
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 211)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -24923,24 +24994,24 @@
 	}
 
 /***/ },
-/* 193 */
+/* 196 */
 /*!*****************************************!*\
   !*** ./~/css-loader!./src/css/main.css ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 194)();
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 197)();
 	// imports
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Rajdhani|Ubuntu);", ""]);
 	
 	// module
-	exports.push([module.id, ".app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n  flex-flow: row wrap;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n  flex-flow: column wrap;\n}\n\n.app__content {\n  flex: 3;\n  flex-flow: column wrap;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.navigation-menu__button {\n  background: #4CAF50;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n  min-width: 300px;\n  -webkit-touch-callout: none; \n  -webkit-user-select: none; \n  -khtml-user-select: none; \n  -moz-user-select: none; \n  -ms-user-select: none; \n  user-select: none;\n  cursor: pointer;\n}\n\n.navigation-menu__button:hover {\n  background: #388E3C;\n}\n\n.navigation-menu__button:active {\n  background: #C8E6C9;\n}\n\n.navigation-menu__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border-bottom: 10px solid #4CAF50;\n  border-right: 2px solid #4CAF50;\n  font-family: 'Rajdhani', sans-serif;\n  opacity: 1;\n  \n}\n\n.board-extra__table {\n  animation: invisibility .5s linear;\n}\n\n.board-extra__table {\n  border-collapse: collapse;\n  margin-bottom: 5px;\n}\n\ntd {\n  padding-right: 65px;\n  border-left: 5px solid #FF5252;\n  max-padding-right: 65px;\n}\n\n.board-extra__account_cell {\n  padding-right: 110px;\n}\n\n.board-extra__title {\n  border-bottom: 2px solid black;\n  margin-bottom: 5px;\n  font-weight: bold;\n}\n\n.board-extra__content {\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n}\n\n\n\n.list__scroll-box {\n  flex: 1;\n  flex-direction: column;\n  overflow: auto;\n  height: 80vh;\n  max-height: 80vh;\n}\n\n.list__scroll-box_height_small {\n  max-height: 73vh;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 0px; /*5*/\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: url(" + __webpack_require__(/*! ../img/arrow.png */ 209) + ") no-repeat;\n  height: 20px;\n  display: inline-block;\n  padding-left: 5px;\n  margin-top: 9px;\n  margin-bottom: 9px;\n\n/*  width: 50px;\n  padding: 2px 5px;\n  font-size: 14px;\n  font-weight: bold;\n  text-align: center;\n  text-transform: uppercase;*/\n}\n\n.list__button-back:hover {\n  opacity: .5;\n}\n\n.list__search {\n  display: flex;\n  width: 30%;\n  transition: width 0.4s ease-in;\n  border-radius: 10px;\n  border: 3px solid #000;\n  outline: none;  \n  font-size: 15px;\n  padding-left: 25px;\n  height: 20px;\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 195) + ") no-repeat left center;\n}\n\n.list__search:focus {\n  display: flex;\n  width: 60%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 2px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  display: none;\n  width: 0%;\n  height: 0px;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 8vh;\n}\n\n.list__input-area {\n\n}\n\n.list__add-button {\n\n}\n\n.collection {\n\n}\n\n.collection__container {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  height: 80vh;\n}\n\n.collection__folder {\n\n}\n\n.note {\n\n}\n\n.note__panel {\n\n}\n\n.list__area, .note__field {\n  font-size: 14px;\n}\n\n.note__field {\n  height: 500px; /* mobile version? */\n  width: 98%;\n  /*max-height: 500px;*/\n  max-width: 980px;\n  height: 85vh;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: #FF5252;\n  width: 100%;\n  min-width: 300px;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid #FF5252;\n  padding-left: 10px;\n  animation: invisibility .5s linear ;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: plum;\n  box-shadow: inset 0px 0px 0px 5px pink;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n  -webkit-touch-callout: none; \n  -webkit-user-select: none; \n  -khtml-user-select: none; \n  -moz-user-select: none; \n  -ms-user-select: none; \n  user-select: none;\n  cursor: default;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 10px;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__price {\n\n}\n\n.task__lable {\n\n}\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.folder {\n\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: #388E3C;\n}\n\n.folder__field {\n  margin-top: 10px;\n}\n\n.folder__name {\n\n}\n\n.folder__panel {\n\n}\n\n.folder__edit {\n\n}\n\n.folder__field {\n\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 196) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 197) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 198) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 199) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 200) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 201) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/timer-on.png */ 202) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/timer-off.png */ 203) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 204) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 205) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 206) + ");\n}\n\n.list__container-button-add {\n  background: #FF5252;\n  border-radius: 100%; /* 900 x 50 */\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-right: 5px;\n  align-self: center;\n}\n\n@keyframes invisibility {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n@media screen and (max-width: 695px) {\n  .app__sidebar {\n    margin-right: 0;\n    align-content: center;\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .navigation-menu__button {\n    min-width: 360px;\n  }\n\n  .task__container {\n    min-width: 380px;\n  }\n  \n  .task__container-descript {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  body {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .list__search {\n    margin-top: 5px;\n    margin-bottom: 5px;\n  }\n\n  .list__search {\n    width: 60%;\n    height: 30px;\n  }\n\n  .list__search:focus {\n    width: 90%;\n  }\n\n  .board-extra__container {\n    margin-bottom: 10px;\n  }\n\n  .list__field {\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .button-add {\n    margin: 5px;  \n    background-position-y: center;\n    background-position-x: center;\n    height: 60px;\n    width: 60px;\n  }\n\n  .board-extra__container {\n    margin-left: 5px;\n    margin-right: 5px;\n    margin-top: 10px;\n  }\n\n  .list__area {\n    margin-bottom: 10px;\n    width: 95%;\n    height: 50vh;\n  }\n\n  .note__field {\n    width: 98.5vw;\n  }\n\n  .list__field {\n    order: 1;\n    margin-bottom: 10px;\n  }\n\n  .list__area {\n    height: 10vh;\n    margin-top: 10px;\n  }\n\n  .list__scroll-box {\n    order: 2;\n  }\n}\n\n.folder__container_level_one,\n.task__container_level_one {\n  background: #4CAF50;\n}\n.task__container_level_two {\n  background: #CDDC39;\n}\n.task__container_level_three {\n  background: #FFC107;\n}\n.task__container_level_four {\n  background: #FF5722;\n}\n.task__container_level_five {\n  background: #E040FB;\n}", ""]);
+	exports.push([module.id, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline;\n}\n\n.app__container {\n  display: flex;\n  font-family: 'Ubuntu', sans-serif;\n  flex-flow: row wrap;\n  margin-top: 10px;\n  margin-left: 10px;\n  margin-right: 5px;\n}\n\n.app__sidebar {\n  flex: 1;\n  margin-right: 30px;\n  flex-flow: column wrap;\n}\n\n.app__content {\n  flex: 3;\n  flex-flow: column wrap;\n}\n\n.task, .stopwatch, .timer {\n  display: flex;\n}\n\n.navigation-menu__button {\n  background: #4CAF50;\n  margin-bottom: 2px;\n  padding: 15px;\n  text-align: center;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Rajdhani', sans-serif;\n  font-size: 18px;\n  min-width: 250px;\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  cursor: pointer;\n}\n\n.navigation-menu__button:hover {\n  background: #388E3C;\n}\n\n.navigation-menu__button:active {\n  background: #C8E6C9;\n}\n\n.navigation-menu__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.board-extra__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  border-bottom: 10px solid #4CAF50;\n  border-right: 2px solid #4CAF50;\n  font-family: 'Rajdhani', sans-serif;\n  opacity: 1;\n\n}\n\n.board-extra__table {\n  animation: invisibility .5s linear;\n}\n\n.board-extra__table {\n  border-collapse: collapse;\n  margin-bottom: 5px;\n}\n\n.board-extra__account-cell,\n.board-extra__spell-cell {\n  padding: 5px 55px 5px 5px;\n  border-left: 5px solid #FF5252;\n}\n\n.board-extra__account-cell {\n  padding-right: 100px;\n}\n\n.board-extra__title {\n  border-bottom: 2px solid black;\n  margin-bottom: 5px;\n  font-weight: bold;\n}\n\n.board-main__container {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__container {\n  flex: 1;\n  display: flex;\n  flex-flow: column wrap;\n  margin: 0;\n}\n\n.list__scroll-box {\n  flex: 1;\n  flex-direction: column;\n  overflow: auto;\n  height: 80vh;\n  max-height: 80vh;\n  border-bottom: 3px solid #4CAF50;\n  margin: 10px 0;\n}\n\n.list__scroll-box_height_small {\n  max-height: 76.4vh;\n}\n\n.list__container-task {\n  display: flex;\n  flex-direction: column;\n  min-height: min-content;\n}\n\n.list__container-search {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  margin-bottom: 0px;\n}\n\n.list__button-back {\n  margin-left: 10px;\n  background: url(" + __webpack_require__(/*! ../img/back.png */ 198) + ") no-repeat;\n  height: 20px;\n  display: inline-block;\n  padding-left: 5px;\n  margin-bottom: 4px;\n}\n\n.list__button-back:hover {\n  opacity: .5;\n}\n\n.list__search {\n  display: flex;\n  width: 30%;\n  transition: width 0.4s ease-in;\n  border-radius: 10px;\n  border: 3px solid #000;\n  outline: none;\n  font-size: 15px;\n  padding-left: 25px;\n  height: 20px;\n  background: url(" + __webpack_require__(/*! ../img/search.png */ 199) + ") no-repeat left center;\n}\n\n.list__search:focus {\n  display: flex;\n  width: 60%;\n}\n\n.list__container-date {\n  display: flex;\n  flex-flow: column wrap;\n}\n\n.list__date {\n  display: flex;\n  flex-flow: column wrap;\n  align-items: center;\n  font-size: 16px;\n  font-weight: bold;\n  border-bottom: 4px solid #000;\n  margin-bottom: 15px;\n  margin-top: 2px;\n}\n\n.list__field {\n  display: flex;\n  flex-flow: row;\n  justify-content: center;\n}\n\n.list__area_hidden {\n  display: none;\n  width: 0%;\n  height: 0px;\n}\n\n.list__area_show {\n  display: flex;\n  width: 90%;\n  height: 8vh;\n  outline-color: #388E3C;\n  resize: none;\n}\n\n.collection__container {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  height: 80vh;\n}\n\n.note__panel {\n  background: #4CAF50;\n  width: 90%;\n  max-width: 980px;\n  border: 3px solid #4CAF50;\n  padding-left: 4px;\n  border-top: 0;\n  border-bottom: 0;\n}\n\n.note__container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.list__area, .note__field {\n  font-size: 14px;\n  border: 3px solid #4CAF50;\n\n}\n\n.note__field {\n  height: 500px;\n  width: 90%;\n  max-width: 980px;\n  padding: 0;\n  height: 85vh;\n  resize: none;\n  outline: none;\n  padding-left: 4px;\n  border-top: 0;\n  padding-top: 4px;\n}\n\n.task__container {\n  align-self: flex-start;\n  display: flex;\n  flex-flow: row wrap;\n  background: #FF5252;\n  width: 100%;\n  min-width: 250px;\n  margin-bottom: 5px;\n}\n\n.task__container-descript {\n  display: flex;\n  flex-flow: row wrap;\n  width: 100%;\n  margin: 0px 10px 15px;\n}\n\n.task__detail {\n  margin-top: 5px;\n  border-left: 5px solid #FF5252;\n  padding-left: 10px;\n  animation: invisibility .5s linear ;\n}\n\n.task__detail>p {\n  margin: 3px;\n}\n\n.task__container-checkbox {\n  display: flex;\n  align-items: center;\n}\n\n.task__checkbox {\n  display: flex;\n  background: whitesmoke;\n  height: 20px;\n  width: 20px;\n  margin: 5px;\n}\n\n.task__checkbox:hover {\n  background: indigo;\n  opacity: .3;\n}\n\n.task__checkbox>input {\n  display: none;\n}\n\n.task__descript {\n  display: flex;\n  margin: 0;\n  align-self: center;\n  flex-direction: column;\n  flex: 3;\n  margin-left: 15px;\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  cursor: default;\n}\n\n.task__panel {\n  display: flex;\n  justify-content: flex-end;\n  margin-right: 5px;\n}\n\n.task__field {\n  flex: 1;\n  margin: 10px 0 10px 10px;\n  outline-color: #388E3C;\n  resize: none;\n  border: 0;\n}\n\n.stopwatch__scoreboard {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__lable {\n  border-radius: 100%;\n  background: #FF5252;\n  display: inline-block;\n  align-self: center;\n  width: 15px;\n  height: 15px;\n  margin-right: 5px;\n}\n\n.timer__container {\n  display: flex;\n}\n\n.timer__container>span {\n  align-self: center;\n  font-size: 20px;\n  font-weight: bold;\n}\n\n.task__attribute {\n  font-weight: bold;\n  text-decoration: underline;\n}\n\n.collection__container {\n  display: flex;\n}\n\n.folder__container {\n  display: flex;\n  flex-direction: column;\n  height: 200px;\n  width: 200px;\n  margin: 10px;\n  background-color: lightcoral;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.folder__container:hover {\n  background-color: #388E3C;\n}\n\n.folder__field {\n  margin-top: 10px;\n  outline-color: #388E3C;\n  resize: none;\n  border: 0;\n}\n\n.folder__name {\n  font-weight: bold;\n  font-size: 20px;\n  margin-top: 15px;\n}\n\n.button-save,\n.button-exit,\n.button-add,\n.button-delete,\n.button-edit,\n.button-note,\n.button-cancel,\n.button-close,\n.button-open,\n.button-pause,\n.button-play {\n  align-self: center;\n  cursor: pointer;\n  display: inline-block;\n  height: 48px;\n  width: 48px;\n}\n\n.button-save:hover,\n.button-exit:hover,\n.button-add:hover,\n.button-delete:hover,\n.button-edit:hover,\n.button-note:hover,\n.button-cancel:hover,\n.button-close:hover,\n.button-open:hover,\n.button-pause:hover,\n.button-play:hover {\n  opacity: .5;\n}\n\n.button-save   { background: url(" + __webpack_require__(/*! ../img/save.png */ 200) + "); }\n.button-exit   { background: url(" + __webpack_require__(/*! ../img/exit.png */ 201) + "); }\n.button-delete { background: url(" + __webpack_require__(/*! ../img/delete.png */ 202) + "); }\n.button-edit   { background: url(" + __webpack_require__(/*! ../img/edit.png */ 203) + "); }\n.button-note   { background: url(" + __webpack_require__(/*! ../img/note.png */ 204) + "); }\n.button-cancel { background: url(" + __webpack_require__(/*! ../img/cancel.png */ 205) + "); }\n.button-close  { background: url(" + __webpack_require__(/*! ../img/close.png */ 206) + "); }\n.button-open   { background: url(" + __webpack_require__(/*! ../img/open.png */ 207) + "); }\n.button-pause  { background: url(" + __webpack_require__(/*! ../img/pause.png */ 208) + "); }\n.button-play   { background: url(" + __webpack_require__(/*! ../img/play.png */ 209) + "); }\n\n.button-add {\n  background: url(" + __webpack_require__(/*! ../img/add.png */ 210) + ");\n}\n\n.list__container-button-add {\n  background: #FF5252;\n  border-radius: 100%;\n  display: flex;\n  height: 48px;\n  width: 48px;\n  margin-right: 5px;\n  align-self: center;\n}\n\n@keyframes invisibility {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n@media screen and (max-width: 600px) {\n  .app__container {\n    margin: 0;\n  }\n\n  .app__sidebar {\n    margin-right: 0;\n    align-content: center;\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .navigation-menu__button {\n    min-width: 280px;\n  }\n\n  .task__container {\n    min-width: 300px;\n  }\n\n  .task__container-descript {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  body {\n    margin-left: 0;\n    margin-right: 0;\n  }\n\n  .list__search {\n    margin-top: 5px;\n    margin-bottom: 5px;\n  }\n\n  .list__search {\n    width: 60%;\n    height: 30px;\n  }\n\n  .list__search:focus {\n    width: 90%;\n  }\n\n  .board-extra__container {\n    margin-bottom: 10px;\n  }\n\n  .list__field {\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .button-add {\n    margin: 5px;\n    background-position-y: center;\n    background-position-x: center;\n    height: 60px;\n    width: 60px;\n  }\n\n  .board-extra__container {\n    margin-left: 5px;\n    margin-right: 5px;\n    margin-top: 10px;\n  }\n\n  .list__area {\n    margin-bottom: 10px;\n    width: 95%;\n    height: 50vh;\n    outline-color: #388E3C;\n  }\n\n  .note__field {\n    width: 98.5vw;\n  }\n\n  .list__field {\n    order: 1;\n    margin-bottom: 10px;\n  }\n\n  .list__area {\n    height: 10vh;\n    margin-top: 10px;\n  }\n\n  .list__scroll-box {\n    order: 2;\n    margin: 0;\n  }\n\n  .board-main__container {\n    margin: 0;\n    padding: 0;\n    border: 0;\n  }\n\n  .note__field {\n    border: 0;\n    margin: 0;\n    padding: 0;\n    padding-left: 5px;\n    border-top: 5px solid #4CAF50;\n    border-bottom: 5px solid #4CAF50;\n  }\n\n  .note__panel {\n    width: 97%;\n    border-top: 0;\n    border-bottom: 0;\n  }\n}\n\n.folder__container_level_one,\n.task__container_level_one {\n  background: #4CAF50;\n}\n\n.task__container_level_two {\n  background: #CDDC39;\n}\n\n.task__container_level_three {\n  background: #FFC107;\n}\n\n.task__container_level_four {\n  background: #FF5722;\n}\n\n.task__container_level_five {\n  background: #E040FB;\n}", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 194 */
+/* 197 */
 /*!**************************************!*\
   !*** ./~/css-loader/lib/css-base.js ***!
   \**************************************/
@@ -24999,7 +25070,16 @@
 
 
 /***/ },
-/* 195 */
+/* 198 */
+/*!**************************!*\
+  !*** ./src/img/back.png ***!
+  \**************************/
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAAUCAYAAAAdmmTCAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAABcSAAAXEgFnn9JSAAAAB3RJTUUH4AwKCwMNKRR82AAAAa1JREFUSMfVl7+LE0EUxz87O5udZJYsZMeABDxiQiTFgWnSXWlj6T9wwYCFvY2NlRaWNv4L8cd/IFiJleAfYHUI4QikOPHirpfs2GTPPY2FVXYeDDy+1efNfB/vDfxHaK3va60THIsAeKGUOtda910C7wCvAKuU+qm1vukK+G3gHWC38GkURQdVgZP/0AVwF3gGHBaitVZkWdbb2kjs1cdBsPF26DXgAfAYuH6lIiFsnuefgBTw9gkfhuH3P7UEeA782FolLyxTtaOUSsvgXeBNVWF3wJ8V4GPgoyvgZfhj4MQl8AJexHF8KqW8gYMhoih6H0XRkZRy4WIBjMdjzxgzqNVqn53y/Gg0+r0HdDrX6vX6W1fgPYDFYkG73Qag3+/r+Xz+ZLVaPdrpMyFW1tp8n06x1npKqW9XpmSSJCyXS2azmZhOpw/TNH262WyapamW9Xq9O8Ph8Ot6vd7nhPV83//7Ao0xl3mz2bzn+/6X0lNlYRgeVLqBu93uZR7H8ZGU8sMW/sKJlbjcyMaYW0EQvFZKnTcaDTc+I5PJhGJ7HAwGJkmSl61Wq1MVvl9tAVyfqtYQDAAAAABJRU5ErkJggg=="
+
+/***/ },
+/* 199 */
 /*!****************************!*\
   !*** ./src/img/search.png ***!
   \****************************/
@@ -25008,7 +25088,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAwElEQVQ4Ec3BMU7CYAAG0BfkHH8jZ5C4mGDirSBwjw7sBORIVEdhBibI50g6FOvGezy4D1sHVwef3v1haCkiIiJqQ3csxdFUMVCZOYlapw9x9OJm7CQmOmzFVNtcbHQ4iKLtWfzocBUDbU/iosNBVNpGYq/Dp5hpW4i1Du/iZOzm1Vm86VSLk7lnT0YWzmLljqFaRERErMS3yh0TGz8u9tbe8C2+VHqrfIlG0VulEY2it0ojdoreisZO8Q9F8bh+AdReVMyZp3KbAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 196 */
+/* 200 */
 /*!**************************!*\
   !*** ./src/img/save.png ***!
   \**************************/
@@ -25017,7 +25097,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4NLREP3R5OAAAA50lEQVRYw+2XTQ7CIBCFH8ZD2B/X1l7MY+gJFG9jw63svrhQo0F+BhjTNOHNjj7mS5lOJwBFRdxqoKCj40hPrxPjRAOoZAAR8bRO5KRTLOJtpSr6LXIBQUQ+IIDgABgfrTA22FZ9ALu+9q/+3bnLB6wdpaPWIFgtQSparEqRC2A2wAUdBAT2kKk49+y6ozam9+hxJwBqoyUFWk7A2eqWfICd1d1TALR/kVj8wOkcR8QGOESsJvZB81OHLW8fjGiN9MyNpqEhX6fe4xpwzjcyFUv6wf2oyrgffGLjo1cYspLf/OmLilL0AJq2t6TWqQyvAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 197 */
+/* 201 */
 /*!**************************!*\
   !*** ./src/img/exit.png ***!
   \**************************/
@@ -25026,7 +25106,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAvUlEQVR4Ae3XTQrCMBAF4Hea0itovJjgYvRC/TmYlKT7CELdNQ87M4vCvFnGzgedNo2IRMzTY0RGPVgrZvTt9guqspYWMaIa1ITdZBOgYDfbT3j49QH4AE+IJ/D6rokX8Pitig9wQSaEeoacUAKcUAOM4ICS4EP+u0QNcOLkgNgP+aoZMk/yfUwTiueLdiPtlZsdb68E7t7bNSCeH5yNkLOfKgJYvQ+/swkw+P4BeaMDWsSEorg5AzoYJxL5APsNcp+a7wfsAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 198 */
+/* 202 */
 /*!****************************!*\
   !*** ./src/img/delete.png ***!
   \****************************/
@@ -25035,7 +25115,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAqklEQVR4Ae2VxRWDUBAA572UQWqJNkYxscr+jdue44br4jv/gs7g0BGG4XNLGX5beoXEreYojQXmQQuXp9WABSwg7LlEllzYI1oBYQ0sQonLYw7WiE5gz5tH4q9/sdcJPIT/RHROJxBNRPU6gUgiqlcLRBNRffuB9i9R+ze5/ce0/Ret/U9F/x87++FUxlXSOypzqhQ4UpklQWl9gAd1EkdciYtzxKNFDOMOajyuIqb0hAYAAAAASUVORK5CYII="
 
 /***/ },
-/* 199 */
+/* 203 */
 /*!**************************!*\
   !*** ./src/img/edit.png ***!
   \**************************/
@@ -25044,7 +25124,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAApUlEQVR4Ae3RuwkCYRBF4QNbh4+1FzGwGsEObEGswFZM7WB9FCEsJgpmAzuJ3IvCzv3z78D8/MVqtZYzTw40WLbgzuvzjjQ23pAIvC2xDbglsRtI7DXHWaWJh+b2PeskcRJ9bZLomEj4JNExlfCDCQHfEvmY2Dj4mNDyIbF08obbh1f87Xf8Zdz8vPjv+dmYedw8bj4PXDU8bh43j5vHzSPgDavV3qRrsQhO25JyAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 200 */
+/* 204 */
 /*!**************************!*\
   !*** ./src/img/note.png ***!
   \**************************/
@@ -25053,7 +25133,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACzoAAAs6AWR/Vw0AAAAHdElNRQfgCw4LEyL1RRiXAAAAl0lEQVRYw+3XTQ5AMBCG4dE4gvg5pSPUnWyIw9VGqCC+zmhi8b2zE5lnhRJhjMU1MklIHo+vD8oZMGBWAyChWdynEBpAZMAJHZBAaAGY0AMgYQEgwgYAhBV4JexATPg8QExkAmR/urdKw9v3iTjlDECB3ORyf2QIECBA4F/A8une+XqpM5xNr1Pfqa3pAHzMKBX/hRiLWwHAZPOEat0YGwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 201 */
+/* 205 */
 /*!****************************!*\
   !*** ./src/img/cancel.png ***!
   \****************************/
@@ -25062,25 +25142,25 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABYElEQVR4Ae3Xt3HjQByF8R9GEQcxrgCpofO2C8a0vcirCLIGMqIa4MVEKLMXnvkPRktw9vz3IgDke+uNP4T/nBg6t3Sr1bq1dG7o2OFozK2lDq3NNXpTm9hJT2hnotaDlz5Lmdp6YS8qU49SvjyaqmQycC310LWBDCo3Uk9d59RiKh2gydNd+3hQwKMXulHbSgdqq9bJJPz83ieXUocufXIf3o518Mwu2L/DUUfEpSO8CxE7jQjmweITxIhv7OFT+DYTwbrTJEbEL99qJeJEkvIiwtuoY4GhlBkR30QNBc6lnIgs++RMYCnlRGTZJwuBWyknIss+2Qi0UmZEtI9qiwcUb6LinVx8mJafaOWXivKL3c9frpvCG075LbP8pl/+2FL+4IXKtdRTV6qSh98rA5lUJnsf3yf25KVtuQsIUBtnXaHGar1pzKykDq3MNA7HsaEzCxut1sbCWbjG/rb85wukqCp0O2MACwAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 202 */
-/*!******************************!*\
-  !*** ./src/img/timer-on.png ***!
-  \******************************/
+/* 206 */
+/*!***************************!*\
+  !*** ./src/img/close.png ***!
+  \***************************/
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACL0lEQVR4Ae3Vz2pTQRTH8a+NyaUkuJI0y9ok7pWIi/6BLvyDrnShaKwbQdHqqoX2DcQHUGittVJsn0AoCFoaaA2kWJFWrvEJLBWXNnrvuBkOCJ17T651Ic3nbApzzvzKZDLhgDCO0usEdJS5zyIb7NAi4DsfWeQBRfbBYUaoYxy1RpUUFjd5xCHacpEvmJj6xDkARggwTOkjsrzAKGuaWwT274eoFNjASIW8YYx+8mTI0MMA4ywT7hHV4pJu+6aM/GKaPvZSYoYAgxQ/uYxClvcyssVJolTwkQCqqDyXgVdkiZNjSfqnULiAbE/a8WT8KY1EcCb+3jflcLKgCoAcvkyliHRDPtoToA6AU/JxXyNSXW42ugAxa9dWiVCSe9/XdkBZvhfHcBq1LW9BHyBW7OooTgu2ZSxRwIRdXcBFnof+RAGDdvUDTju2JZ8ooGBXv+HUsi2ZRAGeXPF/HLAbf0Q9f3VE27jIKzpAEkN2uhF/TcdJYtJOz+N0z7Ysk0TNTt/BqShPRYl2HSe0s71EWLMRM7Rrzk7WiFS1bQEV2nFanrqrRErJT4dPDq0j8jO1SRcxzmNsLZFGI8NrmRlG4RkSQU7x38v2PEGlm3UZ8anEnH1Teut4KOX5LGMBs5QdF3OOUPq2OAp6eRoYqZAVJhikgIdHgSEmqWGQ4p16e9HNU4yyHuORyFn82M03GYbkUlxn1bF1SI0rdLEPitzlJetss8sPvtJgntv00vFf+A28TwB4fl1vlgAAAABJRU5ErkJggg=="
 
 /***/ },
-/* 203 */
-/*!*******************************!*\
-  !*** ./src/img/timer-off.png ***!
-  \*******************************/
+/* 207 */
+/*!**************************!*\
+  !*** ./src/img/open.png ***!
+  \**************************/
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACOklEQVR4Ae2WT0sUcRyHH3ZXJdhb0XrUdiW6b1Sgl8L+3QoiamEP3tbICqTFegFaC3VuMw9lhu9ACELWUKgkSynWtxCG12xnv12+DEPN99f+BvaSPZ+L+HvgYWbQGfYJYsyT/4F9wBTTxFPgFotssktAwC6bvOImeby4jyB/JDKUeYcYW6NEGpQSVUzOILpo4gLbCO595RwAJVoI9zCpxSTGaCMdrM4YLf15Kkki4A13OMUhUvSSY5hJlmPje1yCThIzkUSdI8ajnyVAIvvJZQDfhIsizUighE3iRJYlRPeEDriIWAnjX0RPJDGKGzJsI0bCCkA2vFFfSOOkjPy2B4QQGAE4Hp5dw8l71erUYhJlAiMAc2qv4qCgUsAgOBJxDNFWexCTCVVeAzgS8TTUvYHJoiq3wZmIp6rmAiZbqpyAmMRD3Iyo9wmTXVUOgn+CfrW+YxKokgL/BH3qtDDZU6UX/BNk/h7YUSUH/glyer6DyUdVhsGZqDkf8gYmC6pMAnhfxV09m8dkXJVl8E/wVk8qmORVaVPwThxDdAM4WFNpFgPjrxue6+8aOCmpFlD0TOgXCFdwkg5fHU2y/gk+k8IN5xHdEj3eidN0wDPCRIdXMYMXB1hHdE2K3Ugcjrz6A+YYIo6jvECSJz4g4do0qDJCP31k9NNxBX1FJr9RTxHPTePJWZqIe2wxyuPkiTTXWUWMrXCVFEDihJKnwkvW+cYPWuywwTwVBlCiCdqcpDtoYpwu8ogJ/jl+AQVVXWskAfRLAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 204 */
+/* 208 */
 /*!***************************!*\
   !*** ./src/img/pause.png ***!
   \***************************/
@@ -25089,7 +25169,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LHySwk/KuAAAAFElEQVQY02NgoA7g/8D/YahT1AAAhhA3yVo4XisAAAAASUVORK5CYII="
 
 /***/ },
-/* 205 */
+/* 209 */
 /*!**************************!*\
   !*** ./src/img/play.png ***!
   \**************************/
@@ -25098,7 +25178,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgCw4LFRv8GjcZAAAAm0lEQVRYw+2WwQ3CMBAEB36UAEVQB69UkT5cSAqhBN4UQQv5bhoAgRQPUaSbe1sj2eu7g6IoNufgKx6cXEEIoy0ITy6uIIRmC8KLqysIYbIFYebmCkK49wtvPtZoCzqFN1+q2YLV4c1PNdmCMDO8O37sGOf9XpH8yM39aOfdtgq12cntWh048shUh36XQG60eMmr4x+W36IoVrMAxYYe1+9lz2UAAAAASUVORK5CYII="
 
 /***/ },
-/* 206 */
+/* 210 */
 /*!*************************!*\
   !*** ./src/img/add.png ***!
   \*************************/
@@ -25107,7 +25187,7 @@
 	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAM0lEQVR4Ae3RoREAMBACwfTf9EekgMy8wLBHASs4dUmatwgAAAAAs9w/QPBkAAAAKEvSBTV8zzG4BEJAAAAAAElFTkSuQmCC"
 
 /***/ },
-/* 207 */
+/* 211 */
 /*!*************************************!*\
   !*** ./~/style-loader/addStyles.js ***!
   \*************************************/
@@ -25360,54 +25440,6 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
-
-/***/ },
-/* 208 */
-/*!*****************************!*\
-  !*** ./src/js/db/config.js ***!
-  \*****************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var config = {
-	  _price: 300,
-	  _minutes: 60,
-	
-	  get PREVIEW_LENGTH() {
-	    return document.documentElement.clientWidth > 695 ? 61 : 31;
-	  },
-	
-	  get DEFAULT_PRICE_TASK() {
-	    return this._price;
-	  },
-	
-	  set DEFAULT_PRICE_TASK(newPrice) {
-	    this._price = newPrice;
-	  },
-	
-	  get DEFAULT_PRICE_MINUTES() {
-	    return this._minutes;
-	  },
-	
-	  set DEFAULT_PRICE_MINUTES(newMin) {
-	    this._minutes = newMin;
-	  }
-	};
-	
-	exports.config = config;
-
-/***/ },
-/* 209 */
-/*!***************************!*\
-  !*** ./src/img/arrow.png ***!
-  \***************************/
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAAUCAYAAAAdmmTCAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAABcSAAAXEgFnn9JSAAAAB3RJTUUH4AwKCwMNKRR82AAAAa1JREFUSMfVl7+LE0EUxz87O5udZJYsZMeABDxiQiTFgWnSXWlj6T9wwYCFvY2NlRaWNv4L8cd/IFiJleAfYHUI4QikOPHirpfs2GTPPY2FVXYeDDy+1efNfB/vDfxHaK3va60THIsAeKGUOtda910C7wCvAKuU+qm1vukK+G3gHWC38GkURQdVgZP/0AVwF3gGHBaitVZkWdbb2kjs1cdBsPF26DXgAfAYuH6lIiFsnuefgBTw9gkfhuH3P7UEeA782FolLyxTtaOUSsvgXeBNVWF3wJ8V4GPgoyvgZfhj4MQl8AJexHF8KqW8gYMhoih6H0XRkZRy4WIBjMdjzxgzqNVqn53y/Gg0+r0HdDrX6vX6W1fgPYDFYkG73Qag3+/r+Xz+ZLVaPdrpMyFW1tp8n06x1npKqW9XpmSSJCyXS2azmZhOpw/TNH262WyapamW9Xq9O8Ph8Ot6vd7nhPV83//7Ao0xl3mz2bzn+/6X0lNlYRgeVLqBu93uZR7H8ZGU8sMW/sKJlbjcyMaYW0EQvFZKnTcaDTc+I5PJhGJ7HAwGJkmSl61Wq1MVvl9tAVyfqtYQDAAAAABJRU5ErkJggg=="
 
 /***/ }
 /******/ ]);

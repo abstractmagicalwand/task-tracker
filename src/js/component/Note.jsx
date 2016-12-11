@@ -1,7 +1,6 @@
-import React    from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component} from 'react';
 
-export default class Note extends React.Component {
+export default class Note extends Component {
   constructor(props) {
     super(props);
 
@@ -9,34 +8,34 @@ export default class Note extends React.Component {
     this.handleClickSave = this.handleClickSave.bind(this);
   }
 
-  handleClickBack(e) {
+  handleClickBack() {
     window.dispatchEvent(new CustomEvent('BACK'));
   }
 
-  handleClickSave(e) {
+  handleClickSave() {
     window.dispatchEvent(new CustomEvent('NOTE_SAVE', {
       detail: {
-        value: ReactDOM.findDOMNode(this.refs.text).value
+        value: this.text.value
       }
     }));
   }
 
   render() {
     return (
-      <div className='note'>
-        <div className='note__container'>
-          <div className='note__panel'>
-            <span className='button-exit' onClick={this.handleClickBack} />
-            <span className='button-save' onClick={this.handleClickSave} />
+      <div className="note">
+        <div className="note__container">
+          <div className="note__panel">
+            <span className="button-exit" onClick={this.handleClickBack} />
+            <span className="button-save" onClick={this.handleClickSave} />
           </div>
           <textarea
-            className='note__field'
+            className="note__field"
             defaultValue={`${this.props.value}`}
-            ref='text'
-            placeholder='Write you note...'>
-          </textarea>
+            ref={node => this.text = node}
+            placeholder="Write you note..."
+          />
         </div>
       </div>
     );
   }
-};
+}

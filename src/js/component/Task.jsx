@@ -1,23 +1,24 @@
-import React     from 'react';
-import ReactDOM  from 'react-dom';
-import Stopwatch from './Stopwatch.jsx';
-import Timer     from './Timer.jsx';
+import React, {Component} from 'react';
 
-export default class Task extends React.Component {
+import Stopwatch from './Stopwatch';
+import Timer from './Timer';
+
+import Clone from '../mixin/index';
+
+export default class Task extends Clone(Component) {
   constructor(props) {
     super(props);
-
     this.state = {
       edit: false,
       descript: false
     };
 
-    this.handleDelete        = this.handleDelete.bind(this);
-    this.handleNote          = this.handleNote.bind(this);
-    this.handleCompleted     = this.handleCompleted.bind(this);
-    this.handleExit          = this.handleExit.bind(this);
-    this.handleSave          = this.handleSave.bind(this);
-    this.handleToggle        = this.handleToggle.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleNote = this.handleNote.bind(this);
+    this.handleCompleted = this.handleCompleted.bind(this);
+    this.handleExit = this.handleExit.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
     this.handleClickDescript = this.handleClickDescript.bind(this);
 
     this.edit = this.edit.bind(this);
@@ -32,101 +33,23 @@ export default class Task extends React.Component {
     this.createPreview = this.createPreview.bind(this);
   }
 
-  handleDelete() {
-    window.dispatchEvent(new CustomEvent('TASK_DELETE', {
-      detail: {id: this.props.info.id}
-    }));
-  }
+  getClearJournal(id) {
+    let index;
+    const tmp = this.props.journal.filter((item, i)=> {
 
-  handleCompleted(e) {
-    console.log(e);
-    window.dispatchEvent(new CustomEvent('COMPLETED', {
-      detail: {id: this.props.info.id}
-    }));
-    e.target.checked = false;
-  }
-
-  handleExit() {
-    this.handleToggle();
-  }
-
-  handleSave(e) {
-    this.handleToggle();
-    window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
-      detail: {
-        value: ReactDOM.findDOMNode(this.refs.value).value,
-        id: this.props.info.id
+      if (item.id === id) {
+        index = i;
+        return true;
       }
+
+      return false;
+    });
+
+    window.dispatchEvent(new CustomEvent('JOURNAL_CLEAR', {
+      detail: {index: index}
     }));
-  }
 
-  handleNote(e) {
-    if (!e.target.classList.contains('button-note')) return;
-    console.log('!!!')
-    window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
-      detail: {
-        id: this.props.info.id,
-        value: this.props.info.note
-      }
-    }));
-  }
-
-  handleToggle() {
-    const newState = Object.assign({}, this.state);
-    newState.edit = !this.state.edit;
-    this.setState(newState);
-  }
-
-  handleClickDescript(e) {
-    if (!(e.target.classList.contains('task__container') || 
-      e.target.classList.contains('task__descript'))) return;
-
-    const newState = Object.assign({}, this.state);
-    newState.descript = !this.state.descript;
-    this.setState(newState);
-    console.log(this.state.descript);
-  }
-
-  render() {
-    const time = this.diffDate(this.props.info.project === 'ARCHIV' ?
-      [] : this.getClearJournal(this.props.info.id));
-
-    return (
-      <div className='task'>
-          {this.edit()}
-          {this.content(time.stopwatch, time.timer, time.lable)}
-          {this.archiv()}
-      </div>
-    );
-  }
-
-  componentDidMount() {
-    if (this.state.edit) document.querySelector('.edit-field').focus();
-  }
-
-  componentWillUnmount() {
-    if (!(this.props.info.project === 'ARCHIV')) {
-      window.dispatchEvent(new CustomEvent('JOURNAL_SET', {
-        detail: {
-          id: this.props.info.id,
-          date: new Date()
-        }
-      }));
-    }
-  }
-
-  timer(time) {
-    const t = this.props.info.timeDeath;
-
-    if (!t) return;
-
-    return (
-      <Timer
-        delete={this.handleDelete}
-        id={this.props.info.id}
-        time={time}
-      />
-    );
+    return tmp;
   }
 
   edit() {
@@ -134,12 +57,14 @@ export default class Task extends React.Component {
 
     return (
       <span
-        className={`task__container-descript  task__container task__container_level_${this.color()}`}
+        className={'task__container-descript task__container' +
+          ` task__container_level_${this.color()}`
+        }
       >
         <input
           className="task__field"
           type="text"
-          ref="value"
+          ref={node => this.value = node}
           defaultValue={`${this.props.info.description}`}
         />
         <span className="task__panel">
@@ -154,35 +79,36 @@ export default class Task extends React.Component {
     if (this.props.info.project === 'ARCHIV' || this.state.edit) return;
 
     return (
-      <span 
-        onClick={this.handleClickDescript} 
-        className={`task__container-descript${this.state.descript ? 
-          ' task__container-descript_full' : 
-          ''}`
-      }>
-        <span className={
-          `task__container task__container_level${this.color()}`
-        }>
+      <span
+        onClick={this.handleClickDescript}
+        className={`task__container-descript${this.state.descript
+          ? ' task__container-descript_full'
+          : ''}`
+        }
+      >
+        <span
+          className={`task__container task__container_level${this.color()}`}
+        >
           <div className="task__container-checkbox">
             <lable
               onClick={this.handleCompleted}
               className="task__checkbox"
             >
-            <input type="checkbox"/>
+              <input type="checkbox" />
             </lable>
           </div>
           <p
             className="task__descript"
           >
             {this.createPreview(
-              this.props.info.description, 
+              this.props.info.description,
               this.props.preview
             )}
           </p>
 
           <span className="task__panel">
             {this.timer(timer)}
-            {lable ? <span className="task__lable"></span> : null}
+            {lable ? <span className="task__lable" /> : null}
             <Stopwatch
               id={this.props.info.id}
               time={stopwatch}
@@ -207,23 +133,21 @@ export default class Task extends React.Component {
         <span className="task__detail" hidden={!this.state.descript}>
           <p>
             <span className="task__attribute">
-              Description:
-            </span> 
-            {this.props.info.description}
+              {'Description:'}
+            </span>
+            {` ${this.props.info.description}`}
           </p>
           <p>
             <span className="task__attribute">
-              Price:
-            </span>  
-            {this.props.info.price}
-            \sUSD
+              {'Price:'}
+            </span>
+            {` ${this.props.info.price} USD`}
           </p>
           <p>
             <span className="task__attribute">
-              Time on complete:
-            </span>  
-            {this.props.info.timePrice} 
-            minutes
+              {'Time on complete:'}
+            </span>
+            {` ${this.props.info.timePrice} minutes`}
           </p>
         </span>
       </span>
@@ -232,6 +156,7 @@ export default class Task extends React.Component {
 
   archiv() {
     if (this.props.info.project !== 'ARCHIV') return;
+
     return (
       <span className="task__container task__container_level_one">
         <p className="task__descript">{this.props.info.description}</p>
@@ -244,45 +169,96 @@ export default class Task extends React.Component {
 
   createPreview(str, n) {
     if (str.length < n) return str;
+
     return `${str.slice(0, n)}...`;
   }
 
-  getClearJournal(id) {
-    let index;
-    const tmp = this.props.journal.filter((item, i)=> {
+  timer(time) {
+    const t = this.props.info.timeDeath;
 
-      if (item.id === id) {
-        index = i;
-        return true;
+    if (!t) return;
+
+    return (
+      <Timer
+        delete={this.handleDelete}
+        id={this.props.info.id}
+        time={time}
+      />
+    );
+  }
+
+  handleExit() {
+    this.handleToggle();
+  }
+
+  handleSave() {
+    this.handleToggle();
+
+    window.dispatchEvent(new CustomEvent('EDIT_SAVE', {
+      detail: {
+        value: this.value.value,
+        id: this.props.info.id
       }
+    }));
+  }
 
-      return false;
-    });
+  handleNote(e) {
+    if (!e.target.classList.contains('button-note')) return;
 
-    window.dispatchEvent(new CustomEvent('JOURNAL_CLEAR', {
-      detail: {index: index}
+    window.dispatchEvent(new CustomEvent('NOTE_OPEN', {
+      detail: {
+        id: this.props.info.id,
+        value: this.props.info.note
+      }
+    }));
+  }
+
+  handleToggle() {
+    this.setState(Object.assign(this.cloneDeep(this.state), {
+      edit: !this.state.edit
+    }));
+  }
+
+  handleClickDescript(e) {
+    if (!(e.target.classList.contains('task__container')
+      || e.target.classList.contains('task__descript'))) return;
+
+    this.setState(Object.assign(this.cloneDeep(this.state), {
+      descript: !this.state.descript
+    }));
+  }
+
+  handleCompleted(e) {
+    window.dispatchEvent(new CustomEvent('COMPLETED', {
+      detail: {id: this.props.info.id}
     }));
 
-    return tmp; // timer, stopwatch ...
+    e.target.checked = false;
+  }
+
+  handleDelete() {
+    window.dispatchEvent(new CustomEvent('TASK_DELETE', {
+      detail: {
+        id: this.props.info.id
+      }
+    }));
   }
 
   diffDate(journal) {
-    const timer     = this.props.info.timeDeath,
-          stopwatch = this.props.info.stopwatch,
-          result    = {
-            timer: timer,
-            stopwatch: stopwatch,
-            lable: false
-          };
+    const timer = this.props.info.timeDeath,
+      stopwatch = this.props.info.stopwatch,
+      result = {
+        timer: timer,
+        stopwatch: stopwatch,
+        lable: false
+      };
 
-    if (!journal.length) {
-      return result;
-    }
+    if (!journal.length) return result;
 
     // j - short name from journal
-    const j = (typeof(journal[0].date) === 'string') ? 
-      new Date(journal[0].date) :
-      journal[0].date;
+    const j = typeof(journal[0].date) === 'string'
+      ? new Date(journal[0].date)
+      : journal[0].date;
 
     const journalHMS = [j.getHours(), j.getMinutes(), j.getSeconds()];
 
@@ -331,7 +307,6 @@ export default class Task extends React.Component {
   }
 
   formatTimer(arr) {
-
     for (let i = arr.length; --i >= 0;) {
 
       while (arr[i] < 0) {
@@ -355,7 +330,6 @@ export default class Task extends React.Component {
   }
 
   formatStopwatch(arr) {
-
     for (let i = arr.length; --i >= 0;) {
 
       while (arr[i] > 59) {
@@ -373,20 +347,46 @@ export default class Task extends React.Component {
   }
 
   color() {
-
     switch (this.props.info.priority) {
     case 0:
-        return '_one';
+      return '_one';
     case 1:
-        return '_two';
+      return '_two';
     case 2:
-        return '_three';
+      return '_three';
     case 3:
-        return '_four';
+      return '_four';
     case 4:
-        return '_five';
+      return '_five';
     }
-
   }
 
-};
+  componentWillUnmount() {
+    if (!(this.props.info.project === 'ARCHIV')) {
+      window.dispatchEvent(new CustomEvent('JOURNAL_SET', {
+        detail: {
+          id: this.props.info.id,
+          date: new Date()
+        }
+      }));
+    }
+  }
+
+  render() {
+    const time = this.diffDate(this.props.info.project === 'ARCHIV'
+      ? []
+      : this.getClearJournal(this.props.info.id));
+
+    return (
+      <div className="task">
+        {this.edit()}
+        {this.content(time.stopwatch, time.timer, time.lable)}
+        {this.archiv()}
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    if (this.state.edit) document.querySelector('.edit-field').focus();
+  }
+}

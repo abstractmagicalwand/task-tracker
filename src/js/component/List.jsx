@@ -1,99 +1,71 @@
-import React           from 'react';
-import ReactDOM        from 'react-dom';
-import Field           from './Field.jsx';
-import Search          from './Search.jsx';
-import Task            from './Task.jsx';
-import {journal, temp} from '../db/journal.js';
+import React, {Component} from 'react';
 
-export default class List extends React.Component {
+import Field from './Field';
+import Search from './Search';
+import Task from './Task';
+
+import temp from '../db/temp';
+
+export default class List extends Component {
   constructor(props) {
     super(props);
 
     this.handleClickBack = this.handleClickBack.bind(this);
+
     this.getDate = this.getDate.bind(this);
     this.getCompTasks = this.getCompTasks.bind(this);
   }
 
-  handleClickBack(e) {
-    window.dispatchEvent(new CustomEvent('BACK'));
-  }
-
-  render() {
-    return (
-      <div className='list'>
-        <div className='list__container'>
-        {this.props.type !== 'archiv' ? <Search /> : null} 
-        {this.props.type === 'project' ?
-          (<span
-            className='list__button-back'
-            onClick={this.handleClickBack} />) :
-          null
-        }
-          <div 
-            className={`list__scroll-box${this.props.type === 'project' ? ' list__scroll-box_height_small' : ''}`
-          }>
-            <div className='list__container-task'>
-            {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
-            </div>
-          </div>
-          {this.props.type !== 'archiv' ? <Field /> : null}
-        </div>
-      </div>
-    );
-  }
-
   getTasks(type, db) {
+    const val = this.props.value;
 
     switch (type) {
     case 'inbox':
-        return this.getInboxTasks(db);
+      return this.getInboxTasks(db);
     case 'archiv':
-        return db.filter(item => {
-          if (item.project === 'ARCHIV') return item;
-        })[0].tasks;
+      return db.filter(item => {
+        if (item.project === 'ARCHIV') return item;
+      })[0].tasks;
     case 'project':
-        return db.filter(item => {
-          if (item.project === this.props.projectName) return item;
-        })[0].tasks;
+      return db.filter(item => {
+        if (item.project === this.props.projectName) return item;
+      })[0].tasks;
     case 'search':
-        const val = this.props.value;
-        return this.getInboxTasks(db).filter((item, d, array) => {
-          if (~item.description.search(new RegExp(`${val}`, 'i'))) return item;
-        });
+      return this.getInboxTasks(db).filter(item => {
+        if (~item.description.search(new RegExp(`${val}`, 'i'))) return item;
+      });
     }
 
   }
 
   getInboxTasks(db) {
     return db.filter(item => {
-      if (!(item.project === 'ARCHIV'))  return item;
+      if (!(item.project === 'ARCHIV')) return item;
     }).reduce((sum, item) => sum.concat(item.tasks), []);
   }
 
   getCompTasks(tasks) {
-    const exceptions = ['project', 'archiv', 'search'];
-
     function compareDateYMD(date1, date2) {
       if (!date1 || !date2) return false;
-
       // short name string to date, param string, return create date
       const std = s => new Date(s);
       date1 = std(date1);
       date2 = std(date2);
 
-      if (!(date1.getFullYear() === date2.getFullYear()) ||
-          !(date1.getMonth()    === date2.getMonth())    ||
-          !(date1.getDay()      === date2.getDay())) {
-          return false;
+      if (!(date1.getFullYear() === date2.getFullYear())
+        || !(date1.getMonth() === date2.getMonth())
+        || !(date1.getDay() === date2.getDay())) {
+        return false;
       }
 
       return true;
     }
 
-    return tasks.map((task, i) => {
+    const exceptions = ['project', 'archiv', 'search'];
 
-      if (compareDateYMD(temp.date, task.date) ||
-        ~exceptions.indexOf(this.props.type)) {
+    return tasks.map(task => {
+      if (compareDateYMD(temp.date, task.date)
+        || ~exceptions.indexOf(this.props.type)) {
         return (
           <Task
             journal={this.props.journal}
@@ -105,19 +77,19 @@ export default class List extends React.Component {
         );
       } else {
         temp.date = task.date;
+
         return this.getDate(task, task.date);
       }
-
     });
   }
 
   getDate(task, date) {
     return (
       <div
-        className='list__container-date list__container-date_vertical'
+        className="list__container-date"
         key={task.id}
       >
-        <p className='list__date'>{this.getFormatDate(task.date)}</p>
+        <p className="list__date">{this.getFormatDate(date)}</p>
         <Task
           journal={this.props.journal}
           info={task}
@@ -132,34 +104,66 @@ export default class List extends React.Component {
     function getNameMonth(month) {
       switch (month) {
       case 0:
-          return 'January';
+        return 'January';
       case 1:
-          return 'February';
+        return 'February';
       case 2:
-          return 'March';
+        return 'March';
       case 3:
-          return 'April';
+        return 'April';
       case 4:
-          return 'May';
+        return 'May';
       case 5:
-          return 'June';
+        return 'June';
       case 6:
-          return 'July';
+        return 'July';
       case 7:
-          return 'August';
+        return 'August';
       case 8:
-          return 'September';
+        return 'September';
       case 9:
-          return 'October';
+        return 'October';
       case 10:
-          return 'November';
+        return 'November';
       case 11:
-          return 'December';
+        return 'December';
       }
     }
     // d - short name date
     const d = new Date(date);
+
     return `${d.getDate()}, ${getNameMonth(d.getMonth())} ${d.getFullYear()}`;
   }
 
-};
+  handleClickBack() {
+    window.dispatchEvent(new CustomEvent('BACK'));
+  }
+
+  render() {
+    return (
+      <div className="list">
+        <div className="list__container">
+          {this.props.type !== 'archiv' ? <Search /> : null}
+          {this.props.type === 'project'
+            ? <span
+              className="list__button-back"
+              onClick={this.handleClickBack}
+            />
+            : null
+          }
+          <div
+            className={'list__scroll-box' + `${this.props.type === 'project'
+              ? ' list__scroll-box_height_small'
+              : ''}`
+            }
+          >
+            <div className="list__container-task">
+              {this.getCompTasks(this.getTasks(this.props.type, this.props.db))}
+            </div>
+          </div>
+          {this.props.type !== 'archiv' ? <Field /> : null}
+        </div>
+      </div>
+    );
+  }
+}

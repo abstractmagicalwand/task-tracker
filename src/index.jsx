@@ -1,9 +1,8 @@
+import React from 'react';
+import {render} from 'react-dom';
+
+import App from './js/component/App';
+
 require('./css/main.css');
-import React    from 'react';
-import ReactDOM from 'react-dom';
-import App      from './js/component/App.jsx';
 
-
-window.localStorage.clear();
-
-ReactDOM.render(<App />, document.getElementById('root'));
+render(<App />, document.getElementById('root'));

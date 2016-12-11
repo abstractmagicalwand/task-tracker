@@ -1,9 +1,33 @@
 @import url('https://fonts.googleapis.com/css?family=Rajdhani|Ubuntu');
 
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
 .app__container {
   display: flex;
   font-family: 'Ubuntu', sans-serif;
   flex-flow: row wrap;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 5px;
 }
 
 .app__sidebar {
@@ -30,12 +54,12 @@
   font-weight: bold;
   font-family: 'Rajdhani', sans-serif;
   font-size: 18px;
-  min-width: 300px;
-  -webkit-touch-callout: none; 
-  -webkit-user-select: none; 
-  -khtml-user-select: none; 
-  -moz-user-select: none; 
-  -ms-user-select: none; 
+  min-width: 250px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   cursor: pointer;
 }
@@ -61,7 +85,7 @@
   border-right: 2px solid #4CAF50;
   font-family: 'Rajdhani', sans-serif;
   opacity: 1;
-  
+
 }
 
 .board-extra__table {
@@ -73,23 +97,20 @@
   margin-bottom: 5px;
 }
 
-td {
-  padding-right: 65px;
+.board-extra__account-cell,
+.board-extra__spell-cell {
+  padding: 5px 55px 5px 5px;
   border-left: 5px solid #FF5252;
-  max-padding-right: 65px;
 }
 
-.board-extra__account_cell {
-  padding-right: 110px;
+.board-extra__account-cell {
+  padding-right: 100px;
 }
 
 .board-extra__title {
   border-bottom: 2px solid black;
   margin-bottom: 5px;
   font-weight: bold;
-}
-
-.board-extra__content {
 }
 
 .board-main__container {
@@ -101,9 +122,8 @@ td {
   flex: 1;
   display: flex;
   flex-flow: column wrap;
+  margin: 0;
 }
-
-
 
 .list__scroll-box {
   flex: 1;
@@ -111,10 +131,12 @@ td {
   overflow: auto;
   height: 80vh;
   max-height: 80vh;
+  border-bottom: 3px solid #4CAF50;
+  margin: 10px 0;
 }
 
 .list__scroll-box_height_small {
-  max-height: 73vh;
+  max-height: 76.4vh;
 }
 
 .list__container-task {
@@ -127,24 +149,16 @@ td {
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  margin-bottom: 0px; /*5*/
+  margin-bottom: 0px;
 }
 
 .list__button-back {
   margin-left: 10px;
-  background: url('../img/arrow.png') no-repeat;
+  background: url('../img/back.png') no-repeat;
   height: 20px;
   display: inline-block;
   padding-left: 5px;
-  margin-top: 9px;
-  margin-bottom: 9px;
-
-/*  width: 50px;
-  padding: 2px 5px;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-  text-transform: uppercase;*/
+  margin-bottom: 4px;
 }
 
 .list__button-back:hover {
@@ -157,7 +171,7 @@ td {
   transition: width 0.4s ease-in;
   border-radius: 10px;
   border: 3px solid #000;
-  outline: none;  
+  outline: none;
   font-size: 15px;
   padding-left: 25px;
   height: 20px;
@@ -201,18 +215,8 @@ td {
   display: flex;
   width: 90%;
   height: 8vh;
-}
-
-.list__input-area {
-
-}
-
-.list__add-button {
-
-}
-
-.collection {
-
+  outline-color: #388E3C;
+  resize: none;
 }
 
 .collection__container {
@@ -222,28 +226,39 @@ td {
   height: 80vh;
 }
 
-.collection__folder {
-
-}
-
-.note {
-
-}
-
 .note__panel {
+  background: #4CAF50;
+  width: 90%;
+  max-width: 980px;
+  border: 3px solid #4CAF50;
+  padding-left: 4px;
+  border-top: 0;
+  border-bottom: 0;
+}
 
+.note__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .list__area, .note__field {
   font-size: 14px;
+  border: 3px solid #4CAF50;
+
 }
 
 .note__field {
-  height: 500px; /* mobile version? */
-  width: 98%;
-  /*max-height: 500px;*/
+  height: 500px;
+  width: 90%;
   max-width: 980px;
+  padding: 0;
   height: 85vh;
+  resize: none;
+  outline: none;
+  padding-left: 4px;
+  border-top: 0;
+  padding-top: 4px;
 }
 
 .task__container {
@@ -252,7 +267,8 @@ td {
   flex-flow: row wrap;
   background: #FF5252;
   width: 100%;
-  min-width: 300px;
+  min-width: 250px;
+  margin-bottom: 5px;
 }
 
 .task__container-descript {
@@ -269,6 +285,10 @@ td {
   animation: invisibility .5s linear ;
 }
 
+.task__detail>p {
+  margin: 3px;
+}
+
 .task__container-checkbox {
   display: flex;
   align-items: center;
@@ -283,8 +303,8 @@ td {
 }
 
 .task__checkbox:hover {
-  background: plum;
-  box-shadow: inset 0px 0px 0px 5px pink;
+  background: indigo;
+  opacity: .3;
 }
 
 .task__checkbox>input {
@@ -298,11 +318,11 @@ td {
   flex-direction: column;
   flex: 3;
   margin-left: 15px;
-  -webkit-touch-callout: none; 
-  -webkit-user-select: none; 
-  -khtml-user-select: none; 
-  -moz-user-select: none; 
-  -ms-user-select: none; 
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   cursor: default;
 }
@@ -316,6 +336,9 @@ td {
 .task__field {
   flex: 1;
   margin: 10px 0 10px 10px;
+  outline-color: #388E3C;
+  resize: none;
+  border: 0;
 }
 
 .stopwatch__scoreboard {
@@ -324,12 +347,14 @@ td {
   font-weight: bold;
 }
 
-.task__price {
-
-}
-
 .task__lable {
-
+  border-radius: 100%;
+  background: #FF5252;
+  display: inline-block;
+  align-self: center;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
 }
 
 .timer__container {
@@ -345,10 +370,6 @@ td {
 .task__attribute {
   font-weight: bold;
   text-decoration: underline;
-}
-
-.folder {
-
 }
 
 .collection__container {
@@ -372,22 +393,15 @@ td {
 
 .folder__field {
   margin-top: 10px;
+  outline-color: #388E3C;
+  resize: none;
+  border: 0;
 }
 
 .folder__name {
-
-}
-
-.folder__panel {
-
-}
-
-.folder__edit {
-
-}
-
-.folder__field {
-
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 15px;
 }
 
 .button-save,
@@ -428,8 +442,8 @@ td {
 .button-edit   { background: url('../img/edit.png')     ; }
 .button-note   { background: url('../img/note.png')     ; }
 .button-cancel { background: url('../img/cancel.png')   ; }
-.button-close  { background: url('../img/timer-on.png') ; }
-.button-open   { background: url('../img/timer-off.png'); }
+.button-close  { background: url('../img/close.png') ; }
+.button-open   { background: url('../img/open.png'); }
 .button-pause  { background: url('../img/pause.png')    ; }
 .button-play   { background: url('../img/play.png')     ; }
 
@@ -439,7 +453,7 @@ td {
 
 .list__container-button-add {
   background: #FF5252;
-  border-radius: 100%; /* 900 x 50 */
+  border-radius: 100%;
   display: flex;
   height: 48px;
   width: 48px;
@@ -457,7 +471,11 @@ td {
   }
 }
 
-@media screen and (max-width: 695px) {
+@media screen and (max-width: 600px) {
+  .app__container {
+    margin: 0;
+  }
+
   .app__sidebar {
     margin-right: 0;
     align-content: center;
@@ -466,13 +484,13 @@ td {
   }
 
   .navigation-menu__button {
-    min-width: 360px;
+    min-width: 280px;
   }
 
   .task__container {
-    min-width: 380px;
+    min-width: 300px;
   }
-  
+
   .task__container-descript {
     margin-left: 0;
     margin-right: 0;
@@ -507,7 +525,7 @@ td {
   }
 
   .button-add {
-    margin: 5px;  
+    margin: 5px;
     background-position-y: center;
     background-position-x: center;
     height: 60px;
@@ -524,6 +542,7 @@ td {
     margin-bottom: 10px;
     width: 95%;
     height: 50vh;
+    outline-color: #388E3C;
   }
 
   .note__field {
@@ -542,6 +561,28 @@ td {
 
   .list__scroll-box {
     order: 2;
+    margin: 0;
+  }
+
+  .board-main__container {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .note__field {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    padding-left: 5px;
+    border-top: 5px solid #4CAF50;
+    border-bottom: 5px solid #4CAF50;
+  }
+
+  .note__panel {
+    width: 97%;
+    border-top: 0;
+    border-bottom: 0;
   }
 }
 
@@ -549,15 +590,19 @@ td {
 .task__container_level_one {
   background: #4CAF50;
 }
+
 .task__container_level_two {
   background: #CDDC39;
 }
+
 .task__container_level_three {
   background: #FFC107;
 }
+
 .task__container_level_four {
   background: #FF5722;
 }
+
 .task__container_level_five {
   background: #E040FB;
 }

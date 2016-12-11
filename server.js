@@ -1,10 +1,8 @@
-const express = require('express');
-const app = express();
+const express = require('express'),
+  app = express();
 
-app.set('port', 3000);
+app.set('port', 8101);
 
 app.use('/', express.static(__dirname));
 
-app.listen(app.get('port'), function() {
-  console.log('run');
-});
+app.listen(app.get('port'), () => null);
